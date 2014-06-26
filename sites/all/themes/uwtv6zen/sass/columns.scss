@@ -1,0 +1,56 @@
+@import "zen";
+$zen-gutter-width: 20px;
+
+.halves{
+	$zen-column-count: 2;
+	@include zen-grid-container();
+	.half-first{
+	@include zen-grid-item(1,1);
+	}
+	.half-second{
+	@include zen-grid-item(1,2);
+	}
+}
+
+.thirds{
+	$zen-column-count: 3;
+	@include zen-grid-container();
+	.two-thirds-first{
+		@include zen-grid-item(2,1);
+	}
+	.two-thirds-second{
+		@include zen-grid-item(2,2);
+	}
+	.one-third-first{
+		@include zen-grid-item(1,1);
+	}
+	.one-third-second{
+		@include zen-grid-item(1,2);
+	}
+	.one-third-third{
+		@include zen-grid-item(1,3);
+	}
+}
+
+.quarters{
+	$zen-column-count: 4;
+	@include zen-grid-container();
+	.one-quarter-first{
+		@include zen-grid-item(1,1);
+	}
+	.one-quarter-second{
+		@include zen-grid-item(1,2);
+	}
+	.one-quarter-third{
+		@include zen-grid-item(1,3);
+	}
+	.one-quarter-fourth{
+		@include zen-grid-item(1,4);
+	}
+	.three-quarters-first{
+		@include zen-grid-item(3,1);
+	}
+	.three-quarters-second{
+		@include zen-grid-item(3,2);
+	}
+}

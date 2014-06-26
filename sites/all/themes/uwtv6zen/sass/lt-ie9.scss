@@ -1,0 +1,47 @@
+@import "base";
+
+@include narrow{
+.lt-ie9{
+	#page{
+		
+		#band{
+			
+		}
+		#header{
+			#header-left{
+			
+			}
+		}
+		#site-menu{
+			.menus{
+				
+				.menu{
+					
+				}
+			}
+		}
+	}	
+}
+}
+
+
+
+
+@include widest{
+.lt-ie9{
+	#page{
+		
+		#band{
+			
+		}
+	}
+	#footer{
+		#footer-middle{
+			.block{
+					width:19%;
+					float:left;
+			}
+		}
+	}
+}
+}

@@ -1,0 +1,284 @@
+/**
+ * @file
+ * Positioning for responsive layout .
+ *
+ * Define CSS classes to create a table-free, 3-column, 2-column, or single
+ * column layout depending on whether blocks are enabled in the left or right
+ * columns.
+ *
+ * This layout uses the Zen Grids plugin for Compass: http://zengrids.com
+ */
+
+@import "base";
+
+
+
+
+// IE6-7 don't support box-sizing: border-box. We can fix this in 1 of 3 ways:
+// - Drop support for IE 6/7. :-) In the _base.scss, set $legacy-support-for-ie6
+//   and $legacy-support-for-ie7 to false.
+// - (Preferred) Install the box-sizing polyfill and set the variable below to
+//   the absolute path URL to the boxsizing.htc file.
+//   @see https://github.com/Schepp/box-sizing-polyfill
+//   $box-sizing-polyfill-path: "/path/to/boxsizing.htc";
+// - Use the same CSS unit for grid width and gutter width (use px for both or
+//   use % for both, etc.) and set the box-sizing variable to content-box.
+//   $zen-box-sizing: content-box;
+
+
+// You can generate more efficient CSS if you manually apply the
+// zen-grid-item-base mixin to all grid items from within a single ruleset.
+$zen-auto-include-item-base: false;
+// $zen-auto-include-flow-item-base: false;
+
+
+/*
+ * Center the page.
+ */
+#header,
+#site-menu .inner,
+#main,
+#section-identifier,
+.region-bottom,
+#footer_top,
+#footer-middle,
+#footer-bottom .inner {
+  /* For screen sizes larger than 1200px, prevent excessively long lines of text
+     by setting a max-width. */
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1200px;
+}
+
+/*
+ * Apply the shared properties of grid items in a single, efficient ruleset.
+ */
+// See the note about $zen-auto-include-item-base above.
+
+
+#content, 
+.region-sidebar-first,
+.region-sidebar-second,
+.region-section-menu{
+  @include zen-grid-item-base();
+  padding-left:20px;
+  padding-right:20px;
+}
+
+/*
+ * Containers for grid items and flow items.
+ */
+
+#header,
+#main,
+#footer,
+#footer_top,
+#footer-middle,
+#footer-bottom{
+  @include zen-grid-container();
+}
+
+
+
+//
+// Narrow
+//
+@include narrow{
+#band{
+  display:none;
+}
+#header{
+  //height:73px;
+  .block{
+    margin-bottom:0;
+  }
+} // /#header
+#global-menu{
+
+}
+#header-left{
+  background-color:$purple_dark;
+}
+#patch{
+  height:35px;
+  width:47px;
+  span.graphics-uwt_logo_patch_narrow{
+    display:block;
+  }
+  span.graphics-uwt_logo_patch{
+    display:none;
+  }
+} // /#patch
+
+#wordmark{
+  .graphics-uwt_wordmark_narrow{
+    display:block;
+    position:absolute;
+    top:12px;
+    left:47px;
+  }
+  .graphics-uwt_wordmark{
+    display:none;
+  }
+} // /#wordmark
+
+#global-search{
+  .form-item,
+  .form-actions,
+  .block,
+  h2{
+    margin:0;
+  }
+} // /#global-search
+#post-header{
+  display:none;
+}
+#site-menu{
+//See navigation.scss
+}
+
+.graphics-uwt_logo_horiz_white{
+  display:none;
+}
+}
+
+
+
+//
+// Below is 'laid out' for desktop
+//
+@include widest{
+  #band{
+    display:block;
+  }
+
+  .one-sidebar.sidebar-first{
+    .region-sidebar-first,
+    .region-section-menu{
+      @include zen-grid-item(10,1);
+    }
+    #content{
+      @include zen-grid-item(30,11);
+    }
+  }
+  #header {
+  } // /#header
+  .section-1336{
+    #post-header{
+      display:block;
+    }
+  }
+  #header-left{
+    //background-color:RoyalBlue;
+    @include zen-grid-item(3,1);
+    #patch {
+        span.graphics-uwt_logo_patch_narrow{
+          display:none;
+        }
+        span.graphics-uwt_logo_patch{
+          display:block;
+        }
+      }
+  }
+
+  #header-center{
+    //background-color:MediumAquaMarine;
+    @include zen-grid-item(25,4);
+    @include zen-nested-container;
+  }
+  #global-menu{
+    @include zen-grid-item(38,3);
+    //background-color:lime;
+    .block{
+      margin-bottom: 0; // Not totally sure why this is needed, but it is.
+    }
+  }
+  #wordmark {
+    //background-color:SlateGray;
+    padding-top:40px;
+    //@include zen-clear();
+    @include zen-grid-item(38,3);
+  }
+  #site-home-link-wrapper {
+    //background-color:Sienna;
+    @include zen-clear();
+    @include zen-grid-item(38,3);
+  }
+  #header-right{
+    //background-color:MediumVioletRed;
+    @include zen-grid-item(12,29);
+    @include zen-nested-container;
+    #global-search{
+      //background-color:Orange;
+      @include zen-grid-item(40,1);
+    }
+    #global-secondary{
+      //background-color:PaleVioletRed;
+      @include zen-clear();
+      @include zen-grid-item(40,1);
+    }
+  }
+
+
+
+
+  #footer{
+    #footer_top{
+      @include zen-grid-item(10,2);
+    }
+    #footer-middle{
+      @include zen-clear();
+
+      .region-footer-menus{
+        $zen-column-count:5;
+        .block {
+          @for $i from 1 through 5 {
+            &:nth-child( #{$i}) {
+              @include zen-grid-item(1, $i);
+            }
+          }
+
+        }
+        .block:nth-child(1){ 
+          ul { 
+            padding:0;
+            li{
+              list-style-type: none;
+              
+            }
+          }
+          p,ul{
+            padding-left:50px;
+            li a:link,
+            li a:visited{
+              text-decoration: underline;
+            }
+          }
+          p{
+            margin-top:0;
+          }
+        }
+      }
+    }// /#footer-middle
+
+  } // /#footer
+  #footer-bottom{
+    $zen-column-count:10;
+    @include zen-clear();
+    .left {
+      @include zen-grid-item(4,1);
+      .inner{
+        padding-left:40px;
+      }
+    }
+    .right{
+      @include zen-grid-item(2,8);
+      #shib_login_url{
+        display:inline;
+        a:link,a:visited{
+          font-weight: normal;
+        }
+      }
+    }
+  }
+} // /@mixin widest

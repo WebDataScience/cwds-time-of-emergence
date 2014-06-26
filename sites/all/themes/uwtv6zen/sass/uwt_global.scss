@@ -1,0 +1,1533 @@
+@import "base";
+@import "fonts";
+@import "compass/css3";
+
+/* 
+ * SPRITES
+ */
+/* icons */
+$icons-sprite-dimensions:true;
+$icons-layout:smart;
+@import "icons/*.png";
+@include all-icons-sprites;
+/* images */
+$graphics-sprite-dimensions:true;
+$graphics-layout:smart;
+@import "graphics/*.png";
+@include all-graphics-sprites;
+
+
+body{
+background-color: $grey_light;
+}
+
+h1,h2,h3,h4,h5,h6{
+//font-family:LindenHillRegular;
+}
+
+.node-type-layout-page.no-sidebars{
+  h1#page-title{
+    display:none;
+  }
+}
+
+#main{
+    background-color:white;
+    padding-top:1.5em;
+    padding-bottom:1.5em;
+}
+
+.breadcrumb{
+  font-size:0.75em;
+  margin-bottom:2em;
+  color:$grey_medium;
+  a:visited,a:link{
+    color:$grey_dark;
+  }
+  .icons-W-home{
+    font-size:18px;
+  }
+  ol:first-child{
+    height:34px;
+    display:block;
+    float:left;
+  }
+  li:first-child a{
+    overflow: hidden;
+    text-indent:-9999px;
+    display:inline-block;
+    height:21px;
+    width:24px;
+  }
+}
+
+/**
+  * LINKS
+  */
+body{
+  a:link,a:visited{
+  color:$link_blue;
+  text-decoration:none;
+  }
+  a:hover{
+  text-decoration:underline;
+  }
+
+  a.active {
+      font-weight:bold;
+  }
+  .search-results-url a:link,
+  .search-results-url a:visited{
+    color:$grey_dark;
+  }
+  // Download links
+
+  a.icon{
+    padding-right:18px;
+    margin-right:4px;
+    background-position:100%;
+    background-repeat: no-repeat;
+  }
+  a.icon.pdf{
+    background-image: url('../images/icon-pdf.png');
+  }
+  a.icon.xls{
+    background-image: url('../images/icon-xls.gif');
+  }
+  a.icon.doc{
+    background-image: url('../images/icon-doc.gif');
+  }
+
+  /**
+    * Site home link (in header, below wordmark)
+    */
+  #site-home-link a:link,
+  #site-home-link a:visited{
+      color:$purple_dark;
+      text-transform: uppercase;
+      text-decoration:none;
+  }
+  #site-home-link{
+    .active{
+      font-weight:normal;
+    }
+  }
+}
+
+/**
+  * Headings
+  */
+@include widest {
+  h1#page-title{
+    margin-bottom:0.75em;
+  }
+  .panel-pane{
+    h2.pane-title{
+      width:100%;
+      font-family: $nexa_boldregular;
+      text-transform: uppercase;
+      font-size:100%;
+      border-bottom:1px solid $grey_medium;
+      color:$purple_dark;
+      margin-bottom:0.25em;
+    }
+  }
+  .menu-minipanels{
+    h2.pane-title{
+      font-size:85%;
+    }
+  }
+  #content{
+    .node-layout-page{
+      h1{
+        display:none;
+      }
+    }
+  }
+}
+/* Flexslider */
+.flexslider{
+  background:none;
+  border:none;
+  border-radius:none;
+  box-shadow: none;
+  ul{
+    li{
+      .views-field-title{ // Slideshow captions, not linking to other content
+        position:absolute;
+        bottom:0;
+        background-color: rgba($purple_dark, 0.8);
+        width:100%;
+        padding-top:0.5em;
+        padding-bottom:0.5em;
+        span{
+          color:#fff;
+          padding-left:0.5em;
+          display:inline-block;
+        }
+      }
+      .views-field-nothing{
+        position:absolute;
+        bottom:0;
+        background-color: rgba($purple_dark, 0.8);
+        width:100%;
+        span{
+          padding-left:1em;
+          display:block;
+          color:$grey_light;
+        }
+        a:first-child{
+          display:block;
+          font-family: $nexa_boldregular;
+          text-transform:uppercase;
+          color:$gold_dark;
+        }
+        a{
+          color:$gold_dark;
+        }
+      }
+    }
+  }
+}
+.node ol.slides,
+.node ul.slides {
+  padding-left:0;
+}
+
+
+
+.node-links ul li a{
+background: -moz-linear-gradient(center top , $purple_dark 0%, $purple_light 100%) repeat scroll 0 0 transparent;
+color:$grey_light;
+border-radius: 3px 11px 3px 11px;
+text-shadow:none;
+}
+
+/* Keep images from getting too big for their britches...er...containers... */
+img {
+  max-width:100%;
+  height:auto;
+}
+/* images in tables shouldn't be resized...it's no bueno. */
+table{
+  img{
+    max-width:inherit;
+  }
+}
+
+
+#header{
+    //margin-bottom:1.5em;
+}
+#footer{
+  padding-top:2em;
+}
+
+#post-header {
+
+    .block{
+        margin-bottom: 0;
+    }
+
+    .post-header-image{
+        height:225px;
+        .view-content{
+            position:relative;
+            z-index:-1;
+            .views-field-node-gallery-media{
+              .field-content{
+                width:100%;
+                margin-right:auto;
+                margin-left:auto;
+                text-align: center;
+              }
+            }
+        }
+        img{
+            position:relative;
+            z-index:-1;
+            //@include single-box-shadow(rgba(black, 0.5), 0px, 6px, 6px, 0px);
+        }
+    }
+}
+
+/*
+ * UW Tacoma upper-left elements (patch home logo)
+ */
+#home-links a span{
+    /*display:block;*/
+}
+
+/*
+ * Footer
+ */
+ #footer,#footer-bottom{
+    color:$grey_light;
+    background-color:$grey_dark;
+    //font-size: 75%;
+    h2.block-title{
+        font-family: $arial;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    a:link,a:visited{
+        color:$grey_light;
+    }
+ }
+ #footer_top{ 
+    .graphics-uwt_logo_horiz_white{
+        margin-top: 20px;
+    }
+ }
+ #footer-middle{
+  h2.block-title{
+    font-family: $arial;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size:85%;
+  }
+  padding-top:2em;
+  font-weight: bold;
+  color:$grey_medium;
+  a:link,a:visited{
+    color:$grey_medium;
+    //font-size: 115%;
+    font-weight: normal;
+  }
+  a:hover{
+    text-decoration: underline;
+  }
+  .block-title{
+    padding-top:5px;
+  }
+  p,
+  ul#info{
+    font-size:0.75em;
+  }
+ }
+ #footer-bottom{
+    background-color:black;
+    font-size:80%;
+ }
+
+//
+//  Global/Defaults
+//
+body{
+  min-width: 100%;
+  width:100%;
+}
+
+#band{
+  width:100%;
+}
+
+#global-search{
+    input[type="submit"]{
+        text-indent:-999px;
+        overflow:hidden;
+        background-color:$grey_light;
+        border:none;
+    }
+}
+
+//
+//  Button classes
+//
+.gold-buttons,
+.purple-buttons,
+.grey-buttons{
+  ul{
+    list-style-type:none;
+    list-style-image: none;
+    padding-left:0;
+    margin-top:0;
+    padding-top:auto;
+    li{
+      min-height: 1.5em;
+      padding:0.5em;
+      margin-bottom:10px;
+      list-style-image:none;
+    }
+  }
+}
+.gold-buttons{
+  li{
+    background-color:$gold_dark;
+    color:white;
+    a:link,a:visited{
+      color:white;
+    }
+  }
+}
+.purple-buttons{
+  li{
+    background-color:$purple_dark;
+    color:white;
+    a:link,a:visited{
+      color:white;
+    }
+  }
+}
+.grey-buttons{
+  li{
+    background-color:$grey_medium;
+    color:$purple_dark;
+    a:link,a:visited{
+      color:$purple_dark;
+    }
+  }
+}
+
+.block-facetapi{
+  .item-list{
+    .collapsed{
+      list-style-image: url('../images/menu-plus.png');
+    }
+  }
+}
+
+//
+//  List classes
+//
+.horizontal-list{
+  ul{
+    li{
+      list-style-image:none;
+      list-style-type:none;
+      float:left;
+    }
+    li:after{
+      content: " | ";
+    }
+    li:last-child:after{
+      content:"";
+    }
+  }
+}
+
+.columns-list{
+  ul{
+    @include column-count(2);
+    @include column-break-after(always);
+    //margin-bottom: 20px;
+  }
+}
+
+//
+//  Breakpoints
+//
+
+@include narrow{
+  #page{
+    
+  }
+    .breadcrumb{
+        display:none;
+    }
+    /* Search */
+    #header-right{
+      height:2.25em;
+    }
+    #global-search{
+        input[type="submit"]{
+            text-indent:-999px;
+            overflow:hidden;
+            position:relative;
+            top:6px;
+            left:10px;
+            background-color:$grey_light;
+            border:none;
+        }
+        input[type="text"]{
+            position: relative;
+            top:6px;
+            left:10px;
+            height:20px;
+            border:0;
+        }
+    }
+    #site-home-link{
+        display:none;
+    }
+    #section-identifier{
+        display:none;
+    }
+    #header-right{
+      #global-secondary{
+        display:none;
+      }
+    }
+    #footer_top{
+      .graphics-uwt_w_and_wordmark_horiz_white{
+        max-width:100%;
+        width:100%;
+      }
+    }   
+    #footer-bottom{
+        .right{
+            div{
+                display:inline;
+            }
+        }
+    } // /#footer-bottom
+} // /breakpoint(narrow)
+
+
+
+
+@include widest{
+  #page{
+    background-color:$grey_light;
+  }
+  .menus{
+      label{
+          display:none;
+      }
+  }
+  #band{
+      height:35px;
+      background-color:black;
+  } // /#band
+  #patch{
+
+  }
+  #header{
+    
+    margin-bottom:2em;
+
+    #header-left{
+        margin-top:-35px;
+        background-color:transparent;
+    } // /#header-left
+    #header-center{
+        #audience-menu{
+            display:none;
+        }
+        #global-menu{
+            margin-top:-35px;
+            position:relative;
+            z-index:1;
+        }
+        #site-home-link-wrapper{
+            font-family: nexa_boldregular;
+            font-size:1.25em;
+        }
+    }// /#header-center
+    #header-right{
+        #global-search{
+            margin-top:-15px;
+            input[type="text"]{
+                width:80%;
+                height:35px;
+                @include border-radius(5px);
+                border:2px solid $grey_medium;
+                padding-right:30px
+            }
+            input.icons-search-submit-dark[type="submit"]{
+                margin-left:-30px;
+                background-color:white;
+            }
+        }
+    } // /#header-right
+  } // /#header
+  #post-header{
+      //position:relative;
+      //height:225px;
+      display:none;
+  } // /#post-header
+  #section-identifier{
+      height:4em;
+      line-height: 4em;
+      position: relative;
+      margin-bottom:0;
+      background-color: $purple_medium;
+      * {
+          margin-bottom:0;
+      }
+      a.active{
+          font-weight: normal;
+      }
+      #section-id-link{
+          font-family: nexa_boldregular;
+          font-size: 2.25em;
+          color:white;
+          text-decoration:none;
+          text-transform: uppercase;
+                  padding-left:1em;
+      }
+  } // /#section-identifier
+  #site-menu{
+  }
+
+  //
+  //  Admissions
+  //
+  .section-1450{ // Admissions  General
+    #site-home-link{
+      display:none;
+    }
+    #post-header{
+      display:block;
+      height: 300px;
+      .post-header-image{
+        height:300px;
+        overflow:hidden;
+      }
+      #admissions-post-header-inner{
+        width:100%;
+        background-color:$gold_dark;
+        #admissions-home-tagline{
+          color:#fff;
+          font-family: $nexa_boldregular;
+          font-size:200%;
+          text-transform: uppercase;
+          padding-top:0.5em;
+          padding-bottom:0.5em;
+          padding-left:20px;
+          max-width:1200px;
+          margin-right:auto;
+          margin-left:auto;
+          font-weight: normal;
+          span{
+            font-weight: bold;
+            font-family: $nexa_xboldregular;
+          }
+        }
+      }
+    }
+    #site-menu{
+      background-color:$gold_dark;
+      padding-left:20px;
+      .menus{
+        h2.block-title{
+          display:block;
+          float:left;
+          margin-top:13px;
+          text-transform: uppercase;
+          //font-family:$nexa_boldregular;
+          margin-right:1em;
+          a:link,a:visited{
+            color:#fff;
+          }
+        }
+      }
+      .menu li .outerContainer .innerContainer{
+        border-top: 1px solid $gold_dark;
+        border-bottom: 1px solid $gold_dark;
+        &:hover{
+          background-color:$gold_pale;
+          a:link,a:visited{
+            color:$purple_dark;
+          }
+        }
+        ul.menu{
+          background-color:$gold_pale;
+          border-top:1.25em solid $gold_pale;
+          li:hover{
+            background-color:$gold_pale;
+          }
+        }
+        a:link,a:visited{
+          padding-right:15px;
+          //border-right:2px solid #fff;
+          font-size:1.5em;
+        }
+      }
+
+      li.active-trail{
+        background-color:$gold_pale;
+      }
+      .menu{
+        li:last-child{
+          .outerContainer{
+            .innerContainer{
+              a:link,a:visited{
+                border-right:0;
+              }
+            }
+          }
+
+        }
+        .outerContainer{
+          max-width:17em;
+        }
+      }
+
+    }
+  }
+  .section-1450.page-node-36538{ // Admissions Homepage
+    #post-header{
+      .post-header-image{
+        overflow:visible;
+      }
+    }
+    #main,#content{ // Allow homepage to left align tagline and content
+      padding-left:0;
+      padding-right:0;
+    }
+    #main{
+      background-color:transparent;
+      padding-top:75px;
+      .breadcrumb{
+        display:none;
+      }
+    }
+    #site-menu{
+      display:none;
+    }
+    .panel-col-first,
+    .panel-col-second,
+    .panel-col-third,
+    .panel-col-fourth{
+      .inside{
+        .panel-pane{
+          padding:10px;
+          min-height:10em;
+          h2.pane-title{
+            border-bottom:0;
+            font-size:125%;
+            a:link,a:visited{
+              color:#fff;
+            }
+          }
+        }
+      }
+    }
+    .panel-col-bottom{ // Below the 4 boxes, this is the bottom menu
+      margin-top:25px;
+      background-color:rgba($gold_pale, 0.8);
+      .panel-pane{
+        margin-bottom:0.75em;
+        margin-top:0.75em;
+      }
+      h2.pane-title{
+        float:left;
+        width:6em;
+        padding-top:5px;
+        padding-left:5px;
+        border-bottom:0;
+      }
+      .menu li{
+        float:left;
+        padding-right:1em;
+        font-size:125%;
+        a{
+          font-weight: bold;
+          color:$purple_dark;
+          @include transition-property(all);
+          @include transition-duration(0.5s);
+          &:hover{
+            color:$gold_dark;
+          }
+        }
+      }
+    }
+  }
+} // /breakpoint(widest)
+
+//
+//Homepage fancy stuff...organize into another file?
+//
+.front{
+  #social{
+    li{
+      list-style-type: none;
+    }
+    a{
+      display:block;
+      visibility: visible;
+      strong{
+        display:none;
+        visibility:hidden;
+      }
+    }
+  }
+}
+
+@include narrow{
+  .front{
+    #content{
+      padding-left:0;
+      padding-right:0;
+    }
+    // Hide the boxed content by default
+    #CurrentStudents,
+    #Freshmen,
+    #ProspectiveStudents,
+    #Community,
+    #FacultyStaff,
+    #SupportUWTacoma{
+      display:none;
+      visibility: hidden;
+    }
+    #blocks{
+      width:100%;
+      padding-left:0;
+      li{
+        padding:1em;
+        list-style-image: none;
+        list-style-type: none;
+        background-color:$purple_dark;
+        border-bottom:1px solid $grey_dark;
+        border-right:1px solid $grey_dark;
+        height:3em;
+        //@include single-box-shadow(inset);
+        a:link,a:visited{
+          font-size:0.75em;
+          font-family:nexa_boldregular;
+          color:$grey_light;
+        }
+      }
+    }
+  }
+}
+
+@include widest{
+.front{
+  #main{
+    background-color: $grey_light;
+  }
+  h1.title{
+    display:none;
+  }
+  #content{
+    padding-left:0;
+    padding-right:0;
+  }
+
+  .none{display:none;height:0;}
+  .ie6 #persona{height:540px;}
+  #persona{
+    position:relative;
+    background:#000;
+    overflow:hidden;
+    width:100%;
+    padding:20px 0;
+
+  }
+  .ie7 #persona {padding:0;}
+  #slide{position:absolute;top:0;left:0;width:100%;z-index:0;height:100%;min-height:540px;}
+  #slideWrap{position:relative;width:1680px;overflow:hidden;height:100%;min-height:540px;box-shadow:inset 0 9px 9px -9px #000, inset 0 -9px 9px -9px #000;margin:auto;}
+  #slide img{
+    position:absolute;
+    left:0;
+    top:0;
+    z-index:-1;
+    // removing this to work in new theme...
+    /*display:none;*/
+  }
+  #persona{
+    .inner{
+      max-width:1200px;
+      margin-left:auto;
+      margin-right:auto;
+      position:relative;
+    } 
+    h2{
+      font-size:1.45em;
+      font-family: $nexa_boldregular;
+      letter-spacing:0;
+    }
+  }
+  #blocks{width:960px;margin:0 auto;
+    list-style-type: none;
+    li {
+      a{
+        display:block;
+        width:300px;
+        height:250px;
+        background:transparent url('../images/home/bg-sprite.png') 0 -79px repeat-x;
+        position:relative;
+        color:#31224e;
+        margin:10px;
+        .img{
+          width:100%;
+          height:100%;
+          display:block;
+          cursor:pointer;
+        }
+
+      }
+    }
+  }
+
+
+
+  #blocks li a .current,.expanded #blocks li a .current.selected{background:transparent url('../images/home/block-hovers.jpg') 0 -857px no-repeat;}
+  #blocks li a .freshmen,.expanded #blocks li a .freshmen.selected{background:transparent url('../images/home/block-hovers.jpg') 0 -1359px no-repeat;}
+  #blocks li a .prospective,.expanded #blocks li a .prospective.selected{background:transparent url('../images/home/block-hovers.jpg') 0 -1610px no-repeat;}
+  #blocks li a .faculty,.expanded #blocks li a .faculty.selected{background:transparent url('../images/home/block-hovers.jpg') 0 -1108px no-repeat;}
+  #blocks li a .community,.expanded #blocks li a .community.selected{background:transparent url('../images/home/block-hovers.jpg') 0 -606px no-repeat;}
+  #blocks li a .support,.expanded #blocks li a .support.selected{background:transparent url('../images/home/block-hovers.jpg') 0 -1861px no-repeat;}
+  #blocks li a .set{display:block;cursor:pointer;position:absolute;bottom:15px;left:15px;background:#fff url('../images/home/bg-sprite.png') 0 0 repeat-x;height:55px;}
+  #blocks li a .set span{border:1px solid #dadade;display:block;text-shadow:0 1px 1px #fff;margin:5px;padding:5px;}
+  .expanded #blocks h2{font:16px/20px Arial, sans-serif;letter-spacing:0;}
+  .expanded #blocks{float:left;margin-right:10px;}
+  .expanded #blocks li a .set{bottom:0;left:0;height:auto;letter-spacing:-1px;}
+  .expanded #blocks li a .set span{border:none;margin:0;}
+  .expanded #blocks li a .current, .expanded #blocks li a .current.activated{background:transparent url('../images/home/block-hovers.jpg') 0 0 no-repeat;}
+  .expanded #blocks li a .freshmen, .expanded #blocks li a .freshmen.activated{background:transparent url('../images/home/block-hovers.jpg') 0 -101px no-repeat;}
+  .expanded #blocks li a .prospective, .expanded #blocks li a .prospective.activated {background:transparent url('../images/home/block-hovers.jpg') 0 -505px no-repeat;}
+  .expanded #blocks li a .faculty,.expanded #blocks li a .faculty.activated{background:transparent url('../images/home/block-hovers.jpg') 0 -202px no-repeat;}
+  .expanded #blocks li a .community,.expanded #blocks li a .community.activated{background:transparent url('../images/home/block-hovers.jpg') 0 -303px no-repeat;}
+  .expanded #blocks li a .support,.expanded #blocks li a .support.activated{background:transparent url('../images/home/block-hovers.jpg') 0 -404px no-repeat;}
+  
+  .content-container{
+    margin-left:150px;
+    float:left;
+    width:780px;
+    background-image: url('../images/home/uwthomecontentbg.png');
+    background-repeat: repeat;
+    background-color:transparent;
+    margin-top:10px;
+    position:relative;
+    color:#fff;
+    padding:0 0 0 20px;
+    .inside{
+
+      $zen-column-count:10;
+      @include zen-grid-container();
+      .col60{
+        @include zen-grid-item(6,1);
+        .nth{
+          width:50%;
+          float:left;
+        }
+      }
+      .col40{
+        @include zen-grid-item(4,7);
+      }
+      ul{
+        padding:0;
+        li{
+          //list-style-type:none;
+        }
+      }
+    }
+    .col40,
+    .col60{
+      ul{
+        list-style-type: none;
+        li{
+          vertical-align: middle;
+          list-style:none;
+          padding:0 0 0 10px;
+          background: url("../images/menu-leaf.png") no-repeat 0% 50%;
+          a{
+            color:inherit;
+            padding:3px;
+            display:block;
+            width:85%;
+            @include transition-property(all);
+            @include transition-duration(0.5s);
+            background-color:transparent;
+            &:hover{
+              background-color:rgba(255,255,255,0.5);
+              text-decoration:none;
+            }
+          }
+        }
+      }
+    }
+    
+    .col40,
+    .col60{
+      ul.icon-links{
+        li{
+          background:none;
+        }
+      }
+    }
+    .col.nth{
+      width:50%;
+      float:left;
+      .icon-links{
+        li{
+          width:85%;
+        }
+      }
+    }
+
+    ul{
+      margin-top:0.25em;
+    }
+
+    h2{
+      font-size:28px;
+      line-height:28px;
+      margin:30px 0 28px;
+    }
+    h3{
+      font-family:$nexa_boldregular;
+      font-size:16px;
+      text-transform:uppercase;
+      border-bottom:1px solid #FFF;
+      font-weight:600;
+      margin-bottom:10px;
+      line-height:20px;
+      width:95%;
+    }
+    a.close{
+      position:absolute;
+      float:left;
+      top:-7px;
+      right:-7px;
+      width:22px;
+      height:22px;
+      background-color:transparent;
+      span.icons-close-x{
+        display:inline-block;
+      }
+    }
+    a,a:visited{
+      color:$grey_light;
+      font-size:1em;
+    }
+    a:hover{
+    }
+    .icon-links{
+      list-style-type:none;
+      background-image: url('../images/home/bg-super-light-purple.png');
+      background-repeat: repeat;
+      background-color:transparent;
+      span {
+        float: left;
+        margin-right: 10px;
+      }
+      .icons-logo-canvas{
+        margin-left:8px;
+        margin-right:24px;
+      }
+      .icons-logo-catalyst{
+        margin-right:21px;
+      }
+      .icons-envelope-large{
+        margin-left:7px;
+        margin-right:21px;
+      }
+      .icons-envelope-plus{
+        margin-left:7px;
+        margin-right:17px;
+      }
+      .icons-magnifying-glass{
+        margin-left:11px;
+        margin-right:20px;
+      }
+      .icons-pen-paper{
+        margin-left: 6px;
+        margin-right: 11px;
+      }
+      .icons-q-mark{
+        margin-left:8px;
+        margin-right:20px;
+      }
+      .icons-calendar{
+        margin-left:10px;
+        margin-right:22px;
+      }
+      span.no-icon{
+        width:30px;
+      }
+      li {
+        border-bottom: 1px solid #554969;
+        font-size: 15px;
+        font-weight: 600;
+        clear: both;
+        background-color:rgba(255,255,255,0.05);
+      }
+      .logo-catalyst{
+        padding-bottom:20px;
+      }
+      a {
+        line-height: 30px;
+        background: transparent;
+        display: block;
+        color: #fff;
+        margin: 0;
+        padding: 10px;
+      }
+    }
+    .icon-links.admissions-list li a {
+      background-color: #F9F3D6;
+      color: #A68C40;
+    }
+  }
+
+
+
+  .actions{margin:0 30px;float:right;background:transparent url('../../../images/home/bg-sprite.png') 0 -1389px repeat-x;}
+  .ie7 .actions{padding-bottom:20px;}
+  .actions a.patch1,.actions a.patch2,.actions a.patch3{
+    float:left;width:51px;height:57px;background:url('../../../images/home/bg-sprite.png') 0 -1331px repeat-x;font-size:10px;color:#8b7810;line-height:10px;text-align:center;font-weight:600;margin:20px 41px;
+    @include border-radius(3px);
+  }
+  .actions a span{width:22px;height:24px;display:block;margin:5px auto 0;}
+  .actions a.patch2{margin:20px 0;}
+  .actions a.patch1 span{background:url('../../../images/home/icon-sprite.png') -183px 0 no-repeat;}
+  .actions a.patch2 span{background:url('../../../images/home/icon-sprite.png') -205px 0 no-repeat;}
+  .actions a.patch3 span{background:url('../../../images/home/icon-sprite.png') -227px 0 no-repeat;}
+  .actions a:visited{color:#8b7810;}
+  .actions a:hover{color:#757ec0;}
+  .actions a:active{color:#000;}
+  #ProspectiveStudents,
+  #Community,
+  #Freshmen,
+  #FacultyStaff,
+  #CurrentStudents,
+  #SupportUWTacoma,
+  .content-container .more ul,
+  h3.subscribe a strong{
+    display:none;
+  }
+  #social{
+    li{
+      display:inline;
+      a{
+        display:inline-block;
+      }
+    }
+  }
+
+} // /.front
+
+.not-front{
+  .icon-links{
+    a{
+      span{
+        height:0px;
+        width:0px;
+        background-image:none;
+      }
+    }
+  }
+
+}
+
+#subpersona{
+  $zen-column-count: 1;
+  @include zen-grid-container();
+  .subfirst,
+  .subsecond,
+  .subthird{
+  }
+}
+
+  #subpersona{
+    margin-top:1em;
+    max-width:1200px;
+    margin-left:auto;
+    margin-right: auto;
+    $zen-column-count:10;
+    @include zen-grid-container();
+    .subfirst{
+      @include zen-grid-item(5,1);
+    }
+    .subsecond{
+      @include zen-grid-item(3,6);
+    }
+    .subthird{
+      @include zen-grid-item(2,9);
+      .grey-buttons{
+        a:link,a:visited{
+          text-transform: uppercase;
+          font-weight: bold;
+        }
+      }
+    }
+  }
+
+
+}
+
+//
+//  End homepage fancy stuff
+//
+
+//
+//  News Article / News Widget styling
+//
+@include narrow{
+  .news-widget-container{
+    $zen-column-count:1;
+  }
+}
+@include widest {
+  .news-widget-container{
+    margin-top:20px;
+    font-size:75%;
+    $zen-column-count: 10;
+    @include zen-grid-container();
+    .news-widget-left{
+      @include zen-grid-item(2,1);
+    }
+    .news-widget-right{
+      @include zen-grid-item(7,3);
+      h2{
+        a:link,a:visited{
+          //font-family: $helvetica;
+          color:$purple_dark;
+          font-size:70%;
+          font-weight: bold;
+        }
+      }
+      p{
+        margin-top:0;
+
+      }
+    }
+  }
+  .node-type-news-article{
+    .field-name-field-headline-image{
+      width:auto;
+      float:right;
+      margin-left:1em;
+      margin-bottom:1em;
+    }
+    .field-name-field-subhead{
+      font-size:1.1em;
+      font-style:italic;
+    }
+    .field-name-body{
+      padding-bottom:1.5em;
+      margin-bottom:1.5em;
+      border-bottom:2px solid $grey_dark;
+    }
+    .field-name-field-media-contacts{
+      p{
+        margin-top: 0;
+        margin-bottom: 0;
+      }
+    }
+  }
+} /////// /Homepage fancy stuff
+
+
+//
+//  jQuery UI style modifications
+//
+body .ui-widget{
+  font-family: $arial;
+}
+
+.ui-accordion .ui-accordion-header,
+.ui-tabs .ui-tabs-nav li{
+  //padding-left:2.2em;
+  padding-top:0.5em;
+  padding-bottom:0.5em;
+  font-family: $nexa_boldregular;
+  font-weight: bold;
+  background-image:none;
+  background-color:$grey_light;
+  color:$purple_dark;
+  text-transform: uppercase;
+}
+.ui-tabs .ui-tabs-nav li{
+  padding-top:inherit;
+  padding-bottom:inherit;
+  margin-bottom:0;
+  a{
+    font-size:0.8em;
+  }
+}
+.accordion-container .accordion-container.ui-accordion{
+  max-width:100%;
+  width:auto;
+}
+.ui-accordion .ui-accordion-header.ui-state-hover{
+  background-color:$grey_medium;
+  color:$purple_dark;
+}
+.accordion-container.ui-widget{
+  font-size:inherit;
+  font-family:inherit;
+  h2,h3{
+    padding-left:2.2em;
+  }
+}
+
+// Faux Buttons
+.faux-button{
+    font-family:$nexa_boldregular;
+    text-transform: uppercase;
+}
+// Purple buttons
+.faux-button.purple.ui-button{
+    background-image:none;
+    color:white;
+}
+.faux-button.purple.ui-button.ui-state-default{
+  background-color:$purple_dark;
+}
+.faux-button.purple.ui-button.ui-state-hover{
+  background-color:$purple_medium;
+  color:$purple_dark;
+}
+// Gold buttons
+.faux-button.gold.ui-button{
+    background-image:none;
+    color:white;
+    border:1px solid $gold_dark;
+}
+.faux-button.gold.ui-button.ui-state-default{
+  background-color:$gold_dark;
+}
+.faux-button.gold.ui-button.ui-state-hover{
+  background-color:$gold_light;
+  color:$gold_dark;
+}
+
+//
+//  Tables
+//
+thead{
+  background-color:$purple_dark;
+  color:$grey_light;
+  th{
+    padding-left:1em;
+    padding-right:1em;
+  }
+}
+tbody{
+  tr:nth-child(2n){
+    background-color:$grey_light;
+  }
+  td{
+    padding-left:1em;
+    padding-right:1em;
+    border:1px solid $grey_medium;
+    &:first-child{
+      border-left:0;
+    }
+    &:last-child{
+      border-right:0;
+    }
+    p{ // Paragraphs in tables? Ugh!
+      margin:0;
+    }
+  }
+
+}
+
+//
+// UWT Alerts
+//
+.web_alert {
+  margin: 0 0 5px 0;
+  color: #ffffff;
+  background: $grey_medium;        /* -- same gray as navbar in footer */
+  font-weight: bold;        
+  padding: 5px;
+}
+.web_alert.red {
+  color: #ffffff;
+  background: #990000;
+}
+.web_alert.orange {
+  color: #ffffff;
+  background: #d2691e;
+}
+.web_alert.green {
+  color: #ffffff;
+  background: #336600;
+}.web_alert .timestamp, .no_alert .timestamp {
+  font-size: 85%;
+  font-weight: normal;
+}
+.web_alert h1, .web_alert .h1 {
+  display: inline;
+  margin: 0;
+  color: #ffffff;
+  background: transparent;
+  font-size: 150%;
+  border: 0;
+}
+.web_alert p, .web_alert .p {
+  margin: 0;
+  display: inline;
+}
+
+//
+// Wordmark front vs. not-front vs narrow
+//
+@include widest{
+  .front #wordmark{
+    .graphics-uwt_wordmark_front{
+      display:block;
+      margin-top:12px;
+    }
+    .graphics-uwt_wordmark_not_front{
+      display:none;
+    }
+    .graphics-uwt_wordmark_narrow{
+        display:none;
+    }
+  }
+  .not-front #wordmark{
+      .graphics-uwt_wordmark_front{
+        display:none;
+      }
+      .graphics-uwt_wordmark_narrow{
+          display:none;
+      }
+      .graphics-uwt_wordmark_not_front{
+        display:block;
+      }
+  } // /#wordmark
+}
+
+//
+// Search search-results
+//
+.search-results{
+  p{
+    margin-bottom:0.25em;
+    strong{font-weight:bold;}
+  }
+  .search-result-sectionlink,
+  .search-result-updated{
+    font-size:85%;
+  }
+}
+
+//
+// Lists
+//
+#content{
+  ul{
+    li{
+      //margin-bottom:0.2em;
+    }
+  }
+  ul.extra-space{
+    li{
+      margin-bottom:1em;
+    }
+  }
+}
+.menu-minipanels{
+  .menu{
+    li{
+      line-height: 1.1em;
+      margin-bottom:0.75em;
+    }
+  }
+}
+
+//
+// Blockquotes
+//
+blockquote{
+  font-family:$georgia;
+  font-style:italic;
+  //font-weight: bold;
+  font-size:120%;
+  //padding-left:5em;
+  //padding-right:5em;
+}
+
+//
+// Address (the tag)
+//
+address{
+  margin-left:2em;
+}
+
+//
+// Backgrounds and Hovers 
+//
+.purple-to-gold-bg{
+  //background-image:url("../images/purple-bg-150x150.png");
+  background-color:rgba($purple_dark, 0.8);
+  color:#fff;
+  @include transition-property(all);
+  @include transition-duration(0.5s);
+  &:hover{
+    //background-image:url("../images/gold-bg-150x150.png");
+    background-color:rgba($gold_dark, 0.9);
+    color:white;
+  }
+  a:link,a:visited{
+    color: #fff;
+  }
+}
+.semi-opaque-purple-bg{
+  background-color:rgba($purple_dark, 0.8);
+  color:#fff;
+  a:link,a:visited,h2.pane-title{
+    color:#fff;
+  }
+}
+
+//
+//  Print help
+//
+.print-only{
+  display:none;
+  visibility:hidden;
+}
+
+//
+// Important note
+//
+.important-note{
+  background-color:$gold_pale;
+  color:#000;
+  padding:1em;
+}
+
+//
+//  Panel misc.
+//
+
+// Ensure the first child element in a panel doesn't have any top spacing.
+//    This allows all the panes in a row to align to the top.
+.panel-pane p:first-child,
+.panel-pane div:first-child{
+  margin-top:0;
+  padding-top:0;
+}
+.panel-pane .ui-button-text:first-child{
+  padding-top:0.4em;
+}
+.panel-pane .ui-accordion-header:first-child{
+  padding-top:0.5em;
+}
+.panel-pane .gold-buttons:first-child{
+  padding-top:0.5em;
+}
+.panel-pane{
+  margin-bottom:1em;
+}
+// If a menu tree is manually placed in a pane, make it look like the normal
+//  left-side menus.
+#content .pane-menu-tree.region-section-menu{
+  padding-left:0;
+  padding-right:0;
+  ul{
+    li{
+      margin-bottom:0;
+    }
+  }
+}
+//
+// Aggregator Styles
+//
+.pane-block.pane-aggregator-feed-2{
+  ul{
+    padding-left:0;
+    li{
+      list-style-type: none;
+      margin-bottom:0.85em;
+      span{
+        display:block;
+      }
+      .trumba-rss-description{
+        font-weight: bold;
+      }
+    }
+    li:nth-child(odd){
+      background-color:$grey_light;
+    }
+  }
+}

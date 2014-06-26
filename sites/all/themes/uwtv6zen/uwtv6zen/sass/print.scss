@@ -1,0 +1,120 @@
+/**
+ * @file
+ * Print styling
+ *
+ * We provide some sane print styling for Drupal using Zen's layout method.
+ */
+
+@import "base";
+
+@media print {
+
+//
+//  UWT custom print styles
+//
+  #band,
+  #global-menu,
+  #global-search,
+  #global-secondary,
+  #site-menu,
+  aside.sidebars,
+  #section-menu,
+  #footer,
+  #footer-bottom,
+  .print-none{
+    visibility: hidden !important;
+    display:none !important;
+  }
+
+
+table{
+  page-break-inside: avoid !important;
+}
+
+.print-only,
+.print-only > *{
+  display:block !important;
+  visibility: visible !important;
+}
+
+/* Hide jQuery UI Tab nav */
+.ui-tabs .ui-tabs-nav{
+  display:none !important;
+  visibility:hidden !important;
+}
+/* Print jQuery UI Tab content */
+.ui-tabs .ui-tabs-hide {
+  display:block !important;
+}
+
+
+/* Print jQuery UI Accordion container content */
+.ui-accordion .ui-accordion-content{
+  display:block !important;
+}
+
+// End UWT custom print styles
+
+  a:link,
+  a:visited { /* underline all links */
+    text-decoration: underline !important;
+
+    #site-name & { /* Don't underline header */
+      text-decoration: none !important;
+    }
+  }
+
+  #content {
+    a[href]:after { /* Add visible URL after links. */
+      content: " (" attr(href) ")";
+      font-weight: normal;
+      font-size: $base-font-size;
+    }
+
+    a[href^="javascript:"]:after,
+    a[href$="/d7uwt/"]:after, /* Hide links in jquery ui elements */
+    a[href^="#"]:after { /* Only display useful links. */
+      content: "";
+    }
+
+
+    abbr[title]:after { /* Add visible title after abbreviations. */
+      content: " (" attr(title) ")";
+    }
+  }
+
+  #content { /* Un-float the content */
+    float: none !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body,
+  #page,
+  #main,
+  #content { /* Turn off any background colors or images */
+    color: #000;
+    background-color: transparent !important;
+    background-image: none !important;
+  }
+
+  #skip-link,
+  #toolbar,
+  #navigation,
+  .region-sidebar-first,
+  .region-sidebar-second,
+  #footer,
+  .breadcrumb,
+  .tabs,
+  .action-links,
+  .links,
+  .book-navigation,
+  .forum-topic-navigation,
+  .pager,
+  .feed-icons { /* Hide sidebars and nav elements */
+    visibility: hidden;
+    display: none;
+  }
+
+} /* End @media print */

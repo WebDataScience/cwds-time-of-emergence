@@ -1,0 +1,186 @@
+/**
+ * @file
+ * Styles are organized using the SMACSS technique. @see http://smacss.com/book/
+ *
+ * When you turn on CSS aggregation at admin/config/development/performance, all
+ * of these @include files will be combined into a single file.
+ */
+
+/**
+* Global
+*/
+thead > tr > th > a:link, thead > tr > th > a:visited {
+    color: #8ca9c7;
+    text-decoration: none;
+}
+
+/**
+* FooTable
+*/
+﻿.footable {
+    border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+  border-radius: 0px;
+  /*font-family: 'trebuchet MS' , 'Lucida sans' , Arial;*/
+  font-size: 14px;
+  color: #444;
+}
+/*
+.footable.breakpoint > tbody > tr > td.expand {
+  background: url('img/plus.png') no-repeat 5px center;
+  padding-left: 40px;
+}
+*/
+/*
+.footable.breakpoint > tbody > tr.footable-detail-show > td.expand {
+  background: url('img/minus.png') no-repeat 5px center;
+}
+*/
+.footable.breakpoint > tbody > tr.footable-row-detail {
+  background: #eee;
+}
+
+.footable > tbody > tr:hover {
+  background: #F3ECC2;
+}
+
+.footable.breakpoint > tbody > tr:hover:not(.footable-row-detail) {
+  cursor: pointer;
+}
+
+.footable > tbody > tr > td, .footable > thead > tr > th {
+  border-left: 0px solid #ccc;
+  border-top: 0px solid #ccc;
+  padding: 10px;
+  text-align: left;
+}
+
+.footable > thead > tr > th, .footable > thead > tr > td {
+  background-color: #39275B;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#39275B), to(#39275B));
+  background-image: -webkit-linear-gradient(top, #39275B, #39275B);
+  background-image: -moz-linear-gradient(top, #39275B, #39275B);
+  background-image: -ms-linear-gradient(top, #39275B, #39275B);
+  background-image: -o-linear-gradient(top, #39275B, #39275B);
+  background-image: linear-gradient(to bottom, #39275B, #39275B);
+  -webkit-box-shadow: 0 0px 0 rgba(255,255,255,.8) inset;
+  -moz-box-shadow: 0 0px 0 rgba(255,255,255,.8) inset;
+  box-shadow: 0 0px 0 rgba(255,255,255,.8) inset;
+  border-top: none;
+  text-shadow: 0 0px 0 rgba(255,255,255,.5);
+}
+
+.footable > thead > tr:first-child > th.footable-first-column, .footable > thead > tr:first-child > td.footable-first-column {
+  -moz-border-radius: 0px 0 0 0;
+  -webkit-border-radius: 0px 0 0 0;
+  border-radius: 0px 0 0 0;
+}
+
+.footable > thead > tr:first-child > th.footable-last-column, .footable > thead > tr:first-child > td.footable-last-column {
+  -moz-border-radius: 0 0px 0 0;
+  -webkit-border-radius: 0 0px 0 0;
+  border-radius: 0 0px 0 0;
+}
+
+.footable > thead > tr:first-child > th.footable-first-column.footable-last-column, .footable > thead > tr:first-child > td.footable-first-column.footable-last-column {
+  -moz-border-radius: 0px 0px 0 0;
+  -webkit-border-radius: 0px 0px 0 0;
+  border-radius: 0px 0px 0 0;
+}
+
+.footable > tbody > tr:last-child > td.footable-first-column {
+  -moz-border-radius: 0 0 0 0px;
+  -webkit-border-radius: 0 0 0 0px;
+  border-radius: 0 0 0 0px;
+}
+
+.footable > tbody > tr:last-child > td.footable-last-column {
+  -moz-border-radius: 0 0 0px 0;
+  -webkit-border-radius: 0 0 0px 0;
+  border-radius: 0 0 0px 0;
+}
+
+.footable > tbody > tr:last-child > td.footable-first-column.footable-last-column {
+  -moz-border-radius: 0 0 0px 0px;
+  -webkit-border-radius: 0 0 0px 0px;
+  border-radius: 0 0 0px 0px;
+}
+
+.footable > thead > tr > th.footable-first-column, .footable > thead > tr > td.footable-first-column,
+.footable > tbody > tr > td.footable-first-column {
+  border-left: none;
+}
+
+.footable > tbody img {
+  vertical-align:middle;
+}
+
+.footable > tfoot > tr > th, .footable > tfoot > tr > td {
+  background-color: #39275B;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#39275B), to(#39275B));
+  background-image: -webkit-linear-gradient(top, #39275B, #39275B);
+  background-image: -moz-linear-gradient(top, #39275B, #39275B);
+  background-image: -ms-linear-gradient(top, #39275B, #39275B);
+  background-image: -o-linear-gradient(top, #39275B, #39275B);
+  background-image: linear-gradient(to bottom, #39275B, #39275B);
+  -webkit-box-shadow: 0 0px 0 rgba(255,255,255,.8) inset;
+  -moz-box-shadow: 0 0px 0 rgba(255,255,255,.8) inset;
+  box-shadow: 0 0px 0 rgba(255,255,255,.8) inset;
+  border-top: 0px solid #ccc;
+  text-shadow: 0 0px 0 rgba(255,255,255,.5);
+  padding: 10px;
+}
+
+.footable > thead > tr > th a:link, .footable > thead > tr > th a:visited {
+    color: #8ca9c7;
+}
+
+.footable > tbody > tr > td.footable-last-column{
+    border-right: 0 none;
+}
+.footable{
+    border: 0 none;
+}
+
+
+
+
+
+/**
+* Fields
+*/
+/* field location */
+td.footable-cell-detail div.field-collection-item-field-location {
+    display: inline;
+    float: left;
+    margin-left: 3px;
+    position: absolute;
+    width: 50%;
+}
+td.views-field-field-location .field-name-field-locationbuilding,
+td.footable-cell-detail div.field-name-field-locationbuilding,
+body.node-type-employee div.field-name-field-locationbuilding, 
+body.node-type-department div.field-name-field-locationbuilding  {
+    padding-right: 2px;
+}
+td.views-field-field-location .field-name-field-locationbuilding,
+td.footable-cell-detail div.field-name-field-locationbuilding,
+body.node-type-employee div.field-name-field-locationbuilding, 
+body.node-type-department div.field-name-field-locationbuilding, 
+td.views-field-field-location .field-name-field-locationroom,
+td.footable-cell-detail div.field-name-field-locationroom,
+body.node-type-employee div.field-name-field-locationroom,
+body.node-type-department div.field-name-field-locationroom  {
+    float:left;
+}
+/* dont show these fields. They're already used in the title. see uwtutil module */
+body.node-type-employee div.field-name-field-givenname,
+body.node-type-employee div.field-name-field-familyname,
+body.node-type-employee div.field-name-field-honorificsuffix {
+    display: none;
+    visibility:hidden;
+}
+

@@ -1,0 +1,456 @@
+/**
+ * AJAX Slideshow Styles
+ * .hero-slider
+ */
+
+/* remove margin from relevant containers */
+#block-views-featured-content-block .content { margin: 0; }
+.front #content-wrapper { margin-top: 0; }
+
+/* slider styles */
+.hero-slider {
+    position: relative;
+    width: 940px;
+    overflow: hidden;
+}
+
+.front #main {
+    padding-top: 0px;
+}
+
+/* constrain img elements to the width of the slider */
+.hero-slider img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 940px;
+    /* height: 430px; */ /* causes image stretching */
+    height: auto;
+}
+
+/* hide ajax slideshow's labels */
+.hero-slider .views-label-title,
+.hero-slider .views-label-field-related-link-url { display: none; }
+
+/* use image replacement technique for controls and pager */
+.hero-slider .views_slideshow_previous,
+.hero-slider .views_slideshow_next,
+.hero-slider .views-slideshow-pager-field-item a {
+    text-indent: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    background-repeat: no-repeat;
+    background-color: transparent;
+}
+
+/* hide the slider controls to replace them with icons */
+.hero-slider .views_slideshow_controls { height: 0; }
+
+/* style the slider controls */
+
+.hero-slider .views_slideshow_controls_text_previous,
+.hero-slider .views_slideshow_controls_text_next {
+    position: absolute;
+    top: 40%;
+    left: 25px;
+    width: 40px;
+    height: 40px;
+    margin-top: -20px;
+    font-size: 39px;
+    font-weight: 100;
+    line-height: 40px;
+    color: #C79900;
+    text-align: center;
+    background: #222222;
+    border: 3px solid #ffffff;
+    -webkit-border-radius: 23px;
+    -moz-border-radius: 23px;
+    border-radius: 43px;
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+     z-index: 5; /* get above the slid image */         
+}
+
+.hero-slider .views_slideshow_controls_text_previous {
+left:15px;
+
+}
+.hero-slider .views_slideshow_controls_text_next{
+right: 15px;
+left:auto;
+}
+
+.hero-slider .views_slideshow_controls_text_next a,
+.hero-slider .views_slideshow_controls_text_next a:hover,
+.hero-slider .views_slideshow_controls_text_previous a,
+.hero-slider .views_slideshow_controls_text_previous a:hover{
+    color: white; //#C79900;
+    opacity: 1;
+    filter: alpha(opacity=100);
+    text-decoration: none;
+    
+}    
+/* hide unused slider controls */
+.hero-slider .views-slideshow-controls-text-pause { display: none;}
+
+/* place pager at bottom right */
+.hero-slider .widget_pager_bottom,
+.hero-slider .views_slideshow_pagerNumbered {
+    line-height: 1;
+    float: right;
+}
+.views-slideshow-controls-bottom div{
+
+
+float:right;
+}
+
+/* page-item spacing */
+.hero-slider .views-slideshow-pager-field-item 
+    { padding-left: 0 !important; }
+
+/* hide views-slideshow-pager-field-items so we can replace them with icons */
+.hero-slider .views-slideshow-pager-field-item a {
+    padding: 0;
+    margin: 10px 0 0 10px;
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background-image: url(../images/hero_pager.png);
+    overflow: hidden;
+}
+
+/* active views-slideshow-pager-field-item display */
+.hero-slider .views-slideshow-pager-field-item.activeSlide a {
+    background-image: url(../images/hero_pager_active.png) !important;
+}
+
+.hero-slider .views-row {
+    position: relative;
+    width: 940px;
+    height: 430px;
+    display: table-cell;
+    vertical-align: bottom;
+}
+/* style the slider's text content */
+.hero-slider .views-field-title,
+.hero-slider .views-field-field-related-link-url,
+.hero-slider .views-field-field-featured-slide-text {
+    position: relative;
+    z-index: 15;
+    width: 100%;
+    margin-left: 18px;
+}
+
+.views_slideshow_controls_text span:hover {
+  text-decoration: none;
+  opacity: 0.5;
+}
+
+.views_slideshow_controls_text_next {
+  background-color: red;
+}
+
+.hero-slider .views-field-field-featured-slide-text {
+    margin-bottom: 0px;
+
+}
+
+.hero-slider .views-field-field-featured-slide-text {
+    width: 100%;
+}
+    
+    /* slide title styles */
+.hero-slider .views-field-title {
+    font-size: 28px;
+    line-height: 30px;
+    color: #C79900;
+    font-weight: 400;
+}
+.hero-slider .views-field-title a{
+    color: #C79900;
+    text-decoration:none;
+}
+.hero-slider .views-field-title a:hover{
+    text-decoration:none;
+}
+
+/* slide link styles */
+.hero-slider .views-field-field-related-link-url a {
+    font-size: 17px;
+    color: #fff;
+    display: block;
+    margin-top: 10px;
+}
+
+.hero-slider .views-field-field-related-link-url a:after {
+    content: "\f0a9";
+    color: #fff;
+    margin-left: 5px;
+    font-size: 13px
+}
+
+.hero-slider .views-field-field-related-link-url a:hover {
+    opacity: 0.8;
+    text-decoration: none;
+}
+
+/* slide content styles */
+.hero-slider .views-field-field-featured-slide-text {
+color:#39275B;
+}
+
+    .hero-slider .views-field-field-featured-slide-text ul {
+        margin: 10px 0 0 20px;
+    }
+
+        .hero-slider .views-field-field-featured-slide-text li {
+            font-size: 21px;
+            line-height: 23px;
+            margin-bottom: 3px;
+            color: #001b25;
+        }
+.red-asterisks {
+  color: red;
+}
+
+/* Content panel styles */
+.panel-pane .pane-content .views-field-title a, .panel-pane .pane-content h2 {
+  line-height: 1em;
+  font-size: 13px;
+  font-weight: bold;
+  font-family: Arial,Helvetica,"Nimbus Sans L",sans-serif;
+  color: #3e2e5b;
+}
+
+.panel-pane .pane-content {
+  font-size: 13px;
+  font-family: Arial, Helvetica, "Nimbus Sans L", sans-serif;
+}
+
+.panel-pane .pane-content a {
+  color: #3e2e5b;
+}
+
+.panel-pane .pane-content .node-calendar-event {
+   margin-top: 20px;
+}
+
+body, #main, #header, #post-header, #main, #content, div.content { /*body, #main, #page, #band, #header, #post-header, #main, #content, div.content {*/
+/*display: block;*/
+/*margin-left: auto;*/
+/*margin-right: auto;*/
+/*width: 900px;*/
+}
+
+body {
+left: 5%; /*if changed, also need to change margin-left property of div#band, #footer, #footer-bottom*/
+width: 80%;
+right: 15%;
+position:absolute;
+}
+
+#main {
+background-color: rgb(237, 238, 241);
+}
+
+/*Resetting so that menu still displays in mobile view*/
+html .menus ul {
+  //display: inline;
+}
+
+.pane-content {
+  margin-right: 20px;
+}
+
+/* Front page feature slideshow text styles */
+.views_slideshow_slide {
+  font-family: nexa_boldregular,sans-serif; /*font choices align with uwt main dev slideshow*/
+  overflow: hidden; /* keeps slider image from escaping div if height exceeds */
+}
+
+.views_slideshow_slide .views-field, .views_slideshow_slide .views-field a {  
+  color: white;
+}
+
+div#band, div#footer, div#footer-bottom {
+/*  position: absolute;
+  width: 100%;*/
+  overflow: visible;
+  margin-left: -5%;
+  padding-right: 15%;
+  margin-right: -10%;
+}
+
+div#footer, div#footer-bottom {
+  margin-right: -10%;
+}
+
+/*Styles for /research page panel layout*/
+.page-research .panel-pane .pane-content .view-content .views-row, .page-research .panel-pane .pane-content .view-content .views-row img {
+  float: left;
+  margin: 10px;
+}
+
+.page-research .panel-pane .pane-content .view-content .views-row img {
+  max-height: 150px;
+  width: auto;
+  margin-left: 0; 
+}
+
+/*Styles for research group pages 2-col panel layout*/
+#content .region .node-research-group .group-left {
+  width: 45%; /*changing from default 50%*/
+  margin-right: 5%;
+}
+
+
+/* Styles for listings pages: /articles, /research, /research-groups */
+.page-research .view-id-portfolio h2, .page-research .view-id-portfolio h2 a,
+.page-articles .view-id-blogs_home_right h2, .page-articles .view-id-blogs_home_right h2 a,
+.page-research-groups .view-id-research_groups h2, .page-research-groups .view-id-research_groups h2 a {
+  line-height: 1em;
+  font-size: 13px;
+  font-weight: bold;
+  font-family: Arial,Helvetica,"Nimbus Sans L",sans-serif;
+  color: rgb(62, 46, 91);
+  text-decoration: none;
+  margin-bottom: 10px;
+
+}
+
+.page-research .view-id-portfolio,
+.page-articles .view-id-blogs_home_right,
+.page-research-groups .view-id-research_groups {
+  line-height: 1.5em;
+  font-size: 13px;
+  font-family: Arial,Helvetica,"Nimbus Sans L",sans-serif;
+}
+
+.page-research .view-id-portfolio img,
+.page-articles .view-id-blogs_home_right img,
+.page-research-groups .view-id-research_groups img {
+  float: left;
+  max-height: 150px;
+  margin: 15px;
+  margin-left: 0px;
+  margin-top: 0px;
+}
+
+.page-research .view-id-portfolio .views-row,
+.page-articles .view-id-blogs_home_right .views-row,
+.page-research-groups .view-id-research_groups .views-row {
+  margin-bottom: 25px;
+  margin-top: 15px;
+}
+
+.page-research h1#page-title, .page-articles h1#page-title, .page-research-groups h1#page-title {
+  font-family: nexa_boldregular,sans-serif;
+  text-transform: uppercase;
+  font-size: 100%;
+  border-bottom: 1px solid rgb(205, 205, 205);
+  color: rgb(62, 46, 91);
+  margin-bottom: 0.25em;
+}
+
+.page-research div#main {
+  margin-right: 10%;
+  width: 90%;
+}
+
+.page-research .field-items img {
+  width: 200px;
+  height: auto;
+}
+
+/* Format Projects list in teasers on /research-groups */
+.page-research-groups .node-research-group .field-label-inline .field-label,
+.page-research-groups .node-research-group .field-label-inline .field-items a {
+  float: none;
+
+}
+
+.page-research-groups .view-id-research_groups .views-row {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.page-research-groups .node-research-group {
+  margin-bottom: 25px;
+  margin-top: 15px;
+}
+
+.page-research-groups .node-research-group h2 {
+  margin-bottom: 10px;
+}
+
+/* Format titles on frontpage slideshow */
+.views-slideshow-title-bar-transparent {
+  position: absolute;
+  bottom: 0px;
+  left: 0;
+  height: 115px;
+  width: 100%;
+  background-color: #000;
+  z-index: 10;
+  opacity:0.8;
+  filter:Alpha(opacity=80);
+}
+
+/* Publications page table formatting */
+.page-publications .views-field-field-abstract-1 {
+  min-width: 30%;
+}
+
+.page-publications .views-field-field-conference {
+  min-width: 20%;
+}
+
+.page-publications .views-field-field-title {
+  min-width: 20%;
+}
+
+/* CWDS logo/wordmark */
+#wordmark .graphics-uwt_wordmark_front, #wordmark .graphics-uwt_wordmark_not_front {
+  background-size: auto 50px;
+  height: 60px;
+}
+
+html #wordmark {
+  padding-top: 15px;
+  height: 50px;
+  margin-left: 4%;
+}
+
+html .front #wordmark .graphics-uwt_wordmark_front, html #wordmark .graphics-uwt_wordmark_not_front {
+  margin-top: 5px;
+}
+
+/* Research calendar styling */
+tr.twHeadRow th, .front #trumba-calendar-panel-pane {
+//  color: red;
+//  background-color: red;
+}
+
+/* Front page research groups grid view styling */
+.front .view-research-groups-home-page-panel tbody td {
+  border: none;
+}
+
+.node-type-research-group .field-item img {
+  //float: left;
+  //margin-right: 10px;
+}
+
+.front .pane-views-blogs-home-right-block .view-content .views-row {
+  margin-top: 10px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #cdcdcd;
+  padding-bottom: 10px;
+}
+
+.node-type-article #main article img {
+  float: left;
+  margin-right: 15px;
+  margin-bottom: 15px;
+}
