@@ -1,0 +1,29 @@
+<?php
+
+function toewhiskers_menu() {
+  $items['timeline'] = array(
+    'page callback' => 'toewhiskers_page_function',
+    'page arguments' => array(1, 'foo'),
+    'access callback' => TRUE,
+  );
+  return $items;
+}
+
+
+
+function toewhiskers_page_function(){
+    // Call theme() function, so that Drupal includes the custom-page.tpl.php template
+    drupal_add_js('https://www.google.com/jsapi');
+    drupal_add_js(drupal_get_path('module', 'toewhiskers') . '/js/chart.js');
+    return theme('timeline_template');
+}
+
+
+function toewhiskers_theme(){
+    return array(
+        'timeline_template' => array(
+            // file name will be page-timeline.tpl.php
+            'template' => 'page-timeline',
+        ),
+    );
+}
