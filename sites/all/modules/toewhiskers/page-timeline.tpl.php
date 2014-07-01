@@ -71,8 +71,9 @@
 ?>
 
 
-<h1> Yeah Baby!</h1>
+<h2> Timeline Chart </h1>
 
 <div id="page">
-In div!
+  <div id="timeline-chart"></div>
+  <div id="stackedbar-chart"></div>
 </div>

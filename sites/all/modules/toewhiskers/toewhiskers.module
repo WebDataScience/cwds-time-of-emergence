@@ -6,6 +6,11 @@ function toewhiskers_menu() {
     'page arguments' => array(1, 'foo'),
     'access callback' => TRUE,
   );
+  $items['timelinedata'] = array(
+    'page callback' => 'toewhiskers_json_query_function',
+    'page arguments' => array(1, 'foo'),
+    'access callback' => TRUE,
+  );
   return $items;
 }
 
@@ -27,3 +32,19 @@ function toewhiskers_theme(){
         ),
     );
 }
+
+
+function toewhiskers_json_query_function(){
+  $toedata = array(
+    "airtemp" => array('22 C',2020,2025,2032,2036),
+    "h2otemp" => array('7 C',2025,2039,2030,2050),
+    "windvel" => array('10 mph',2035,2041,2042,2045),
+    "precip" => array('50 inchesyr',2020,2030,2025,2040),
+  );  
+  drupal_json_output($toedata);
+}
+
+
+
+
+  
