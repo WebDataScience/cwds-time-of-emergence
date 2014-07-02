@@ -19,6 +19,7 @@ function toewhiskers_menu() {
 function toewhiskers_page_function(){
     // Call theme() function, so that Drupal includes the custom-page.tpl.php template
     drupal_add_js('https://www.google.com/jsapi');
+    drupal_add_js("https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['timeline']}]}");
     drupal_add_js(drupal_get_path('module', 'toewhiskers') . '/js/chart.js');
     return theme('timeline_template');
 }
