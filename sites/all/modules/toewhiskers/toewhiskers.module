@@ -8,7 +8,7 @@ function toewhiskers_menu() {
   );
   $items['timelinedata'] = array(
     'page callback' => 'toewhiskers_json_query_function',
-    'page arguments' => array(1, 'foo'),
+    'page arguments' => array(1, 'sid'),
     'access callback' => TRUE,
   );
   return $items;
@@ -35,12 +35,87 @@ function toewhiskers_theme(){
 }
 
 
-function toewhiskers_json_query_function(){
+function toewhiskers_json_query_function($sid){
+
+  // The nid of the webform.
+  $webformnid = '4';
+
+  // Use querystring value for sid if present.
+  //$qs = drupal_get_query_parameters();
+  //if (isset($qs['sid'])) {
+  //  $sid = $qs['sid'];
+  //}
+
+  module_load_include('inc', 'webform', 'includes/webform.submissions');
+ 
+  $webform = webform_get_submission($webformnid, $sid);
+  //print_r($webform);
+  $dataarray = $webform->data;
+  //print_r($dataarray);
+  $region = trim($dataarray[7]['value'][0]);
+  $compare = trim($dataarray[8]['value'][0]);
+  // Multiple variables allowed.
+  $variables = implode("','",$dataarray[1]['value']);
+  $emission = trim($dataarray[2]['value'][0]);
+  $dataset = trim($dataarray[6]['value'][0]);
+  $tolerance = trim($dataarray[5]['value'][0]);
+  $confidence = trim($dataarray[3]['value'][0]);
+  $agreement = trim($dataarray[4]['value'][0]);
+  
+  
+  $query = "SELECT * FROM {scen1_data} WHERE 
+  VARIABLEID in ('" . $variables . "') 
+  AND REGION = '" . $region . 
+  "' AND EMISSCENARIO = '" . $emission . 
+  "' AND DATASET = '" . $dataset . "' 
+  AND EMERGTHRES = " . $tolerance . "
+  AND SIGNALCONFIDENCE = " . $confidence . "
+  AND MODELAGREEMENT = '" . $agreement . "' 
+  LIMIT 10";
+  
+  //print($query);
+  
+  
+  /*
+SELECT * FROM scen1_data WHERE VARIABLEID in ('V2','V1') AND REGION = 'King' AND EMISSCENARIO = 'A1B' AND DATASET = 'BCSD5' 
+  AND EMERGTHRES = 90
+  AND SIGNALCONFIDENCE = 50
+  AND MODELAGREEMENT = '50' 
+  LIMIT 10;
+  */
+  
+  
+  $output = "";
+  $toe = array();
+  
+  db_set_active('cig_toe');
+  
+  $result = db_query($query);
+  // Result is returned as a iterable object that returns a stdClass object on each iteration
+  foreach ($result as $record) {
+    // Perform operations on $record->title, etc. here. In this example the available data would be mapped to object properties:
+    // $record->nid, $record->title, $record->created
+    //$output .= "variableid: " . $record->VARIABLEID . " toe: " . $record->TOE;
+    $toe[$record->VARIABLEID] = array($record->CHANGEDIR,intval($record->TOE));
+  }
+
+  db_set_active();
+  
+  
+  
   $toedata = array(
-    "airtemp" => array('22 C',2020,2025,2032,2036),
-    "h2otemp" => array('7 C',2025,2039,2030,2050),
-    "windvel" => array('10 mph',2035,2041,2042,2045),
-    "precip" => array('50 inchesyr',2020,2030,2025,2040),
+    "toedataold" => array(
+      "airtemp$sid" => array('22 C',2020),
+      "h2otemp" => array('7 C',2025),
+      "windvel" => array('10 mph',2035),
+      "precip" => array('50 inchesyr',2040),
+    ),
+    "toedatanew" => $toe,
+    "toedata" => $toe,
+    "query" => $query,
+    "sid" => $sid,
+    //"webform" => $webform,
+    //"output" => $output,
   );  
   drupal_json_output($toedata);
 }

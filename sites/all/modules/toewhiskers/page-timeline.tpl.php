@@ -74,7 +74,7 @@
 <h2> Timeline Chart </h1>
 
 <div id="page">
-  <div id="candlesticks-chart"></div>
+  <!--<div id="candlesticks-chart"></div>-->
   <div id="stackedbar-chart"></div>
-  <div id="timeline-chart"></div>
+  <!--<div id="timeline-chart"></div>-->
 </div>

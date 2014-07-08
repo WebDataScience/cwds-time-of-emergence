@@ -6,32 +6,28 @@ google.load("visualization", "1", {packages:["corechart"]});
 
 jQuery( document ).ready(function( $ ) {
 
+  var sid = getParameterByName('sid');
 
   dataarray = []; 
 
-  $.post( "timelinedata", function( jsonobj ) { 
+  $.post( "timelinedata/" + sid, function( jsonobj ) { 
   
-    for (var key in jsonobj) {
-       var onerow = jsonobj[key];
-       dataarray.push([key,onerow[1],onerow[2],onerow[3],onerow[4]]);
+    alert(jsonobj.query);
+  
+    dataarray = [  ['Genre', '',{ role: 'style' },'Change Direction',{ role: 'style' }] ];
+  
+    toedata = jsonobj.toedata;
+  
+    for (var key in toedata) {
+       var onerow = toedata[key];
+       dataarray.push([key,onerow[1],'opacity: 0',1,'opacity: 1']);
     }
+
+    //var data = google.visualization.arrayToDataTable(dataarray, true);
+    //drawCandlesticks(data);
     
-    var data = google.visualization.arrayToDataTable(dataarray, true);
-    drawCandlesticks(data);
-    
-    
-    
-    dataarray = [
-     // ['Genre', 'Clear area text','Yellow text', 'Green text', 'Black text', 'Green text',         'Yellow text',  { role: 'annotation' } ],
-     //   ['Air Temp 22C', 2010, 4, 2, 1, 3, 5, ''],
-     //   ['Sea Temp 6C', 2016, 8, 3, 1, 6, 9, ''],
-     //   ['Wind Vel > 10mph', 2028, 9, 2, 1, 2, 13, '']  ];
-        ['Genre', 'Clear area text',{ role: 'style' },'Blue Bar',{ role: 'style' },'Clear area text',{ role: 'style' },'Blue Bar',{ role: 'style' },],
-        ['Air Temp 22C', 2010,'opacity: 0', 1,'opacity: 1', 3,'opacity: 0', 1,'opacity: 1'],
-        ['Sea Temp 6C', 2016,'opacity: 0',1,'opacity: 1', 10,'opacity: 0',1,'opacity: 1'],
-        ['Wind Vel > 10mph', 2028,'opacity: 0',1,'opacity: 1', 4,'opacity: 0',1,'opacity: 1']    ];
-    data = google.visualization.arrayToDataTable(dataarray, false);
-    drawStackedBarChart(data);
+    var stackeddata = google.visualization.arrayToDataTable(dataarray, false);
+    drawStackedBarChart(stackeddata);
     
     
     // Timeline chart include start and end dates which don't work for ToE.
@@ -100,7 +96,7 @@ function drawStackedBarChart(data) {
       minValue: 2000,
       viewWindow:{
         min : 2000,
-        max : 2100,
+        max : 2200,
       },
     },
     //width: 600,
@@ -114,3 +110,9 @@ function drawStackedBarChart(data) {
   chart.draw(data, options);
 }
 
+function getParameterByName(name) {
+  name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+  var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+    results = regex.exec(location.search);
+  return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
