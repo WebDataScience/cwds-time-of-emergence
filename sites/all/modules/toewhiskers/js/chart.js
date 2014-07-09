@@ -12,15 +12,15 @@ jQuery( document ).ready(function( $ ) {
 
   $.post( "timelinedata/" + sid, function( jsonobj ) { 
   
-    alert(jsonobj.query);
+    //alert(jsonobj.query);
   
-    dataarray = [  ['Genre', '',{ role: 'style' },'Change Direction',{ role: 'style' }] ];
+    dataarray = [  ['Genre', '',{ role: 'style' },'Blue',{ role: 'style' }] ];
   
     toedata = jsonobj.toedata;
   
     for (var key in toedata) {
        var onerow = toedata[key];
-       dataarray.push([key,onerow[1],'opacity: 0',1,'opacity: 1']);
+       dataarray.push([onerow[2],onerow[1],'opacity: 0',1,'opacity: 1']);
     }
 
     //var data = google.visualization.arrayToDataTable(dataarray, true);
