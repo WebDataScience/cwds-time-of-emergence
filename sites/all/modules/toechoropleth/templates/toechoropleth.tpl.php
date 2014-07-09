@@ -22,7 +22,7 @@ $path = drupal_get_path('module', 'toechoropleth');
 </head>
 
 <body>
-    <div id="map" style="width: 900px; height: 500px"</div>
+    <div id="map" <!--style="width: 900px; height: 500px"--></div>
     <div id='chart'>
     </div>
     <input id="module_path" type="hidden" value="<?php echo base_path() . $path ?>" />
@@ -100,7 +100,12 @@ $path = drupal_get_path('module', 'toechoropleth');
             county_labels.selectAll('text')
                 .text(function(d, i) {
                   if(json['#percents'][d.id] > 0) { if(i != 136) return json['#counties_list'][d.id] + ' County'; } else return '';})
-                .on("click", function(d) { alert(json['#counties_list'][d.id] + ' County'); })
+                .on("click", function(d) { 
+                  //alert(json['#counties_list'][d.id] + ' County'); 
+                  //$("#edit-submitted-region-1").prop("checked", true);
+                  if(json['#counties_list'][d.id] == "King"){document.getElementById('edit-submitted-region-1').checked = true;}
+                  else{document.getElementById('edit-submitted-region-2').checked = true;}
+                })
                   .append("title")
                     .text(function(d, i) {
                             if(json['#counties_list'][d.id] != null) {

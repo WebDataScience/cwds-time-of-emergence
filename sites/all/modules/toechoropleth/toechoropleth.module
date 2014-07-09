@@ -9,6 +9,10 @@ function toechoropleth_menu() {
     'page callback' => 'toechoropleth_page_function',
     'access callback' => TRUE,
   );
+  $items['explore'] = array(
+    'page callback' => 'toechoropleth_page_function',
+    'access callback' => TRUE,
+  );
   return $items;
 }
 
