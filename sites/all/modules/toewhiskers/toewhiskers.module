@@ -72,17 +72,14 @@ function toewhiskers_json_query_function($sid){
   AND scen1_data.EMERGTHRES = " . $tolerance . "
   AND scen1_data.SIGNALCONFIDENCE = " . $confidence . "
   AND scen1_data.MODELAGREEMENT = '" . $agreement . "' 
-  LIMIT 10";
+  LIMIT 20";
   
   
   /*
   
   SELECT CONCAT(VARIABLEID,'|',VARIABLEDEF,' ',VARIABLEMONTH) FROM toe_data LIMIT 20;
 
-  
-  
-
-SELECT * FROM scen1_data WHERE VARIABLEID in ('V2','V1') AND REGION = 'King' AND EMISSCENARIO = 'A1B' AND DATASET = 'BCSD5' 
+  SELECT * FROM scen1_data WHERE VARIABLEID in ('V2','V1') AND REGION = 'King' AND EMISSCENARIO = 'A1B' AND DATASET = 'BCSD5' 
   AND EMERGTHRES = 90
   AND SIGNALCONFIDENCE = 50
   AND MODELAGREEMENT = '50' 
@@ -97,30 +94,19 @@ SELECT * FROM scen1_data WHERE VARIABLEID in ('V2','V1') AND REGION = 'King' AND
   AND scen1_data.MODELAGREEMENT = '50' 
   LIMIT 10;
   
-  
   SELECT scen1_data.TOE,scen1_data.VARIABLEID,toe_data.VARIABLEDEF,scen1_data.CHANGEDIR FROM scen1_data LEFT JOIN toe_data on (toe_data.VARIABLEID = scen1_data.VARIABLEID) WHERE 
-
   scen1_data.VARIABLEID in ('V4','V5','V6','V7','V16','V17','V18','V19') 
-
   AND scen1_data.REGION = '' 
-
   AND scen1_data.EMISSCENARIO = 'A1B' 
-
   AND scen1_data.DATASET = 'BCSD5' 
-
   AND scen1_data.EMERGTHRES = 90
-
   AND scen1_data.SIGNALCONFIDENCE = 50
-
   AND scen1_data.MODELAGREEMENT = '50' 
-
   LIMIT 10
   
   /node/%webform_menu/submission/%webform_menu_submission/edit/
   
-  
   $information = theme('webform_submission_information', array('node' => $node, 'submission' => $submission, 'mode' => $mode));
-  
   
   */
   
@@ -136,7 +122,7 @@ SELECT * FROM scen1_data WHERE VARIABLEID in ('V2','V1') AND REGION = 'King' AND
     // Perform operations on $record->title, etc. here. In this example the available data would be mapped to object properties:
     // $record->nid, $record->title, $record->created
     //$output .= "variableid: " . $record->VARIABLEID . " toe: " . $record->TOE;
-    $toe[$record->VARIABLEID] = array($record->CHANGEDIR,intval($record->TOE),$record->VARIABLEDEF);
+    $toe[$record->VARIABLEID] = array($record->CHANGEDIR,intval($record->TOE),$record->VARIABLEDEF,$record->VARIABLEID);
   }
 
   db_set_active();

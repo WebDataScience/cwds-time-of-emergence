@@ -9,29 +9,35 @@ jQuery( document ).ready(function( $ ) {
   var sid = getParameterByName('sid');
 
   dataarray = []; 
+  jsondataarray = [];
 
   $.post( "timelinedata/" + sid, function( jsonobj ) { 
   
     //alert(jsonobj.query);
   
     dataarray = [  ['Genre', '',{ role: 'style' },'Blue',{ role: 'style' }] ];
+    jsondataarray = [['Variable','Year of Emergence',{ role: 'annotation' }]];
   
     toedata = jsonobj.toedata;
   
     for (var key in toedata) {
        var onerow = toedata[key];
        dataarray.push([onerow[2],onerow[1],'opacity: 0',1,'opacity: 1']);
+       jsondataarray.push([onerow[3],onerow[1],onerow[2]]);
     }
 
     //var data = google.visualization.arrayToDataTable(dataarray, true);
     //drawCandlesticks(data);
     
-    var stackeddata = google.visualization.arrayToDataTable(dataarray, false);
-    drawStackedBarChart(stackeddata);
+    //var stackeddata = google.visualization.arrayToDataTable(dataarray, false);
+    //drawStackedBarChart(stackeddata);
     
     
     // Timeline chart include start and end dates which don't work for ToE.
     //drawTimelineChart();
+    
+    var hbardata = google.visualization.arrayToDataTable(jsondataarray, false);
+    drawHorizontalBarChart(jsondataarray);
     
   });
   
@@ -40,6 +46,34 @@ jQuery( document ).ready(function( $ ) {
 }); 
   
   
+  
+  function drawHorizontalBarChart(jsondataarray) {
+  
+    var data = google.visualization.arrayToDataTable(jsondataarray, false);
+    var rowcount = dataarray.length;
+    var height = 10 + (40 * (rowcount - 1));
+   
+   
+        var options = {
+          title: 'Time of Emergence',
+          height: height,
+          hAxis:{
+            title: 'Year of Emergence',
+            minValue: 2000,
+            viewWindow:{
+              min : 2000,
+              max : 2200,
+            },
+          },
+          legend:{
+            position: 'none',
+          },
+        };
+
+        var chart = new google.visualization.BarChart(document.getElementById('horizontal-bar-chart'));
+        chart.draw(data, options);
+      }
+
 
 
 function drawTimelineChart() {
