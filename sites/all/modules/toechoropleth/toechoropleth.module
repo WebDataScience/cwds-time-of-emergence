@@ -1,0 +1,29 @@
+<?php
+/* Error reporting */
+error_reporting(E_ALL);
+ini_set('display_errors', TRUE);
+ini_set('display_startup_errors', TRUE);
+
+function toechoropleth_menu() {
+  $items['choropleth'] = array(
+    'page callback' => 'toechoropleth_page_function',
+    'access callback' => TRUE,
+  );
+  return $items;
+}
+
+function toechoropleth_page_function(){
+    return theme('toechoropleth_template');
+}
+
+function toechoropleth_theme(){
+    return array(
+        'toechoropleth_template' => array(
+            // file name will be page-timeline.tpl.php
+            'template' => 'templates/toechoropleth',
+        ),
+    );
+}
+
+
+  

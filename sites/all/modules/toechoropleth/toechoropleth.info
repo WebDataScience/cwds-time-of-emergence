@@ -1,0 +1,13 @@
+name = Time of Emergence - Choropleth Data Visualization
+description = Provides a choropleth map visualization generator for time of emergence climate data.
+core = 7.x
+
+stylesheets[all][] = css/button.css
+stylesheets[all][] = css/chart.css
+stylesheets[all][] = css/colorbrewer.css
+stylesheets[all][] = css/choropleth.css
+
+scripts[] = js/d3.v2.min.js
+scripts[] = js/d3.parcoords.js
+scripts[] = js/d3.v2.js
+scripts[] = js/choropleth.js
