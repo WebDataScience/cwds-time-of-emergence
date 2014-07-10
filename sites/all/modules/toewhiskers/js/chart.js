@@ -10,20 +10,26 @@ jQuery( document ).ready(function( $ ) {
 
   dataarray = []; 
   jsondataarray = [];
+  // Some of Google charts default colors.
+  colorarray = ["#3366cc","#dc3912","#ff9900","#109618","#990099","#0099c6","#dd4477","#66aa00","#b82e2e","#316395","#994499","#22aa99","#aaaa11","#6633cc","#e67300","#8b0707","#651067","#329262","#5574a6","#3b3eac","#b77322","#16d620","#b91383","#f4359e","#9c5935","#a9c413","#2a778d","#668d1c","#bea413","#0c5922","#743411"];
+  // Gradient colors from http://www.perbang.dk/rgbgradient/
+  colorarray = ["#E59C00","#E39400","#E18C00","#DF8400","#DD7C00","#DB7400","#D96C00","#D76400","#D55C00","#D35400","#D14C01","#CF4401","#CD3C01","#CB3401","#C92C01","#C72401","#C51C01","#C31401","#C10C01","#C00402"];
 
   $.post( "timelinedata/" + sid, function( jsonobj ) { 
   
     //alert(jsonobj.query);
   
     dataarray = [  ['Genre', '',{ role: 'style' },'Blue',{ role: 'style' }] ];
-    jsondataarray = [['Variable','Year of Emergence',{ role: 'annotation' }]];
+    //jsondataarray = [['Variable','Year of Emergence',{ role: 'annotation' }]];
+    jsondataarray = [['Variable','Year of Emergence', {role: 'style'}, ]];
   
     toedata = jsonobj.toedata;
   
     for (var key in toedata) {
        var onerow = toedata[key];
        dataarray.push([onerow[2],onerow[1],'opacity: 0',1,'opacity: 1']);
-       jsondataarray.push([onerow[3],onerow[1],onerow[2]]);
+       //jsondataarray.push([onerow[2],onerow[1],onerow[2]]);
+       jsondataarray.push([ onerow[2],onerow[1], colorarray.shift() ]);
     }
 
     //var data = google.visualization.arrayToDataTable(dataarray, true);
@@ -50,14 +56,19 @@ jQuery( document ).ready(function( $ ) {
   function drawHorizontalBarChart(jsondataarray) {
   
     var data = google.visualization.arrayToDataTable(jsondataarray, false);
-    var rowcount = dataarray.length;
-    var height = 10 + (40 * (rowcount - 1));
+
+    var height = 600;
    
+    var orientation = 'horizontal';
+    if(orientation == 'vertical'){ height = 10 + (40 * (dataarray.length - 1));}
    
         var options = {
+          colors: ['#e0440e', '#e6693e', '#ec8f6e', '#f3b49f', '#f6c7b6'],
+          //"#3366cc","#dc3912","#ff9900","#109618","#990099","#0099c6","#dd4477","#66aa00","#b82e2e","#316395","#994499","#22aa99","#aaaa11","#6633cc","#e67300","#8b0707","#651067","#329262","#5574a6","#3b3eac","#b77322","#16d620","#b91383","#f4359e","#9c5935","#a9c413","#2a778d","#668d1c","#bea413","#0c5922","#743411"
+          
           title: 'Time of Emergence',
           height: height,
-          hAxis:{
+          vAxis:{
             title: 'Year of Emergence',
             minValue: 2000,
             viewWindow:{
@@ -68,6 +79,7 @@ jQuery( document ).ready(function( $ ) {
           legend:{
             position: 'none',
           },
+          orientation: 'horizontal',
         };
 
         var chart = new google.visualization.BarChart(document.getElementById('horizontal-bar-chart'));

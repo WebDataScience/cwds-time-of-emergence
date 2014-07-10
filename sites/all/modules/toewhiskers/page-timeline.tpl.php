@@ -69,10 +69,7 @@
  * @see template_process()
  */
 ?>
-
-
-<h2> Timeline Chart </h1>
-
+<!-- toewhiskers/page-timeline.tpl.php-->
 <div id="page">
   <!--<div id="candlesticks-chart"></div>-->
   <!--<div id="stackedbar-chart"></div>-->
