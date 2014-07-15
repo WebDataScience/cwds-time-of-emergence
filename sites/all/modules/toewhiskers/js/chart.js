@@ -29,21 +29,19 @@ jQuery( document ).ready(function( $ ) {
        var onerow = toedata[key];
        dataarray.push([onerow[2],onerow[1],'opacity: 0',1,'opacity: 1']);
        //jsondataarray.push([onerow[2],onerow[1],onerow[2]]);
-       jsondataarray.push([ onerow[2],onerow[1], colorarray.shift() ]);
+       jsondataarray.push([ onerow[2],onerow[4], colorarray.shift() ]);
     }
 
-    //var data = google.visualization.arrayToDataTable(dataarray, true);
-    //drawCandlesticks(data);
     
-    //var stackeddata = google.visualization.arrayToDataTable(dataarray, false);
-    //drawStackedBarChart(stackeddata);
+    var nochartmessage = "<p>No results are available for that configuration of parameters.</p>";
+    if(jsondataarray.length == 1){
+      $("#horizontal-bar-chart" ).html( nochartmessage );
+      return;
+    } 
     
-    
-    // Timeline chart include start and end dates which don't work for ToE.
-    //drawTimelineChart();
     
     var hbardata = google.visualization.arrayToDataTable(jsondataarray, false);
-    drawHorizontalBarChart(jsondataarray);
+    drawHorizontalBarChart(jsondataarray, jsonobj.maxtoeyear);
     
   });
   
@@ -53,8 +51,8 @@ jQuery( document ).ready(function( $ ) {
   
   
   
-  function drawHorizontalBarChart(jsondataarray) {
-  
+  function drawHorizontalBarChart(jsondataarray, maxtoeyear) {
+ 
     var data = google.visualization.arrayToDataTable(jsondataarray, false);
 
     var height = 600;
@@ -73,7 +71,7 @@ jQuery( document ).ready(function( $ ) {
             minValue: 2000,
             viewWindow:{
               min : 2000,
-              max : 2200,
+              max : maxtoeyear,
             },
           },
           legend:{

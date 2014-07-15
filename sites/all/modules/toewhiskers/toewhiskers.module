@@ -1,5 +1,50 @@
 <?php
 
+function regionlookup($id){
+  $regionlookup = array(
+'01'=>'ADAMS',
+'02'=>'ASOTIN',
+'03'=>'BENTON',
+'04'=>'CHELAN',
+'05'=>'CLALLAM',
+'06'=>'CLARK',
+'07'=>'COLUMBIA',
+'08'=>'COWLITZ',
+'09'=>'DOUGLAS',
+'10'=>'FERRY',
+'11'=>'FRANKLIN',
+'12'=>'GARFIELD',
+'13'=>'GRANT',
+'14'=>'GRAYS HARBOR',
+'15'=>'ISLAND',
+'16'=>'JEFFERSON',
+'17'=>'KING',
+'18'=>'KITSAP',
+'19'=>'KITTITAS',
+'20'=>'KLICKITAT',
+'21'=>'LEWIS',
+'22'=>'LINCOLN',
+'23'=>'MASON',
+'24'=>'OKANOGAN',
+'25'=>'PACIFIC',
+'26'=>'PEND OREILLE',
+'27'=>'PIERCE',
+'28'=>'SAN JUAN',
+'29'=>'SKAGIT',
+'30'=>'SKAMANIA',
+'31'=>'SNOHOMISH',
+'32'=>'SPOKANE',
+'33'=>'STEVENS',
+'34'=>'THURSTON',
+'35'=>'WAHKIAKUM',
+'36'=>'WALLA WALLA',
+'37'=>'WHATCOM',
+'38'=>'WHITMAN',
+'39'=>'YAKIMA',
+);
+  return $regionlookup[$id];
+}
+
 function toewhiskers_menu() {
   $items['timeline'] = array(
     'page callback' => 'toewhiskers_page_function',
@@ -37,6 +82,10 @@ function toewhiskers_theme(){
 
 function toewhiskers_json_query_function($sid){
 
+  $verbose_test_mode = FALSE;
+  
+  $max_TOE_year = 2100;
+
   // The nid of the webform.
   $webformnid = '4';
 
@@ -49,10 +98,10 @@ function toewhiskers_json_query_function($sid){
   module_load_include('inc', 'webform', 'includes/webform.submissions');
  
   $webform = webform_get_submission($webformnid, $sid);
-  //print_r($webform);
   $dataarray = $webform->data;
-  //print_r($dataarray);
-  $region = trim($dataarray[7]['value'][0]);
+  
+  $region = regionlookup(trim($dataarray[7]['value'][0]));
+  
   $compare = trim($dataarray[8]['value'][0]);
   // Multiple variables allowed.
   $variables = implode("','",$dataarray[1]['value']);
@@ -61,7 +110,7 @@ function toewhiskers_json_query_function($sid){
   $dataset = trim($dataarray[6]['value'][0]);
   $tolerance = trim($dataarray[5]['value'][0]);
   $confidence = trim($dataarray[3]['value'][0]);
-  $agreement = trim($dataarray[4]['value'][0]);
+
   
   
   $query = "SELECT {scen1_data}.TOE,{scen1_data}.VARIABLEID,{scen1_data}.CHANGEDIR,toe_data.VARIABLEDEF FROM {scen1_data} LEFT JOIN {toe_data} on (toe_data.VARIABLEID = scen1_data.VARIABLEID) WHERE 
@@ -71,8 +120,17 @@ function toewhiskers_json_query_function($sid){
   AND scen1_data.DATASET = '" . $dataset . "' 
   AND scen1_data.EMERGTHRES = " . $tolerance . "
   AND scen1_data.SIGNALCONFIDENCE = " . $confidence . "
-  AND scen1_data.MODELAGREEMENT = '" . $agreement . "' 
+  AND scen1_data.TOE <= " . $max_TOE_year . "
   LIMIT 20";
+  
+  /*
+  AND scen1_data.MODELAGREEMENT = 'N/A' 
+  AND scen1_data.GCM = 'GCM_ensemble' 
+  */
+  
+  
+  
+  if($verbose_test_mode){print($query);}
   
   
   /*
@@ -108,6 +166,36 @@ function toewhiskers_json_query_function($sid){
   
   $information = theme('webform_submission_information', array('node' => $node, 'submission' => $submission, 'mode' => $mode));
   
+  
+  SELECT scen1_data.TOE,scen1_data.VARIABLEID,scen1_data.CHANGEDIR,toe_data.VARIABLEDEF FROM scen1_data LEFT JOIN toe_data on (toe_data.VARIABLEID = scen1_data.VARIABLEID) WHERE scen1_data.VARIABLEID in ('V4','V5','V14','V15','V16','V17','V18','V19','V20','V6','V7','V8','V9','V10','V11','V12','V13') AND scen1_data.REGION = 'PNW' AND scen1_data.EMISSCENARIO = 'A1B' AND scen1_data.DATASET = 'BCSD5' AND scen1_data.EMERGTHRES = 90 AND scen1_data.SIGNALCONFIDENCE = 95 AND scen1_data.MODELAGREEMENT = '25 AND scen1_data.TOE < 2101 LIMIT 20
+  
+  
+  SELECT scen1_data.TOE,scen1_data.VARIABLEID,{scen1_data}.CHANGEDIR,toe_data.VARIABLEDEF FROM {scen1_data} LEFT JOIN {toe_data} on (toe_data.VARIABLEID = scen1_data.VARIABLEID) WHERE 
+  scen1_data.VARIABLEID in ('V1','V2','V3','V4','V5','V6','V7') 
+  AND scen1_data.REGION = '17' 
+  AND scen1_data.EMISSCENARIO = 'A1B' 
+  AND scen1_data.DATASET = 'BCSD5' 
+  AND scen1_data.EMERGTHRES = 90
+  AND scen1_data.SIGNALCONFIDENCE = 50
+  AND scen1_data.MODELAGREEMENT = 'N/A'
+  AND scen1_data.TOE <= 2100
+  LIMIT 20
+  
+  
+
+  SELECT scen1_data.TOE,scen1_data.VARIABLEID,scen1_data.CHANGEDIR,toe_data.VARIABLEDEF FROM scen1_data LEFT JOIN toe_data on (toe_data.VARIABLEID = scen1_data.VARIABLEID) WHERE 
+  scen1_data.VARIABLEID in ('V1','V2','V3','V4','V5','V6','V7') 
+  AND scen1_data.REGION = 'KING' 
+  AND scen1_data.EMISSCENARIO = 'A1B' 
+  AND scen1_data.DATASET = 'BCSD5' 
+  AND scen1_data.EMERGTHRES = 90
+  AND scen1_data.SIGNALCONFIDENCE = 50
+  AND scen1_data.MODELAGREEMENT = 'N/A' 
+  AND scen1_data.GCM = 'GCM_ensemble' 
+  AND scen1_data.TOE <= 2100
+  LIMIT 20;
+  
+  
   */
   
   
@@ -122,7 +210,7 @@ function toewhiskers_json_query_function($sid){
     // Perform operations on $record->title, etc. here. In this example the available data would be mapped to object properties:
     // $record->nid, $record->title, $record->created
     //$output .= "variableid: " . $record->VARIABLEID . " toe: " . $record->TOE;
-    $toe[$record->VARIABLEID] = array($record->CHANGEDIR,intval($record->TOE),$record->VARIABLEDEF,$record->VARIABLEID);
+    $toe[$record->VARIABLEID] = array($record->CHANGEDIR,intval($record->TOE),$record->VARIABLEDEF,$record->VARIABLEID,ceil($record->TOE/5)*5);
   }
 
   db_set_active();
@@ -139,19 +227,38 @@ function toewhiskers_json_query_function($sid){
     //"toedatanew" => $toe,
     "toedata" => $toe,
     "query" => $query,
+    "maxtoeyear" => $max_TOE_year,
     "sid" => $sid,
     //"webform" => $webform,
     //"output" => $output,
   );  
   drupal_json_output($toedata);
   
+  
+  
   /*
   $node = node_load(4);
-  $submission = webform_get_submission('4', '27');
-  webform_node_view($node,'full');
-  $o = theme_webform_view($node->content);
-  print($o);
+  $submission = webform_get_submission('4', '47');
+  $o = webform_submission_render($node, $submission, '', 'form');
+  
+  $output = drupal_get_form('webform_client_form_' . $node->nid, $node, $submission);
+  
+  //webform_node_view($node,'full');
+  //$o = theme_webform_view($node->content);
+  
+  $page = array(
+    '#theme' => 'webform_submission_page',
+    '#node' => $node,
+    '#mode' => $mode,
+    '#submission' => $submission,
+    '#submission_content' => $output,
+    '#submission_navigation' => $navigation,
+    '#submission_information' => $information,
+    '#submission_actions' => $actions,
+  );
+  drupal_render($page);
   */
+  
   
 }
 
