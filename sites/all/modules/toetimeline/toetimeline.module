@@ -1,0 +1,96 @@
+<?php
+/* Error reporting */
+error_reporting(E_ALL);
+ini_set('display_errors', TRUE);
+ini_set('display_startup_errors', TRUE);
+
+function toetimeline_menu() {
+  $items['timeline_page'] = array(
+    'page callback' => 'toetimeline_page_function',
+    'access callback' => TRUE,
+  );
+  $items['timelinedata_page'] = array(
+    'page callback' => 'toetimeline_json_query_function',
+    'page arguments' => array(1, 'sid'),
+    'access callback' => TRUE,
+  );
+  return $items;
+}
+
+function toetimeline_page_function(){
+    return theme('toetimeline_template');
+}
+
+function toetimeline_theme(){
+    return array(
+        'toetimeline_template' => array(
+            // file name will be page-timeline.tpl.php
+            'template' => 'templates/toetimeline',
+        ),
+    );
+}
+
+function toetimeline_json_query_function($sid){
+
+  //Dwaine's code for data pull
+
+  $verbose_test_mode = FALSE; 
+  $max_TOE_year = 2100;
+  // The nid of the webform.
+  $webformnid = '4';
+
+  module_load_include('inc', 'webform', 'includes/webform.submissions');
+ 
+  $webform = webform_get_submission($webformnid, $sid);
+  $dataarray = $webform->data;
+  
+  $region = "King";
+  
+  $compare = trim($dataarray[8]['value'][0]);
+  // Multiple variables allowed.
+  $variables = implode("','",$dataarray[1]['value']);
+  $variables = str_replace(" ", "", $variables);
+  $emission = trim($dataarray[2]['value'][0]);
+  $dataset = trim($dataarray[6]['value'][0]);
+  $tolerance = trim($dataarray[5]['value'][0]);
+  $confidence = trim($dataarray[3]['value'][0]);
+
+  $query = "SELECT {scen1_data}.TOE,{scen1_data}.VARIABLEID,{scen1_data}.CHANGEDIR,toe_data.VARIABLEDEF FROM {scen1_data} LEFT JOIN {toe_data} on (toe_data.VARIABLEID = scen1_data.VARIABLEID) WHERE 
+  scen1_data.VARIABLEID in ('" . $variables . "') 
+  AND scen1_data.REGION = '" . $region .   "' 
+  AND scen1_data.EMISSCENARIO = '" . $emission .   "' 
+  AND scen1_data.DATASET = '" . $dataset . "' 
+  AND scen1_data.EMERGTHRES = " . $tolerance . "
+  AND scen1_data.SIGNALCONFIDENCE = " . $confidence . "
+  AND scen1_data.TOE <= " . $max_TOE_year . "
+  LIMIT 20";
+
+  if($verbose_test_mode){print($query);}  
+  
+  $output = "";
+  $toe = array();
+  
+  db_set_active('toe');
+  
+  $result = db_query($query);
+  // Result is returned as a iterable object that returns a stdClass object on each iteration
+  foreach ($result as $record) {
+    $toe[$record->VARIABLEID] = array($record->CHANGEDIR,intval($record->TOE),$record->VARIABLEDEF,$record->VARIABLEID,ceil($record->TOE/5)*5);
+  }
+
+  db_set_active();
+  
+  $toedata = array(
+    "toedata" => $toe,
+    "query" => $query,
+    "maxtoeyear" => $max_TOE_year,
+    "sid" => $sid,
+  );  
+
+  print_r($toedata);
+  break;
+
+  drupal_json_output($toedata);
+  
+}
+  

@@ -1,0 +1,3 @@
+name = Time of Emergence - Timeline Visualization
+description = Provides a timeline visualization generator for time of emergence climate data.
+core = 7.x
