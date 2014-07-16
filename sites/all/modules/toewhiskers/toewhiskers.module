@@ -113,14 +113,14 @@ function toewhiskers_json_query_function($sid){
 
   
   
-  $query = "SELECT {scen1_data}.TOE,{scen1_data}.VARIABLEID,{scen1_data}.CHANGEDIR,toe_data.VARIABLEDEF FROM {scen1_data} LEFT JOIN {toe_data} on (toe_data.VARIABLEID = scen1_data.VARIABLEID) WHERE 
-  scen1_data.VARIABLEID in ('" . $variables . "') 
-  AND scen1_data.REGION = '" . $region .   "' 
-  AND scen1_data.EMISSCENARIO = '" . $emission .   "' 
-  AND scen1_data.DATASET = '" . $dataset . "' 
-  AND scen1_data.EMERGTHRES = " . $tolerance . "
-  AND scen1_data.SIGNALCONFIDENCE = " . $confidence . "
-  AND scen1_data.TOE <= " . $max_TOE_year . "
+  $query = "SELECT {SCEN1_DATA}.TOE,{SCEN1_DATA}.VARIABLEID,{SCEN1_DATA}.CHANGEDIR,{TOE_DATA}.VARIABLEDEF FROM {SCEN1_DATA} LEFT JOIN {TOE_DATA} on (TOE_DATA.VARIABLEID = SCEN1_DATA.VARIABLEID) WHERE 
+  SCEN1_DATA.VARIABLEID in ('" . $variables . "') 
+  AND SCEN1_DATA.REGION = '" . $region .   "' 
+  AND SCEN1_DATA.EMISSCENARIO = '" . $emission .   "' 
+  AND SCEN1_DATA.DATASET = '" . $dataset . "' 
+  AND SCEN1_DATA.EMERGTHRES = " . $tolerance . "
+  AND SCEN1_DATA.SIGNALCONFIDENCE = " . $confidence . "
+  AND SCEN1_DATA.TOE <= " . $max_TOE_year . "
   LIMIT 20";
   
   /*
