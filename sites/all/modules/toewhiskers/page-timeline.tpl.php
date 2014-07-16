@@ -70,9 +70,20 @@
  */
 ?>
 <!-- toewhiskers/page-timeline.tpl.php-->
+  <style>
+	.main text {
+	    font: 10px sans-serif;	
+	}
+	.axis line, .axis path {
+	    shape-rendering: crispEdges;
+	    stroke: black;
+	    fill: none;
+	}
+	circle {
+	    fill: steelblue;
+	}
+  </style>
 <div id="page">
-  <!--<div id="candlesticks-chart"></div>-->
-  <!--<div id="stackedbar-chart"></div>-->
   <div id="horizontal-bar-chart"></div>
-  <!--<div id="timeline-chart"></div>-->
+  <div id="timeline-chart"></div>    
 </div>
