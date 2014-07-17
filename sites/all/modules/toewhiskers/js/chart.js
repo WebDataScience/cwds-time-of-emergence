@@ -22,6 +22,7 @@ jQuery( document ).ready(function( $ ) {
     dataarray = [  ['Genre', '',{ role: 'style' },'Blue',{ role: 'style' }] ];
     //jsondataarray = [['Variable','Year of Emergence',{ role: 'annotation' }]];
     jsondataarray = [['Variable','Year of Emergence', {role: 'style'}, ]];
+    timelinedataarray = []; // [ [toe(integer),height(zero)], ];
   
     toedata = jsonobj.toedata;
   
@@ -30,6 +31,7 @@ jQuery( document ).ready(function( $ ) {
        dataarray.push([onerow[2],onerow[1],'opacity: 0',1,'opacity: 1']);
        //jsondataarray.push([onerow[2],onerow[1],onerow[2]]);
        jsondataarray.push([ onerow[2],onerow[4], colorarray.shift() ]);
+       timelinedataarray.push([ onerow[4] , 0]); //Math.floor(Math.random()*2)
     }
 
     
@@ -39,9 +41,14 @@ jQuery( document ).ready(function( $ ) {
       return;
     } 
     
+    // Old GoogleCharts based bar chart
+    //var hbardata = google.visualization.arrayToDataTable(jsondataarray, false);
+    //drawHorizontalBarChart(jsondataarray, jsonobj.maxtoeyear);
     
-    var hbardata = google.visualization.arrayToDataTable(jsondataarray, false);
-    drawHorizontalBarChart(jsondataarray, jsonobj.maxtoeyear);
+    
+    // New D3.js based timeline chart
+    drawD3Timeline(timelinedataarray, jsonobj.maxtoeyear);
+    
     
   });
   
@@ -49,6 +56,65 @@ jQuery( document ).ready(function( $ ) {
   
 }); 
   
+  
+  function drawD3Timeline(timelinedataarray, maxtoeyear){
+  
+    var chartheight = 200;
+  
+		var data = [[2000,0], [2020,0], [2085,0], [2040,0]];
+    data = timelinedataarray;
+		   
+		var margin = {top: 20, right: 15, bottom: 60, left: 60}
+		  , width = 960 - margin.left - margin.right
+		  , height = chartheight - margin.top - margin.bottom;
+
+		var x = d3.scale.linear()
+		          .domain([2000, 2100])
+		          .range([ 0, width ]);
+
+		var y = d3.scale.linear()
+		        .domain([0, d3.max(data, function(d) { return d[1]; })])
+		        .range([ height, 0 ]);
+
+		var chart = d3.select('#timeline-chart')
+		.append('svg:svg')
+		.attr('width', width + margin.right + margin.left)
+		.attr('height', height + margin.top + margin.bottom)
+		.attr('class', 'chart')
+
+		var main = chart.append('g')
+		.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+		.attr('width', width)
+		.attr('height', height)
+		.attr('class', 'main')   
+		    
+		// draw the x axis
+		var xAxis = d3.svg.axis()
+		.scale(x)
+		.orient('bottom');
+
+		main.append('g')
+		.attr('transform', 'translate(0,' + height + ')')
+		.attr('class', 'main axis date')
+		.call(xAxis);
+
+		var g = main.append("svg:g"); 
+
+		g.selectAll("scatter-dots")
+		  .data(data)
+		  .enter().append("svg:circle")
+		      .attr("cx", function (d,i) { return x(d[0]); } )
+		      .attr("cy", function (d) { return y(d[1]); } )
+		      .attr("r", 8)
+		      .attr('class', 'scatter-point')
+		      .attr('title', function(d) { return d[0]; });
+		      /*.append("circle:a")
+		        .attr("class", "tooltips")
+		        .attr("href", "#")
+		        .text(function(d) { return d[0]; })
+		        .append("a:span")
+		          .text(function(d) { return d[0]; });*/
+  }
   
   
   function drawHorizontalBarChart(jsondataarray, maxtoeyear) {
