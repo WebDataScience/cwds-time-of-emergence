@@ -161,33 +161,30 @@ function toewhiskers_json_query_function($sid){
   db_set_active();
   
   
-  
   $toedata = array(
-    //"toedataold" => array(
-    //  "airtemp$sid" => array('22 C',2020),
-    //  "h2otemp" => array('7 C',2025),
-    //  "windvel" => array('10 mph',2035),
-    //  "precip" => array('50 inchesyr',2040),
-    //),
-    //"toedatanew" => $toe,
     "toedata" => $toe,
     "query" => $query,
     "maxtoeyear" => $max_TOE_year,
     "sid" => $sid,
+    "scenario" => $emission,
+    "confidence" => $confidence,
+    "tolerance" => $tolerance,
+    "dataset" => $dataset,
     //"webform" => $webform,
     //"output" => $output,
   );  
   drupal_json_output($toedata);
   
-   
 }
 
 
+
 function toewhiskers_cigtoeconfig_function(){
-  $columns = array('REGION','VARIABLEID','EMISSCENARIO','DATASET','EMERGTHRES','SIGNALCONFIDENCE','MODELAGREEMENT','GCM');
+  
   $o = "";
   db_set_active('cig_toe');
   
+  $columns = array('REGION','EMISSCENARIO','DATASET','EMERGTHRES','SIGNALCONFIDENCE','MODELAGREEMENT','GCM');
   foreach ($columns as $column) {
     $o .= "<br/>" . $column . "<br/>";
     $query = "SELECT DISTINCT " . $column . " FROM {SCEN1_DATA_V1}";
@@ -196,6 +193,20 @@ function toewhiskers_cigtoeconfig_function(){
     // Result is returned as a iterable object that returns a stdClass object on each iteration
     foreach ($result as $record) {
       $o .= $record->$column . "|" . $record->$column . "<br/>";
+    }
+  }
+  
+  $queries = array('SELECT DISTINCT SCEN1_DATA_V1.VARIABLEID AS k, TOE_DATA_V1.VARIABLENAME AS v FROM SCEN1_DATA_V1 LEFT JOIN TOE_DATA_V1 ON (TOE_DATA_V1.VARIABLEID = SCEN1_DATA_V1.VARIABLEID)');
+  
+  foreach ($queries as $query) {
+    print($query);
+    $o .= "<br/>" . $query . "<br/>";
+    //$query = "SELECT DISTINCT " . $column . " FROM {SCEN1_DATA_V1}";
+    
+    $result = db_query($query);
+    // Result is returned as a iterable object that returns a stdClass object on each iteration
+    foreach ($result as $record) {
+      $o .= $record->k . "|" . $record->v . "<br/>";
     }
   }
 

@@ -70,6 +70,7 @@
  */
 ?>
 <!-- toewhiskers/page-timeline.tpl.php-->
+
   <style>
 	.main text {
 	    font: 10px sans-serif;	
@@ -84,7 +85,12 @@
 	}
   </style>
 <div id="page">
-  <h2>Multi-Model Median Time of Emergence for {King County} under {RCP8.5}</h2>
+  <h2>Multi-Model Median Time of Emergence for <span id="region">King County</span> under <span id="emission">RCP8.5</span></h2>
+  <div id="chartmessage"></div>
   <div id="horizontal-bar-chart"></div>
-  <div id="timeline-chart"></div>    
-</div>
+  <div id="timeline-chart"></div>  
+  
+    <p>Confidence: <span id="confidence">{High (95% confidence interval)}</span>% confidence interval<!--[Column J]--><br/>
+    Tolerance: <span id="tolerance">{Low (90% historical range)}</span>% historical range <!--[Column I]--><br/>
+    Dataset: Statistically-downscaled <span id="dataset">{Statistically-downscaled (CMIP5 BCSD)}</span> <!-- [Column G]--></p>
+  

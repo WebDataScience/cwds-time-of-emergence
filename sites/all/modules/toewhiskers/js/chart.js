@@ -31,13 +31,13 @@ jQuery( document ).ready(function( $ ) {
        dataarray.push([onerow[2],onerow[1],'opacity: 0',1,'opacity: 1']);
        //jsondataarray.push([onerow[2],onerow[1],onerow[2]]);
        jsondataarray.push([ onerow[2],onerow[4], colorarray.shift() ]);
-       timelinedataarray.push([ onerow[4] , 0]); //Math.floor(Math.random()*2)
+       timelinedataarray.push([ onerow[4] , 0, onerow[2], onerow[5]]); //Math.floor(Math.random()*2)
     }
 
     
     var nochartmessage = "<p>No results are available for that configuration of parameters.</p>";
-    if(jsondataarray.length == 1){
-      $("#horizontal-bar-chart" ).html( nochartmessage );
+    if(timelinedataarray.length ==  0){
+      $("#chartmessage" ).html( nochartmessage );
       return;
     } 
     
@@ -49,21 +49,24 @@ jQuery( document ).ready(function( $ ) {
     // New D3.js based timeline chart
     drawD3Timeline(timelinedataarray, jsonobj.maxtoeyear);
     
-    
+    $("#emission" ).html( jsonobj.scenario );
+    $("#confidence" ).html( jsonobj.confidence );
+    $("#tolerance" ).html( jsonobj.tolerance );
+    $("#dataset" ).html( jsonobj.dataset );
   });
-  
-  
   
 }); 
   
+ 
   
-  function drawD3Timeline(timelinedataarray, maxtoeyear){
-  
+    function drawD3Timeline(timelinedataarray, maxtoeyear){
+    
     var chartheight = 200;
-  
-		var data = [[2000,0], [2020,0], [2085,0], [2040,0]];
-    data = timelinedataarray;
-		   
+    
+    var data = [[2000,0,"tooltip1","label1"], [2020,0,"tooltip2","label2"], [2085,0,"tooltip3","label3"], [2040,0,"tooltip4","label4"]];
+		data = timelinedataarray;
+       
+       
 		var margin = {top: 20, right: 15, bottom: 60, left: 60}
 		  , width = 960 - margin.left - margin.right
 		  , height = chartheight - margin.top - margin.bottom;
@@ -107,14 +110,14 @@ jQuery( document ).ready(function( $ ) {
 		      .attr("cy", function (d) { return y(d[1]); } )
 		      .attr("r", 8)
 		      .attr('class', 'scatter-point')
-		      .attr('title', function(d) { return d[0]; });
-		      /*.append("circle:a")
-		        .attr("class", "tooltips")
-		        .attr("href", "#")
-		        .text(function(d) { return d[0]; })
-		        .append("a:span")
-		          .text(function(d) { return d[0]; });*/
-  }
+		      .text(function(d) { return d[3]; })
+		      .attr('title', function(d) { return d[2]; });
+    
+    
+    
+    
+    }
+  
   
   
   function drawHorizontalBarChart(jsondataarray, maxtoeyear) {
