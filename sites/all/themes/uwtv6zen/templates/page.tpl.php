@@ -238,7 +238,7 @@ $footer_menus = render($page['footer_menus']);
         <span class="inner">&copy; <?php echo date('Y'); ?> University of Washington Tacoma</span>
       </div>
       <div class="right">
-        <?php 
+        <!--<?php 
           if(!user_is_logged_in()) {
             echo l('UWNetID login', $shiblink);
             echo " | ";
@@ -248,7 +248,7 @@ $footer_menus = render($page['footer_menus']);
               echo $userlink;
             }
           }
-        ?>
+        ?>-->
         <?php
           if(isset($link_info) && is_array($link_info)){
             echo '<br />Node ID: ' .  $link_info['nid'] . ' href: ' . $link_info['href'];
