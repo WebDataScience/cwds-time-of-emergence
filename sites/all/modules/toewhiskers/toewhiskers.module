@@ -56,6 +56,11 @@ function toewhiskers_menu() {
     'page arguments' => array(1, 'sid'),
     'access callback' => TRUE,
   );
+  $items['cigtoeconfig'] = array(
+    'page callback' => 'toewhiskers_cigtoeconfig_function',
+    'page arguments' => array(),
+    'access callback' => TRUE,
+  );
   return $items;
 }
 
@@ -68,6 +73,8 @@ function toewhiskers_page_function(){
     drupal_add_js(drupal_get_path('module', 'toewhiskers') . '/js/chart.js');
     return theme('timeline_template');
 }
+
+
 
 
 function toewhiskers_theme(){
@@ -89,18 +96,13 @@ function toewhiskers_json_query_function($sid){
   // The nid of the webform.
   $webformnid = '4';
 
-  // Use querystring value for sid if present.
-  //$qs = drupal_get_query_parameters();
-  //if (isset($qs['sid'])) {
-  //  $sid = $qs['sid'];
-  //}
-
   module_load_include('inc', 'webform', 'includes/webform.submissions');
  
   $webform = webform_get_submission($webformnid, $sid);
   $dataarray = $webform->data;
   
-  $region = regionlookup(trim($dataarray[7]['value'][0]));
+  //$region = regionlookup(trim($dataarray[7]['value'][0]));
+  $region = trim($dataarray[7]['value'][0]);
   
   $compare = trim($dataarray[8]['value'][0]);
   // Multiple variables allowed.
@@ -112,7 +114,7 @@ function toewhiskers_json_query_function($sid){
   $confidence = trim($dataarray[3]['value'][0]);
 
   
-  
+  /* Depricated. Based on original version of database.
   $query = "SELECT {SCEN1_DATA}.TOE,{SCEN1_DATA}.VARIABLEID,{SCEN1_DATA}.CHANGEDIR,{TOE_DATA}.VARIABLEDEF FROM {SCEN1_DATA} LEFT JOIN {TOE_DATA} on (TOE_DATA.VARIABLEID = SCEN1_DATA.VARIABLEID) WHERE 
   SCEN1_DATA.VARIABLEID in ('" . $variables . "') 
   AND SCEN1_DATA.REGION = '" . $region .   "' 
@@ -122,81 +124,24 @@ function toewhiskers_json_query_function($sid){
   AND SCEN1_DATA.SIGNALCONFIDENCE = " . $confidence . "
   AND SCEN1_DATA.TOE <= " . $max_TOE_year . "
   LIMIT 20";
-  
-  /*
-  AND scen1_data.MODELAGREEMENT = 'N/A' 
-  AND scen1_data.GCM = 'GCM_ensemble' 
   */
+ 
   
+  $query = "SELECT {SCEN1_DATA_V1}.TOE,{SCEN1_DATA_V1}.VARIABLEID,{SCEN1_DATA_V1}.CHANGEDIR,{TOE_DATA_V1}.VARIABLENAME,{TOE_DATA_V1}.VARIABLESHORTNAME FROM {SCEN1_DATA_V1} LEFT JOIN {TOE_DATA_V1} on (TOE_DATA_V1.VARIABLEID = SCEN1_DATA_V1.VARIABLEID) WHERE 
+  SCEN1_DATA_V1.VARIABLEID in ('" . $variables . "') 
+  AND SCEN1_DATA_V1.REGION = '" . $region .   "' 
+  AND SCEN1_DATA_V1.EMISSCENARIO = '" . $emission .   "' 
+  AND SCEN1_DATA_V1.DATASET = '" . $dataset . "' 
+  AND SCEN1_DATA_V1.EMERGTHRES = " . $tolerance . "
+  AND SCEN1_DATA_V1.SIGNALCONFIDENCE = " . $confidence . "
+  AND SCEN1_DATA_V1.TOE <= " . $max_TOE_year . "
+  AND SCEN1_DATA_V1.MODELAGREEMENT = 'XX' 
+  AND SCEN1_DATA_V1.GCM = 'GCM_ensemble' 
+  LIMIT 20";
   
   
   if($verbose_test_mode){print($query);}
   
-  
-  /*
-  
-  SELECT CONCAT(VARIABLEID,'|',VARIABLEDEF,' ',VARIABLEMONTH) FROM toe_data LIMIT 20;
-
-  SELECT * FROM scen1_data WHERE VARIABLEID in ('V2','V1') AND REGION = 'King' AND EMISSCENARIO = 'A1B' AND DATASET = 'BCSD5' 
-  AND EMERGTHRES = 90
-  AND SIGNALCONFIDENCE = 50
-  AND MODELAGREEMENT = '50' 
-  LIMIT 10;
-  
-  SELECT scen1_data.TOE,scen1_data.VARIABLEID,toe_data.VARIABLEDEF,scen1_data.CHANGEDIR FROM scen1_data LEFT JOIN toe_data on (toe_data.VARIABLEID = scen1_data.VARIABLEID) WHERE  scen1_data.VARIABLEID in ('V2','V1') 
-  AND scen1_data.REGION = 'King' 
-  AND scen1_data.EMISSCENARIO = 'A1B' 
-  AND scen1_data.DATASET = 'BCSD5' 
-  AND scen1_data.EMERGTHRES = 90 
-  AND scen1_data.SIGNALCONFIDENCE = 50 
-  AND scen1_data.MODELAGREEMENT = '50' 
-  LIMIT 10;
-  
-  SELECT scen1_data.TOE,scen1_data.VARIABLEID,toe_data.VARIABLEDEF,scen1_data.CHANGEDIR FROM scen1_data LEFT JOIN toe_data on (toe_data.VARIABLEID = scen1_data.VARIABLEID) WHERE 
-  scen1_data.VARIABLEID in ('V4','V5','V6','V7','V16','V17','V18','V19') 
-  AND scen1_data.REGION = '' 
-  AND scen1_data.EMISSCENARIO = 'A1B' 
-  AND scen1_data.DATASET = 'BCSD5' 
-  AND scen1_data.EMERGTHRES = 90
-  AND scen1_data.SIGNALCONFIDENCE = 50
-  AND scen1_data.MODELAGREEMENT = '50' 
-  LIMIT 10
-  
-  /node/%webform_menu/submission/%webform_menu_submission/edit/
-  
-  $information = theme('webform_submission_information', array('node' => $node, 'submission' => $submission, 'mode' => $mode));
-  
-  
-  SELECT scen1_data.TOE,scen1_data.VARIABLEID,scen1_data.CHANGEDIR,toe_data.VARIABLEDEF FROM scen1_data LEFT JOIN toe_data on (toe_data.VARIABLEID = scen1_data.VARIABLEID) WHERE scen1_data.VARIABLEID in ('V4','V5','V14','V15','V16','V17','V18','V19','V20','V6','V7','V8','V9','V10','V11','V12','V13') AND scen1_data.REGION = 'PNW' AND scen1_data.EMISSCENARIO = 'A1B' AND scen1_data.DATASET = 'BCSD5' AND scen1_data.EMERGTHRES = 90 AND scen1_data.SIGNALCONFIDENCE = 95 AND scen1_data.MODELAGREEMENT = '25 AND scen1_data.TOE < 2101 LIMIT 20
-  
-  
-  SELECT scen1_data.TOE,scen1_data.VARIABLEID,{scen1_data}.CHANGEDIR,toe_data.VARIABLEDEF FROM {scen1_data} LEFT JOIN {toe_data} on (toe_data.VARIABLEID = scen1_data.VARIABLEID) WHERE 
-  scen1_data.VARIABLEID in ('V1','V2','V3','V4','V5','V6','V7') 
-  AND scen1_data.REGION = '17' 
-  AND scen1_data.EMISSCENARIO = 'A1B' 
-  AND scen1_data.DATASET = 'BCSD5' 
-  AND scen1_data.EMERGTHRES = 90
-  AND scen1_data.SIGNALCONFIDENCE = 50
-  AND scen1_data.MODELAGREEMENT = 'N/A'
-  AND scen1_data.TOE <= 2100
-  LIMIT 20
-  
-  
-
-  SELECT scen1_data.TOE,scen1_data.VARIABLEID,scen1_data.CHANGEDIR,toe_data.VARIABLEDEF FROM scen1_data LEFT JOIN toe_data on (toe_data.VARIABLEID = scen1_data.VARIABLEID) WHERE 
-  scen1_data.VARIABLEID in ('V1','V2','V3','V4','V5','V6','V7') 
-  AND scen1_data.REGION = 'KING' 
-  AND scen1_data.EMISSCENARIO = 'A1B' 
-  AND scen1_data.DATASET = 'BCSD5' 
-  AND scen1_data.EMERGTHRES = 90
-  AND scen1_data.SIGNALCONFIDENCE = 50
-  AND scen1_data.MODELAGREEMENT = 'N/A' 
-  AND scen1_data.GCM = 'GCM_ensemble' 
-  AND scen1_data.TOE <= 2100
-  LIMIT 20;
-  
-  
-  */
   
   
   $output = "";
@@ -210,7 +155,7 @@ function toewhiskers_json_query_function($sid){
     // Perform operations on $record->title, etc. here. In this example the available data would be mapped to object properties:
     // $record->nid, $record->title, $record->created
     //$output .= "variableid: " . $record->VARIABLEID . " toe: " . $record->TOE;
-    $toe[$record->VARIABLEID] = array($record->CHANGEDIR,intval($record->TOE),$record->VARIABLEDEF,$record->VARIABLEID,ceil($record->TOE/5)*5);
+    $toe[$record->VARIABLEID] = array($record->CHANGEDIR,intval($record->TOE),$record->VARIABLENAME,$record->VARIABLEID,ceil($record->TOE/5)*5,$record->VARIABLESHORTNAME);
   }
 
   db_set_active();
@@ -234,34 +179,31 @@ function toewhiskers_json_query_function($sid){
   );  
   drupal_json_output($toedata);
   
-  
-  
-  /*
-  $node = node_load(4);
-  $submission = webform_get_submission('4', '47');
-  $o = webform_submission_render($node, $submission, '', 'form');
-  
-  $output = drupal_get_form('webform_client_form_' . $node->nid, $node, $submission);
-  
-  //webform_node_view($node,'full');
-  //$o = theme_webform_view($node->content);
-  
-  $page = array(
-    '#theme' => 'webform_submission_page',
-    '#node' => $node,
-    '#mode' => $mode,
-    '#submission' => $submission,
-    '#submission_content' => $output,
-    '#submission_navigation' => $navigation,
-    '#submission_information' => $information,
-    '#submission_actions' => $actions,
-  );
-  drupal_render($page);
-  */
-  
-  
+   
 }
 
+
+function toewhiskers_cigtoeconfig_function(){
+  $columns = array('REGION','VARIABLEID','EMISSCENARIO','DATASET','EMERGTHRES','SIGNALCONFIDENCE','MODELAGREEMENT','GCM');
+  $o = "";
+  db_set_active('cig_toe');
+  
+  foreach ($columns as $column) {
+    $o .= "<br/>" . $column . "<br/>";
+    $query = "SELECT DISTINCT " . $column . " FROM {SCEN1_DATA_V1}";
+    
+    $result = db_query($query);
+    // Result is returned as a iterable object that returns a stdClass object on each iteration
+    foreach ($result as $record) {
+      $o .= $record->$column . "|" . $record->$column . "<br/>";
+    }
+  }
+
+  db_set_active();
+  
+  print($o);
+}
+  
 
 
 

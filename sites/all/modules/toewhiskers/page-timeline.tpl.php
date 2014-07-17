@@ -84,6 +84,7 @@
 	}
   </style>
 <div id="page">
+  <h2>Multi-Model Median Time of Emergence for {King County} under {RCP8.5}</h2>
   <div id="horizontal-bar-chart"></div>
   <div id="timeline-chart"></div>    
 </div>
