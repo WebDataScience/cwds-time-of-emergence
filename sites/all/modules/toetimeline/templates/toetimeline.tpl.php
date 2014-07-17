@@ -39,7 +39,7 @@
     <input id="module_path" type="hidden" value="<?php echo base_path() . $path ?>" />
     <script>
     	//test data
-		var data = [[2000,0,"string1"], [2020,0,"string2"], [2085,0,"string3"], [2040,0,"string4"]];
+		var data = [[2000,0,"tooltip1","label1"], [2020,0,"tooltip2","label2"], [2085,0,"tooltip3","label3"], [2040,0,"tooltip4","label4"]];
 		   
 		var margin = {top: 20, right: 15, bottom: 60, left: 60}
 		  , width = 960 - margin.left - margin.right
@@ -84,6 +84,7 @@
 		      .attr("cy", function (d) { return y(d[1]); } )
 		      .attr("r", 8)
 		      .attr('class', 'scatter-point')
+		      .text(function(d) { return d[3]; })
 		      .attr('title', function(d) { return d[2]; });
 		      /*.append("circle:a")
 		        .attr("class", "tooltips")
