@@ -127,6 +127,7 @@ function toewhiskers_json_query_function($sid){
   */
  
   
+  //Query for the timeline chart portion of /timeline page.
   $query = "SELECT {SCEN1_DATA_V1}.TOE,{SCEN1_DATA_V1}.VARIABLEID,{SCEN1_DATA_V1}.CHANGEDIR,{TOE_DATA_V1}.VARIABLENAME,{TOE_DATA_V1}.VARIABLESHORTNAME FROM {SCEN1_DATA_V1} LEFT JOIN {TOE_DATA_V1} on (TOE_DATA_V1.VARIABLEID = SCEN1_DATA_V1.VARIABLEID) WHERE 
   SCEN1_DATA_V1.VARIABLEID in ('" . $variables . "') 
   AND SCEN1_DATA_V1.REGION = '" . $region .   "' 
@@ -158,11 +159,40 @@ function toewhiskers_json_query_function($sid){
     $toe[$record->VARIABLEID] = array($record->CHANGEDIR,intval($record->TOE),$record->VARIABLENAME,$record->VARIABLEID,ceil($record->TOE/5)*5,$record->VARIABLESHORTNAME);
   }
 
+  
+  // Query for 'table' portion of /timeline page.
+  $query = "SELECT SCEN1_DATA_V1.*,TOE_DATA_V1.VARIABLESHORTNAME FROM {SCEN1_DATA_V1}  LEFT JOIN {TOE_DATA_V1} on (TOE_DATA_V1.VARIABLEID = SCEN1_DATA_V1.VARIABLEID) WHERE
+  SCEN1_DATA_V1.VARIABLEID in ('" . $variables . "') 
+  AND SCEN1_DATA_V1.REGION = '" . $region .   "' 
+  AND SCEN1_DATA_V1.EMISSCENARIO = '" . $emission .   "' 
+  AND SCEN1_DATA_V1.DATASET = '" . $dataset . "' 
+  AND SCEN1_DATA_V1.EMERGTHRES = " . $tolerance . "
+  AND SCEN1_DATA_V1.SIGNALCONFIDENCE = " . $confidence . "
+  AND (SCEN1_DATA_V1.MODELAGREEMENT = '25' OR SCEN1_DATA_V1.MODELAGREEMENT = '75') 
+  AND SCEN1_DATA_V1.GCM = 'GCM_ensemble' ORDER BY SCEN1_DATA_V1.VARIABLEID ";
+  //print($query . "<br/>");
+  
+  $result = db_query($query);
+  
+  $tabledataarray = array();
+  
+  // Result is returned as a iterable object that returns a stdClass object on each iteration
+  foreach ($result as $record) {
+    //print_r($record);
+    if($record->MODELAGREEMENT == '25'){$tabledataarray[$record->VARIABLEID]['toe25']=ceil($record->TOE/5)*5;}
+    if($record->MODELAGREEMENT == '75'){$tabledataarray[$record->VARIABLEID]['toe75']=ceil($record->TOE/5)*5;}
+    $tabledataarray[$record->VARIABLEID]['changedir']=$record->CHANGEDIR;
+    $tabledataarray[$record->VARIABLEID]['shortname']=$record->VARIABLESHORTNAME;
+  }
+  
+  //print_r($tabledataarray);
+  
   db_set_active();
   
   
   $toedata = array(
     "toedata" => $toe,
+    "tabledata" => $tabledataarray,
     "query" => $query,
     "maxtoeyear" => $max_TOE_year,
     "sid" => $sid,
