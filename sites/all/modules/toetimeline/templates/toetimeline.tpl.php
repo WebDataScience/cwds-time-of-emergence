@@ -10,29 +10,16 @@
   <meta charset="utf-8" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="http://d3js.org/d3.v2.min.js?2.9.3"></script>
+  <!--<script src="http://d3js.org/d3.v2.min.js?2.9.3"></script>-->
   <?php
-    drupal_add_js($path . '/js/d3.parcoords.js');
+  	drupal_add_css($path . '/css/timeline.css');
     drupal_add_js($path . '/js/d3.v2.js');
   ?>
-
-  <style>
-	.main text {
-	    font: 10px sans-serif;	
-	}
-	.axis line, .axis path {
-	    shape-rendering: crispEdges;
-	    stroke: black;
-	    fill: none;
-	}
-	circle {
-	    fill: steelblue;
-	}
-  </style>
 
 </head>
 
 <body>
+<h4>Multi-Model Median Time of Emergence for King County under {RCP8.5} </h4>
     <div class='content'>
           <!-- chart -->
     </div>
@@ -77,22 +64,52 @@
 
 		var g = main.append("svg:g"); 
 
-		g.selectAll("scatter-dots")
-		  .data(data)
-		  .enter().append("svg:circle")
-		      .attr("cx", function (d,i) { return x(d[0]); } )
-		      .attr("cy", function (d) { return y(d[1]); } )
-		      .attr("r", 8)
-		      .attr('class', 'scatter-point')
-		      .text(function(d) { return d[3]; })
-		      .attr('title', function(d) { return d[2]; });
-		      /*.append("circle:a")
-		        .attr("class", "tooltips")
-		        .attr("href", "#")
-		        .text(function(d) { return d[0]; })
-		        .append("a:span")
-		          .text(function(d) { return d[0]; });*/
+		var node = g.selectAll("g")
+                .data(data)
+                .enter()
+                .append("g");
+
+		node.append("line")
+		  .attr("class", "scatter-point")
+		  //.attr("cx", function (d,i) { return x(d[0]); } )
+		  //.attr("cy", function (d) { return y(d[1]); } )
+		  //.attr("r", 8)
+		  	.attr("class", "tick")
+		  .attr("x1", function (d,i) { return 1 + x(d[0]); } )
+			.attr("y1", -5)
+			.attr("x2", function (d,i) { return 1 + x(d[0]); } )
+			.attr("y2", 20)
+			.attr("stroke-width", 1)
+			.style("shape-rendering", "crispEdges")
+			.attr("stroke", "black");
+
+		node.append("line:text")
+		  .attr("class", "point-label")
+		  .attr("x", function (d,i) { return x(d[0]); } )
+		  .attr("y", function (d) { return y(d[1]); } )
+		  .attr("dy", -32)
+		  .style("text-anchor", "middle")
+		  .text(function(d) { return d[3]; })
+		  .attr('title', function(d) { return d[2]; }); 
 
     </script>
+
+    <style>
+		.main text {
+		    font: 10px sans-serif;	
+		}
+		.axis line, .axis path, line.scatter-point {
+		    shape-rendering: crispEdges;
+		    stroke: black;
+		    fill: none;
+		}
+		h4 {
+			text-align: center;
+		}
+		#main {
+			background-color: #edeef1;
+		}
+  </style>
+      	
   </body>
 </html>
