@@ -67,16 +67,13 @@ jQuery( document ).ready(function( $ ) {
   
 }); 
   
- 
   
 function drawD3Timeline(timelinedataarray, maxtoeyear){
-    
-    var chartheight = 200;
-    
-    var data = [[2000,0,"tooltip1","label1"], [2020,0,"tooltip2","label2"], [2085,0,"tooltip3","label3"], [2040,0,"tooltip4","label4"]];
-		data = timelinedataarray;
-       
-       
+ var data = [[2000,0,"tooltip1","label1"], [2020,0,"tooltip2","label2"], [2085,0,"tooltip3","label3"], [2040,0,"tooltip4","label4"]];
+ 
+ var chartheight = 100;
+ data = timelinedataarray;
+		   
 		var margin = {top: 20, right: 15, bottom: 60, left: 60}
 		  , width = 960 - margin.left - margin.right
 		  , height = chartheight - margin.top - margin.bottom;
@@ -113,18 +110,37 @@ function drawD3Timeline(timelinedataarray, maxtoeyear){
 
 		var g = main.append("svg:g"); 
 
-		g.selectAll("scatter-dots")
-		  .data(data)
-		  .enter().append("svg:circle")
-		      .attr("cx", function (d,i) { return x(d[0]); } )
-		      .attr("cy", function (d) { return y(d[1]); } )
-		      .attr("r", 8)
-		      .attr('class', 'scatter-point')
-		      .text(function(d) { return d[3]; })
-		      .attr('title', function(d) { return d[2]; });
+		var node = g.selectAll("g")
+                .data(data)
+                .enter()
+                .append("g");
+
+		node.append("line")
+		  .attr("class", "scatter-point")
+		  	.attr("class", "tick")
+		  .attr("x1", function (d,i) { return 1 + x(d[0]); } )
+			.attr("y1", -5)
+			.attr("x2", function (d,i) { return 1 + x(d[0]); } )
+			.attr("y2", 20)
+			.attr("stroke-width", 1)
+			.style("shape-rendering", "crispEdges")
+			.attr("stroke", "black");
+
+		node.append("line:circle")
+		  .attr("cx", function (d,i) { return x(d[0]); } )
+		  .attr("cy", function (d) { return y(d[1]); } )
+		  .attr("r", 2);
+
+		node.append("line:text")
+		  .attr("class", "point-label")
+		  .attr("x", function (d,i) { return x(d[0]); } )
+		  .attr("y", function (d) { return y(d[1]); } )
+		  .attr("dy", -32)
+		  .style("text-anchor", "middle")
+		  .text(function(d) { return d[3]; })
+		  .attr('title', function(d) { return d[2]; }); 
 }
- 
- 
+
 
 function getParameterByName(name) {
   name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");

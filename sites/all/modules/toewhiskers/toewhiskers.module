@@ -1,54 +1,14 @@
 <?php
 
-function regionlookup($id){
-  $regionlookup = array(
-'01'=>'ADAMS',
-'02'=>'ASOTIN',
-'03'=>'BENTON',
-'04'=>'CHELAN',
-'05'=>'CLALLAM',
-'06'=>'CLARK',
-'07'=>'COLUMBIA',
-'08'=>'COWLITZ',
-'09'=>'DOUGLAS',
-'10'=>'FERRY',
-'11'=>'FRANKLIN',
-'12'=>'GARFIELD',
-'13'=>'GRANT',
-'14'=>'GRAYS HARBOR',
-'15'=>'ISLAND',
-'16'=>'JEFFERSON',
-'17'=>'KING',
-'18'=>'KITSAP',
-'19'=>'KITTITAS',
-'20'=>'KLICKITAT',
-'21'=>'LEWIS',
-'22'=>'LINCOLN',
-'23'=>'MASON',
-'24'=>'OKANOGAN',
-'25'=>'PACIFIC',
-'26'=>'PEND OREILLE',
-'27'=>'PIERCE',
-'28'=>'SAN JUAN',
-'29'=>'SKAGIT',
-'30'=>'SKAMANIA',
-'31'=>'SNOHOMISH',
-'32'=>'SPOKANE',
-'33'=>'STEVENS',
-'34'=>'THURSTON',
-'35'=>'WAHKIAKUM',
-'36'=>'WALLA WALLA',
-'37'=>'WHATCOM',
-'38'=>'WHITMAN',
-'39'=>'YAKIMA',
-);
-  return $regionlookup[$id];
-}
-
 function toewhiskers_menu() {
+  $items['explore'] = array(
+    'page callback' => 'toewhiskers_explore_page_function',
+    'page arguments' => array(),
+    'access callback' => TRUE,
+  );
   $items['timeline'] = array(
     'page callback' => 'toewhiskers_page_function',
-    'page arguments' => array(1, 'foo'),
+    'page arguments' => array(),
     'access callback' => TRUE,
   );
   $items['timelinedata'] = array(
@@ -61,30 +21,74 @@ function toewhiskers_menu() {
     'page arguments' => array(),
     'access callback' => TRUE,
   );
+  $items['renderwebformelement'] = array(
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('form_test_form'),
+    'access callback' => TRUE,
+  );
+  $items['test'] = array(
+    'page callback' => 'toewhiskers_renderwebformelement_function',
+    'page arguments' => array(),
+    'access callback' => TRUE,
+  );
   return $items;
 }
 
 
+function toewhiskers_explore_page_function(){   
+  return theme('explore_template');  
+}
+
 
 function toewhiskers_page_function(){
-    // Call theme() function, so that Drupal includes the custom-page.tpl.php template
+
     drupal_add_js('https://www.google.com/jsapi');
     drupal_add_js("https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['timeline']}]}");
     drupal_add_js(drupal_get_path('module', 'toewhiskers') . '/js/chart.js');
+    
+    drupal_add_css(drupal_get_path('module', 'toewhiskers') . '/css/toewhiskers.css');
+    
     return theme('timeline_template');
 }
+
+  
+  
+
 
 
 
 
 function toewhiskers_theme(){
     return array(
+      'explore_template' => array(
+         // file name will be page-explore.tpl.php
+         'template' => 'page-explore',
+        ),
         'timeline_template' => array(
             // file name will be page-timeline.tpl.php
             'template' => 'page-timeline',
+            /*'variables' => array(
+               'title' => null,
+               'body' => null,
+               'link' => null,
+               //'parameterform' => null,
+            ),*/
         ),
     );
 }
+
+
+function template_preprocess_explore_template(&$variables) {
+  //drupal_build_form($form_id, &$form_state)
+  $form = drupal_get_form('form_explore_form');
+  $o = drupal_render($form);
+  $variables['explore_form'] = $o;
+}
+
+function template_preprocess_timeline_template(&$variables) {
+  $variables['parameterform'] = toewhiskers_renderwebformelement_function();
+}
+
 
 
 function toewhiskers_json_query_function($sid){
@@ -101,7 +105,6 @@ function toewhiskers_json_query_function($sid){
   $webform = webform_get_submission($webformnid, $sid);
   $dataarray = $webform->data;
   
-  //$region = regionlookup(trim($dataarray[7]['value'][0]));
   $region = trim($dataarray[7]['value'][0]);
   
   $compare = trim($dataarray[8]['value'][0]);
@@ -222,7 +225,7 @@ function toewhiskers_cigtoeconfig_function(){
     $result = db_query($query);
     // Result is returned as a iterable object that returns a stdClass object on each iteration
     foreach ($result as $record) {
-      $o .= $record->$column . "|" . $record->$column . "<br/>";
+      $o .= "'" . $record->$column . "' => '" . $record->$column . "',<br/>";
     }
   }
   
@@ -230,22 +233,140 @@ function toewhiskers_cigtoeconfig_function(){
   
   foreach ($queries as $query) {
     print($query);
-    $o .= "<br/>" . $query . "<br/>";
-    //$query = "SELECT DISTINCT " . $column . " FROM {SCEN1_DATA_V1}";
-    
+    $o .= "<br/>" . $query . "<br/>";   
     $result = db_query($query);
     // Result is returned as a iterable object that returns a stdClass object on each iteration
     foreach ($result as $record) {
       $o .= $record->k . "|" . $record->v . "<br/>";
     }
   }
-
   db_set_active();
-  
   print($o);
 }
   
-
-
-
   
+function toewhiskers_renderwebformelement_function(){
+
+  //drupal_build_form($form_id, &$form_state)
+  
+  $form = drupal_get_form('form_compare_form');
+  
+  $o = drupal_render($form);
+  
+  return $o;
+  
+}
+
+
+function form_explore_form($form,&$form_submit) {
+  $form['region'] = array(
+    '#type' => 'select',
+    '#title' => t('Region'),
+    '#options' => array(
+      '2.1.17' => 'King County',
+    ),
+    '#multiple' => FALSE,
+    '#required' => TRUE,
+  );
+  $form['compare'] = array(
+    '#type' => 'radios',
+    '#title' => t('Compare or Explore'),
+    '#options' => array(
+      'compare' => 'Compare multiple hydroclimatic variables in a single geographic domain',
+      'explore' => 'Explore the spatial variability of one hydro-climatic variable across a specific geographic domain',
+    ),
+    '#required' => TRUE,
+  );
+  $form['submit'] = array(
+    '#title' => t('Submit'),
+    '#value' => 'Submit',
+    '#type' => 'submit',
+    );
+  return $form;
+}
+
+
+
+
+
+function form_compare_form($form,&$form_submit) {
+  /* 
+  // 'variable' might get it's own function? How to separate form elements across different pages is still under review.
+  $form['variable'] = array(
+    '#type' => 'select',
+    '#title' => t('Variable'),
+    '#options' => array(
+      'V1.01' => t('Average temperature in January'),
+      'V1.02' => t('Average temperature in February'),
+      'V1.03' => t('Average temperature in March'),
+      'V1.04' => t('Average temperature in April'),
+      'V1.05' => t('Average temperature in May'),
+      'V1.06' => t('Average temperature in June'),
+      'V1.07' => t('Average temperature in July'),
+      'V1.08' => t('Average temperature in August'),
+      'V1.09' => t('Average temperature in September'),
+      'V1.10' => t('Average temperature in October'),
+      'V1.11' => t('Average temperature in November'),
+      'V1.12' => t('Average temperature in December'),
+      'V8' => t('Number of days per year with daily maximum temperature exceeding 90 degF (32.2 degC)'),
+    ),
+    //'#default_value' => $category['selected'],
+    '#description' => t('Select one or many hydroclimatic variable(s).'),
+    '#multiple' => TRUE,
+    '#required' => TRUE,
+  );
+  */
+  $form['emission'] = array(
+    '#type' => 'radios',
+    '#title' => t('Emission scenario'),
+    '#options' => array(
+      'rcp45' => 'rcp45',
+      'rcp85' => 'rcp85',
+    ),
+    '#required' => TRUE,
+  );
+  $form['dataset'] = array(
+    '#type' => 'radios',
+    '#title' => t('Dataset'),
+    '#options' => array(
+      'BCSD5' => 'BCSD5',
+    ),
+    '#required' => TRUE,
+  );
+  $form['tolerance'] = array(
+    '#type' => 'radios',
+    '#title' => t('Tolerance (Emergence threshold)'),
+    '#options' => array(
+      '80' => '80',
+      '95' => '95',
+    ),
+    '#required' => TRUE,
+  );
+  $form['confidence'] = array(
+    '#type' => 'radios',
+    '#title' => t('Confidence'),
+    '#options' => array(
+      '5' => '5',
+      '50' => '50',
+      '95' => '95',
+    ),
+    '#required' => TRUE,
+  );
+  $form['submit'] = array(
+    '#title' => t('Submit'),
+    '#value' => 'Submit',
+    '#type' => 'submit',
+    );
+  return $form;
+}
+
+
+function mytheme_preprocess(&$variables, $hook) {
+
+ 
+  // Track run count for each hook to provide zebra striping.
+  // See "template_preprocess_block()" which provides the same feature specific to blocks.
+  $count[$hook] = isset($count[$hook]) && is_int($count[$hook]) ? $count[$hook] : 1;
+  $variables['zebra_hook'][$hook] = ($count[$hook] % 2) ? 'odd' : 'even';
+  $variables['id_hook'][$hook] = $count[$hook]++;
+}

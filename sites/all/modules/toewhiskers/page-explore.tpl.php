@@ -69,60 +69,15 @@
  * @see template_process()
  */
 ?>
-<!-- toewhiskers/page-timeline.tpl.php-->
+<!-- toewhiskers/page-explore.tpl.php-->
 
-  <style>
-	  .main text {
-		    font: 10px sans-serif;	
-		}
-		.axis line, .axis path, line.scatter-point {
-		    shape-rendering: crispEdges;
-		    stroke: black;
-		    fill: none;
-		}
-		h4 {
-			text-align: center;
-		}
-		#main {
-			background-color: #edeef1;
-		}
-		circle {
-			fill: black;
-		}
-  </style>
+ 
   
 <div id="page">
-  <h2>Multi-Model Median Time of Emergence for <span class="region">King County</span> under <span class="emission">RCP8.5</span></h2>
-    <p>Confidence: <span class="confidence">{High (95% confidence interval)}</span>% confidence interval<!--[Column J]--><br/>
-    Tolerance: <span class="tolerance">{Low (90% historical range)}</span>% historical range <!--[Column I]--><br/>
-    Dataset: Statistically-downscaled <span class="dataset">{Statistically-downscaled (CMIP5 BCSD)}</span> <!-- [Column G]--></p>
-  <div id="chartmessage"></div>
-  <div id="horizontal-bar-chart"></div>
-  <div id="timeline-chart"></div>  
 
-  <hr/>
+  <h2>Explore</h2>
+  <p><img src="sites/default/files/wamap.png"></p>
   
-  <h2>Projected Range of Time of Emergence for <span class="region">King County</span> under <span class="emission">RCP8.5</span> </h2>
-      <p>Confidence: <span class="confidence">{High (95% confidence interval)}</span>% confidence interval<!--[Column J]--><br/>
-    Tolerance: <span class="tolerance">{Low (90% historical range)}</span>% historical range <!--[Column I]--><br/>
-    Dataset: Statistically-downscaled <span class="dataset">{Statistically-downscaled (CMIP5 BCSD)}</span> <!-- [Column G]--></p>
-  <table id="tabledata">
-      <th>Hydro-climatic Variable</th><th>ToE Range</th><th>Direction of Change</th>
-      <!--<tr><td>Variable Shortname (Column G)</td><td>{Year A} – {Year B}</td><td>ChangeDir (Column C)</td></tr>
-      <tr><td>Tmax>90degF(32.2degC)</td><td>2045 - 2065</td><td>Negative</td></tr>-->
-      <span class="tablerows"></span>
-  </table>
+  <?php print $explore_form; ?><br/>
   
-  <hr/>
-  
-  <div class="h-form">
-  <?php print $parameterform; ?><br/>
-  <div style="clear:both"></div>
-  <div>
-
-  
-  
-  
-
-  
-  <div>
+<div>
