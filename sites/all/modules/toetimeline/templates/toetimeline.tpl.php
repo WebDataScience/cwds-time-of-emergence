@@ -71,9 +71,6 @@
 
 		node.append("line")
 		  .attr("class", "scatter-point")
-		  //.attr("cx", function (d,i) { return x(d[0]); } )
-		  //.attr("cy", function (d) { return y(d[1]); } )
-		  //.attr("r", 8)
 		  	.attr("class", "tick")
 		  .attr("x1", function (d,i) { return 1 + x(d[0]); } )
 			.attr("y1", -5)
@@ -82,6 +79,11 @@
 			.attr("stroke-width", 1)
 			.style("shape-rendering", "crispEdges")
 			.attr("stroke", "black");
+
+		node.append("line:circle")
+		  .attr("cx", function (d,i) { return x(d[0]); } )
+		  .attr("cy", function (d) { return y(d[1]); } )
+		  .attr("r", 2);
 
 		node.append("line:text")
 		  .attr("class", "point-label")
@@ -108,6 +110,9 @@
 		}
 		#main {
 			background-color: #edeef1;
+		}
+		circle {
+			fill: black;
 		}
   </style>
       	
