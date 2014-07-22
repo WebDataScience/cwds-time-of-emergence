@@ -310,7 +310,7 @@ function toewhiskers_renderwebformelement_function(){
 function toewhiskers_compare_form($form,&$form_submit) {
 
   // Session variable used to prepopulate if available.
-  $comparearray = $_SESSION['compare'];
+  $comparearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
   
   // 'variable' might get it's own function? How to separate form elements across different pages is still under review.
   $form['variable'] = array(
@@ -335,7 +335,7 @@ function toewhiskers_compare_form($form,&$form_submit) {
     '#description' => t('Select one or many hydroclimatic variable(s).'),
     '#multiple' => TRUE,
     '#required' => TRUE,
-    '#default_value' =>   $comparearray['variable'],
+    '#default_value' => isset($comparearray['variable'])?$comparearray['variable']:'',
   );
   $form['emission'] = array(
     '#type' => 'radios',
@@ -345,7 +345,7 @@ function toewhiskers_compare_form($form,&$form_submit) {
       'rcp85' => 'rcp85',
     ),
     '#required' => TRUE,
-    '#default_value' =>   $comparearray['emission'],
+    '#default_value' => isset($comparearray['emission'])?$comparearray['emission']:'',
   );
   $form['dataset'] = array(
     '#type' => 'radios',
@@ -354,7 +354,7 @@ function toewhiskers_compare_form($form,&$form_submit) {
       'BCSD5' => 'BCSD5',
     ),
     '#required' => TRUE,
-    '#default_value' =>   $comparearray['dataset'],
+    '#default_value' => isset($comparearray['dataset'])?$comparearray['dataset']:'',
   );
   $form['tolerance'] = array(
     '#type' => 'radios',
@@ -364,7 +364,7 @@ function toewhiskers_compare_form($form,&$form_submit) {
       '95' => '95',
     ),
     '#required' => TRUE,
-    '#default_value' =>   $comparearray['tolerance'],
+    '#default_value' => isset($comparearray['tolerance'])?$comparearray['tolerance']:'',
   );
   $form['confidence'] = array(
     '#type' => 'radios',
@@ -375,7 +375,7 @@ function toewhiskers_compare_form($form,&$form_submit) {
       '95' => '95',
     ),
     '#required' => TRUE,
-    '#default_value' =>   $comparearray['confidence'],
+    '#default_value' => isset($comparearray['confidence'])?$comparearray['confidence']:'',
   );
   $form['submit'] = array(
     '#title' => t('Submit'),
@@ -394,7 +394,7 @@ function toewhiskers_compare_form_submit($form, &$form_state) {
   //drupal_set_message('formstate:<pre>'. print_r($form_state, TRUE) .'</pre>');
 
   // Grab session values if present.
-  $comparearray = $_SESSION['compare'];
+  $comparearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
   
   $comparearray['variable'] = toewhiskers_clean_array($form_state['values']['variable']);
   $comparearray['emission'] = check_plain($form_state['values']['emission']);
@@ -405,9 +405,7 @@ function toewhiskers_compare_form_submit($form, &$form_state) {
   $_SESSION['compare'] = $comparearray;
 
   $compare = $_SESSION['compare'];
-  //drupal_set_message('region: ' . $compare['region']);
-  
-  //drupal_set_message('<pre>'. print_r($compare, TRUE) .'</pre>');
+
   
   $form_state['redirect'] = 'timeline';
   
