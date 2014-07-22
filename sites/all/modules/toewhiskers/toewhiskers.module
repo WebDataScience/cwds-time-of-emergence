@@ -100,24 +100,20 @@ function toewhiskers_explore_form($form, &$form_submit) {
 }
 
 
-
 /**
  * Submit handler for the '/explore' form.
  */
 function toewhiskers_explore_form_submit($form, &$form_state) {
-  
   $form_state['redirect'] = 'compare';
 
   // Grab session values if present.
-  $comparearray = $_SESSION['compare'];
+  $comparearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
   
   $comparearray['region'] = check_plain($form_state['values']['region']);
   $comparearray['compare'] = check_plain($form_state['values']['compare']);
   
   $_SESSION['compare'] = $comparearray;
 }
-
-
 
 
 function toewhiskers_page_function(){
@@ -132,11 +128,9 @@ function toewhiskers_page_function(){
 }
 
 
-
 function template_preprocess_timeline_template(&$variables) {
   $variables['parameterform'] = toewhiskers_renderwebformelement_function();
 }
-
 
 
 function toewhiskers_json_query_function($sid){
