@@ -6,6 +6,11 @@ function toewhiskers_menu() {
     'page arguments' => array(),
     'access callback' => TRUE,
   );
+  $items['compare'] = array(
+    'page callback' => 'toewhiskers_renderwebformelement_function',
+    'page arguments' => array(),
+    'access callback' => TRUE,
+  );
   $items['timeline'] = array(
     'page callback' => 'toewhiskers_page_function',
     'page arguments' => array(),
@@ -26,36 +31,9 @@ function toewhiskers_menu() {
     'page arguments' => array('form_test_form'),
     'access callback' => TRUE,
   );
-  $items['test'] = array(
-    'page callback' => 'toewhiskers_renderwebformelement_function',
-    'page arguments' => array(),
-    'access callback' => TRUE,
-  );
+
   return $items;
 }
-
-
-function toewhiskers_explore_page_function(){   
-  return theme('explore_template');  
-}
-
-
-function toewhiskers_page_function(){
-
-    drupal_add_js('https://www.google.com/jsapi');
-    drupal_add_js("https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['timeline']}]}");
-    drupal_add_js(drupal_get_path('module', 'toewhiskers') . '/js/chart.js');
-    
-    drupal_add_css(drupal_get_path('module', 'toewhiskers') . '/css/toewhiskers.css');
-    
-    return theme('timeline_template');
-}
-
-  
-  
-
-
-
 
 
 function toewhiskers_theme(){
@@ -78,12 +56,82 @@ function toewhiskers_theme(){
 }
 
 
+
+function toewhiskers_explore_page_function(){   
+  return theme('explore_template');  
+}
+
+
 function template_preprocess_explore_template(&$variables) {
   //drupal_build_form($form_id, &$form_state)
-  $form = drupal_get_form('form_explore_form');
+  $form = drupal_get_form('toewhiskers_explore_form');
   $o = drupal_render($form);
   $variables['explore_form'] = $o;
 }
+
+function toewhiskers_explore_form($form, &$form_submit) {
+  $form['region'] = array(
+    '#type' => 'select',
+    '#title' => t('Region'),
+    '#options' => array(
+      '2.1.17' => 'King County',
+    ),
+    '#multiple' => FALSE,
+    '#required' => TRUE,
+  );
+  $form['compare'] = array(
+    '#type' => 'radios',
+    '#title' => t('Compare or Explore'),
+    '#options' => array(
+      'compare' => 'Compare multiple hydroclimatic variables in a single geographic domain',
+      'explore' => 'Explore the spatial variability of one hydro-climatic variable across a specific geographic domain',
+    ),
+    '#required' => TRUE,
+  );
+  $form['submit'] = array(
+    '#title' => t('Submit'),
+    '#value' => 'Submit',
+    '#type' => 'submit',
+    );
+    
+  $form_submit['redirect'] = 'compare';
+    
+  return $form;
+}
+
+
+
+/**
+ * Submit handler for the '/explore' form.
+ */
+function toewhiskers_explore_form_submit($form, &$form_state) {
+  
+  $form_state['redirect'] = 'compare';
+
+  // Grab session values if present.
+  $comparearray = $_SESSION['compare'];
+  
+  $comparearray['region'] = check_plain($form_state['values']['region']);
+  $comparearray['compare'] = check_plain($form_state['values']['compare']);
+  
+  $_SESSION['compare'] = $comparearray;
+}
+
+
+
+
+function toewhiskers_page_function(){
+
+    drupal_add_js('https://www.google.com/jsapi');
+    drupal_add_js("https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['timeline']}]}");
+    drupal_add_js(drupal_get_path('module', 'toewhiskers') . '/js/chart.js');
+    
+    drupal_add_css(drupal_get_path('module', 'toewhiskers') . '/css/toewhiskers.css');
+    
+    return theme('timeline_template');
+}
+
+
 
 function template_preprocess_timeline_template(&$variables) {
   $variables['parameterform'] = toewhiskers_renderwebformelement_function();
@@ -95,39 +143,25 @@ function toewhiskers_json_query_function($sid){
 
   $verbose_test_mode = FALSE;
   
+  $compare = $_SESSION['compare'];
+  
   $max_TOE_year = 2100;
 
   // The nid of the webform.
-  $webformnid = '4';
-
-  module_load_include('inc', 'webform', 'includes/webform.submissions');
- 
-  $webform = webform_get_submission($webformnid, $sid);
-  $dataarray = $webform->data;
+  //$webformnid = '4';
+  //module_load_include('inc', 'webform', 'includes/webform.submissions');
+  //$webform = webform_get_submission($webformnid, $sid);
+  //$dataarray = $webform->data;
   
-  $region = trim($dataarray[7]['value'][0]);
+  $region = trim($compare['region']);
   
-  $compare = trim($dataarray[8]['value'][0]);
   // Multiple variables allowed.
-  $variables = implode("','",$dataarray[1]['value']);
+  $variables = implode("','",$compare['variable']);
   $variables = str_replace(" ", "", $variables);
-  $emission = trim($dataarray[2]['value'][0]);
-  $dataset = trim($dataarray[6]['value'][0]);
-  $tolerance = trim($dataarray[5]['value'][0]);
-  $confidence = trim($dataarray[3]['value'][0]);
-
-  
-  /* Depricated. Based on original version of database.
-  $query = "SELECT {SCEN1_DATA}.TOE,{SCEN1_DATA}.VARIABLEID,{SCEN1_DATA}.CHANGEDIR,{TOE_DATA}.VARIABLEDEF FROM {SCEN1_DATA} LEFT JOIN {TOE_DATA} on (TOE_DATA.VARIABLEID = SCEN1_DATA.VARIABLEID) WHERE 
-  SCEN1_DATA.VARIABLEID in ('" . $variables . "') 
-  AND SCEN1_DATA.REGION = '" . $region .   "' 
-  AND SCEN1_DATA.EMISSCENARIO = '" . $emission .   "' 
-  AND SCEN1_DATA.DATASET = '" . $dataset . "' 
-  AND SCEN1_DATA.EMERGTHRES = " . $tolerance . "
-  AND SCEN1_DATA.SIGNALCONFIDENCE = " . $confidence . "
-  AND SCEN1_DATA.TOE <= " . $max_TOE_year . "
-  LIMIT 20";
-  */
+  $emission = trim($compare['emission']);
+  $dataset = trim($compare['dataset']);
+  $tolerance = trim($compare['tolerance']);
+  $confidence = trim($compare['confidence']);
  
   
   //Query for the timeline chart portion of /timeline page.
@@ -143,14 +177,13 @@ function toewhiskers_json_query_function($sid){
   AND SCEN1_DATA_V1.GCM = 'GCM_ensemble' 
   LIMIT 20";
   
-  
-  if($verbose_test_mode){print($query);}
-  
-  
+  if($verbose_test_mode){print($query . "<br/><br/>");}
   
   $output = "";
   $toe = array();
   
+  
+  // Setup to query non Drupal database.
   db_set_active('cig_toe');
   
   $result = db_query($query);
@@ -162,7 +195,6 @@ function toewhiskers_json_query_function($sid){
     $toe[$record->VARIABLEID] = array($record->CHANGEDIR,intval($record->TOE),$record->VARIABLENAME,$record->VARIABLEID,ceil($record->TOE/5)*5,$record->VARIABLESHORTNAME);
   }
 
-  
   // Query for 'table' portion of /timeline page.
   $query = "SELECT SCEN1_DATA_V1.*,TOE_DATA_V1.VARIABLESHORTNAME FROM {SCEN1_DATA_V1}  LEFT JOIN {TOE_DATA_V1} on (TOE_DATA_V1.VARIABLEID = SCEN1_DATA_V1.VARIABLEID) WHERE
   SCEN1_DATA_V1.VARIABLEID in ('" . $variables . "') 
@@ -187,8 +219,6 @@ function toewhiskers_json_query_function($sid){
     $tabledataarray[$record->VARIABLEID]['changedir']=$record->CHANGEDIR;
     $tabledataarray[$record->VARIABLEID]['shortname']=$record->VARIABLESHORTNAME;
   }
-  
-  //print_r($tabledataarray);
   
   db_set_active();
   
@@ -245,52 +275,43 @@ function toewhiskers_cigtoeconfig_function(){
 }
   
   
+  
 function toewhiskers_renderwebformelement_function(){
 
-  //drupal_build_form($form_id, &$form_state)
+
+/*
+  $form_state = &$form_state;
+
+  if($form_state == null){
+    $form_state = form_state_defaults();
+  }
   
-  $form = drupal_get_form('form_compare_form');
+
+  $form_state['values']['dataset'] = 'BCSD5';
+  $form_state['values']['tolerance'] = '95';
+  $form_state['values']['confidence'] = '5';
   
+  //drupal_set_message('formstate:<pre>'. print_r($form_state, TRUE) .'</pre>');
+  
+  return drupal_render(drupal_build_form('toewhiskers_compare_form', $form_state));
+*/
+  
+  
+  //This works to build initial forms that have no selections made yet.
+  $form = drupal_get_form('toewhiskers_compare_form');
   $o = drupal_render($form);
-  
   return $o;
   
+  
+  
 }
 
 
-function form_explore_form($form,&$form_submit) {
-  $form['region'] = array(
-    '#type' => 'select',
-    '#title' => t('Region'),
-    '#options' => array(
-      '2.1.17' => 'King County',
-    ),
-    '#multiple' => FALSE,
-    '#required' => TRUE,
-  );
-  $form['compare'] = array(
-    '#type' => 'radios',
-    '#title' => t('Compare or Explore'),
-    '#options' => array(
-      'compare' => 'Compare multiple hydroclimatic variables in a single geographic domain',
-      'explore' => 'Explore the spatial variability of one hydro-climatic variable across a specific geographic domain',
-    ),
-    '#required' => TRUE,
-  );
-  $form['submit'] = array(
-    '#title' => t('Submit'),
-    '#value' => 'Submit',
-    '#type' => 'submit',
-    );
-  return $form;
-}
+function toewhiskers_compare_form($form,&$form_submit) {
 
-
-
-
-
-function form_compare_form($form,&$form_submit) {
-  /* 
+  // Session variable used to prepopulate if available.
+  $comparearray = $_SESSION['compare'];
+  
   // 'variable' might get it's own function? How to separate form elements across different pages is still under review.
   $form['variable'] = array(
     '#type' => 'select',
@@ -314,8 +335,8 @@ function form_compare_form($form,&$form_submit) {
     '#description' => t('Select one or many hydroclimatic variable(s).'),
     '#multiple' => TRUE,
     '#required' => TRUE,
+    '#default_value' =>   $comparearray['variable'],
   );
-  */
   $form['emission'] = array(
     '#type' => 'radios',
     '#title' => t('Emission scenario'),
@@ -324,6 +345,7 @@ function form_compare_form($form,&$form_submit) {
       'rcp85' => 'rcp85',
     ),
     '#required' => TRUE,
+    '#default_value' =>   $comparearray['emission'],
   );
   $form['dataset'] = array(
     '#type' => 'radios',
@@ -332,6 +354,7 @@ function form_compare_form($form,&$form_submit) {
       'BCSD5' => 'BCSD5',
     ),
     '#required' => TRUE,
+    '#default_value' =>   $comparearray['dataset'],
   );
   $form['tolerance'] = array(
     '#type' => 'radios',
@@ -341,6 +364,7 @@ function form_compare_form($form,&$form_submit) {
       '95' => '95',
     ),
     '#required' => TRUE,
+    '#default_value' =>   $comparearray['tolerance'],
   );
   $form['confidence'] = array(
     '#type' => 'radios',
@@ -351,6 +375,7 @@ function form_compare_form($form,&$form_submit) {
       '95' => '95',
     ),
     '#required' => TRUE,
+    '#default_value' =>   $comparearray['confidence'],
   );
   $form['submit'] = array(
     '#title' => t('Submit'),
@@ -361,12 +386,42 @@ function form_compare_form($form,&$form_submit) {
 }
 
 
-function mytheme_preprocess(&$variables, $hook) {
+/**
+ * Submit handler for the first form.
+ */
+function toewhiskers_compare_form_submit($form, &$form_state) {
 
- 
-  // Track run count for each hook to provide zebra striping.
-  // See "template_preprocess_block()" which provides the same feature specific to blocks.
-  $count[$hook] = isset($count[$hook]) && is_int($count[$hook]) ? $count[$hook] : 1;
-  $variables['zebra_hook'][$hook] = ($count[$hook] % 2) ? 'odd' : 'even';
-  $variables['id_hook'][$hook] = $count[$hook]++;
+  //drupal_set_message('formstate:<pre>'. print_r($form_state, TRUE) .'</pre>');
+
+  // Grab session values if present.
+  $comparearray = $_SESSION['compare'];
+  
+  $comparearray['variable'] = toewhiskers_clean_array($form_state['values']['variable']);
+  $comparearray['emission'] = check_plain($form_state['values']['emission']);
+  $comparearray['dataset'] = check_plain($form_state['values']['dataset']);
+  $comparearray['tolerance'] = check_plain($form_state['values']['tolerance']);
+  $comparearray['confidence'] = check_plain($form_state['values']['confidence']);
+  
+  $_SESSION['compare'] = $comparearray;
+
+  $compare = $_SESSION['compare'];
+  //drupal_set_message('region: ' . $compare['region']);
+  
+  //drupal_set_message('<pre>'. print_r($compare, TRUE) .'</pre>');
+  
+  $form_state['redirect'] = 'timeline';
+  
+}
+
+function toewhiskers_clean_array($array, $filter = 'check_plain') {
+  $clean = array();
+  foreach ($array as $key => $val) {
+    if (is_array($val)) {
+      $clean[$filter($key)] = clean_array($val, $filter);
+    }
+    else {
+      $clean[$filter($key)] = $filter($val);
+    }
+  }
+  return $clean;
 }
