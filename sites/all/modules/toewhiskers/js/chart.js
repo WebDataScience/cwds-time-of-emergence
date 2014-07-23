@@ -6,6 +6,26 @@ google.load("visualization", "1", {packages:["corechart"]});
 
 jQuery( document ).ready(function( $ ) {
 
+  var websitetextarray = new Object();
+  var confidence = new Object();
+  confidence['5'] = 'Low (5% confidence interval)';
+  confidence['50'] = 'Medium (50% confidence interval)';
+  confidence['95'] = 'High (95% confidence interval)';
+  websitetextarray['confidence'] = confidence;
+  var tolerance = new Object;
+  tolerance['95'] = 'Low (90% historical range)';
+  tolerance['80'] = 'High (60% historical range)';
+  websitetextarray['tolerance'] = tolerance;
+  var dataset = new Object;
+  dataset['BCSD5'] = 'Statistically-downscaled (CMIP5 BCSD)';
+  websitetextarray['dataset'] = dataset;
+  var emission = new Object;
+  emission['rcp45'] = 'RCP4.5';
+  emission['rcp85'] = 'RCP8.5';
+  websitetextarray['emission'] = emission;
+
+
+
   var sid = getParameterByName('sid');
 
   dataarray = []; 
@@ -49,10 +69,10 @@ jQuery( document ).ready(function( $ ) {
     // D3.js based timeline chart
     drawD3Timeline(timelinedataarray, jsonobj.maxtoeyear);
     
-    $(".emission" ).html( jsonobj.scenario );
-    $(".confidence" ).html( jsonobj.confidence );
-    $(".tolerance" ).html( jsonobj.tolerance );
-    $(".dataset" ).html( jsonobj.dataset );
+    $(".emission" ).html( websitetextarray['emission'][jsonobj.emission] );
+    $(".confidence" ).html( websitetextarray['confidence'][jsonobj.confidence] );
+    $(".tolerance" ).html( websitetextarray['tolerance'][jsonobj.tolerance] );
+    $(".dataset" ).html( websitetextarray['dataset'][jsonobj.dataset] );
     
     
     // Table modification via jQuery.

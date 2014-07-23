@@ -26,11 +26,6 @@ function toewhiskers_menu() {
     'page arguments' => array(),
     'access callback' => TRUE,
   );
-  $items['renderwebformelement'] = array(
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('form_test_form'),
-    'access callback' => TRUE,
-  );
 
   return $items;
 }
@@ -398,7 +393,7 @@ function toewhiskers_json_query_function($sid){
     "query" => $query,
     "maxtoeyear" => $max_TOE_year,
     "sid" => $sid,
-    "scenario" => $emission,
+    "emission" => $emission,
     "confidence" => $confidence,
     "tolerance" => $tolerance,
     "dataset" => $dataset,
