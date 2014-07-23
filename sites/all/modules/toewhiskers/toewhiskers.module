@@ -70,23 +70,36 @@ function template_preprocess_explore_template(&$variables) {
 }
 
 function toewhiskers_explore_form($form, &$form_submit) {
+
+  // Session variable used to prepopulate if available.
+  $previousvaluesearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
+  
+  $options = array(0 => 'Pacific NW',1 => 'State',2 => 'County',3 => 'Tribal land',4 => 'Watershed',5 => 'Puget Sound',6 => 'Stream');
+  $form['geodomain'] = array(
+    '#type' => 'radios',
+    '#title' => t('Geographic Domain'),
+    '#options' => $options,
+    '#disabled' => TRUE,
+  );
+  $options = array('2.1.17' => 'King County',);
   $form['region'] = array(
     '#type' => 'select',
     '#title' => t('Region'),
-    '#options' => array(
-      '2.1.17' => 'King County',
-    ),
+    '#options' => $options,
     '#multiple' => FALSE,
     '#required' => TRUE,
+    '#default_value' => isset($previousvaluesearray['region'])?$previousvaluesearray['region']:key($options),
+  );
+  $options = array(
+    0 => 'Compare multiple hydroclimatic variables in a single geographic domain',
+    1 => 'Explore the spatial variability of one hydro-climatic variable across a specific geographic domain',
   );
   $form['compare'] = array(
     '#type' => 'radios',
     '#title' => t('Compare or Explore'),
-    '#options' => array(
-      'compare' => 'Compare multiple hydroclimatic variables in a single geographic domain',
-      'explore' => 'Explore the spatial variability of one hydro-climatic variable across a specific geographic domain',
-    ),
+    '#options' => $options,
     '#required' => TRUE,
+    '#default_value' => isset($previousvaluesearray['compare'])?$previousvaluesearray['compare']:key($options),
   );
   $form['submit'] = array(
     '#title' => t('Submit'),
@@ -108,10 +121,11 @@ function toewhiskers_explore_form_submit($form, &$form_state) {
 
   // Grab session values if present.
   $comparearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
-  
+ 
+  $comparearray['geodomain'] = check_plain($form_state['values']['geodomain']); 
   $comparearray['region'] = check_plain($form_state['values']['region']);
   $comparearray['compare'] = check_plain($form_state['values']['compare']);
-  
+
   $_SESSION['compare'] = $comparearray;
 }
 
@@ -133,6 +147,167 @@ function template_preprocess_timeline_template(&$variables) {
 }
 
 
+
+  
+  
+  
+function toewhiskers_renderwebformelement_function(){  
+  //This works to build initial forms that have no selections made yet.
+  $form = drupal_get_form('toewhiskers_compare_form');
+  $o = drupal_render($form);
+  return $o;
+}
+
+
+function toewhiskers_compare_form($form,&$form_submit) {
+
+  // Session variable used to prepopulate if available.
+  $comparearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
+  
+  $options = array(0 => 'Temperature', 1 => 'Precipitation', 2 => 'Hydrological', 3 => 'Stream',);
+  $form['theme'] = array(
+    '#type' => 'radios',
+    '#title' => t('Theme'),
+    '#options' => $options,
+    '#disabled' => TRUE,
+  );
+  $options = array(0 => 'Drought', 1 => 'Energy', 2 => 'Fish', 3 => 'Flood',4 => 'General', 5 => 'Human health', 6 => 'Infrastructure', 7 => 'Streamflow',8 => 'Water quality',);
+  $form['impact'] = array(
+    '#type' => 'radios',
+    '#title' => t('Impact'),
+    '#options' => $options,
+    '#disabled' => TRUE,
+  ); 
+  $options = array(0 => 'Average', 1 => 'Extreme',);
+  $form['descriptor'] = array(
+    '#type' => 'radios',
+    '#title' => t('Descriptor'),
+    '#options' => $options,
+    '#disabled' => TRUE,
+  );  
+  $form['variable'] = array(
+    '#type' => 'select',
+    '#title' => t('Variable'),
+    '#options' => array(
+      'V1.01' => t('Average temperature in January'),
+      'V1.02' => t('Average temperature in February'),
+      'V1.03' => t('Average temperature in March'),
+      'V1.04' => t('Average temperature in April'),
+      'V1.05' => t('Average temperature in May'),
+      'V1.06' => t('Average temperature in June'),
+      'V1.07' => t('Average temperature in July'),
+      'V1.08' => t('Average temperature in August'),
+      'V1.09' => t('Average temperature in September'),
+      'V1.10' => t('Average temperature in October'),
+      'V1.11' => t('Average temperature in November'),
+      'V1.12' => t('Average temperature in December'),
+      'V8' => t('Number of days per year with daily maximum temperature exceeding 90 degF (32.2 degC)'),
+    ),
+    //'#default_value' => $category['selected'],
+    '#description' => t('Select one or many hydroclimatic variable(s).'),
+    '#multiple' => TRUE,
+    '#required' => TRUE,
+    '#default_value' => isset($comparearray['variable'])?$comparearray['variable']:'',
+  );
+  $options = array(
+    'rcp45' => 'RCP Low (RCP4.5)',
+    'rcp85' => 'RCP High (RCP8.5)',
+  );
+  $form['emission'] = array(
+    '#type' => 'radios',
+    '#title' => t('Emission scenario'),
+    '#options' => $options,
+    '#required' => TRUE,
+    '#default_value' => isset($comparearray['emission'])?$comparearray['emission']:key($options),
+  );
+  $options = array(
+    'BCSD5' => 'GCM',
+  );
+  $form['dataset'] = array(
+    '#type' => 'radios',
+    '#title' => t('Dataset'),
+    '#options' => $options,
+    '#required' => TRUE,
+    '#default_value' => isset($comparearray['dataset'])?$comparearray['dataset']:key($options),
+  );
+  $options = array(
+    '95' => 'Low (90% historical range)',
+    '80' => 'High (60% historical range)',
+  );
+  $form['tolerance'] = array(
+    '#type' => 'radios',
+    '#title' => t('Tolerance (Emergence threshold)'),
+    '#options' => $options,
+    '#required' => TRUE,
+    '#default_value' => isset($comparearray['tolerance'])?$comparearray['tolerance']:key($options),
+  );
+  $options = array(
+    '5' => 'Low (5% confidence interval)',
+    '50' => 'Medium (50% confidence interval)',
+    '95' => 'High (95% confidence interval)',
+  );
+  $form['confidence'] = array(
+    '#type' => 'radios',
+    '#title' => t('Confidence'),
+    '#options' => $options,
+    '#required' => TRUE,
+    '#default_value' => isset($comparearray['confidence'])?$comparearray['confidence']:key($options),
+  );
+  $form['submit'] = array(
+    '#title' => t('Submit'),
+    '#value' => 'Submit',
+    '#type' => 'submit',
+    );
+  return $form;
+}
+
+
+/**
+ * Submit handler for the 'compare' form.
+ */
+function toewhiskers_compare_form_submit($form, &$form_state) {
+
+  //drupal_set_message('formstate:<pre>'. print_r($form_state, TRUE) .'</pre>');
+
+  // Grab session values if present.
+  $comparearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
+  
+  $comparearray['theme'] = check_plain($form_state['values']['theme']);
+  $comparearray['impact'] = check_plain($form_state['values']['impact']);
+  $comparearray['descriptor'] = check_plain($form_state['values']['descriptor']);
+  $comparearray['variable'] = toewhiskers_clean_array($form_state['values']['variable']);
+  $comparearray['emission'] = check_plain($form_state['values']['emission']);
+  $comparearray['dataset'] = check_plain($form_state['values']['dataset']);
+  $comparearray['tolerance'] = check_plain($form_state['values']['tolerance']);
+  $comparearray['confidence'] = check_plain($form_state['values']['confidence']);
+  
+  $_SESSION['compare'] = $comparearray;
+
+  $compare = $_SESSION['compare'];
+
+  
+  $form_state['redirect'] = 'timeline';
+  
+}
+
+
+function toewhiskers_clean_array($array, $filter = 'check_plain') {
+  $clean = array();
+  foreach ($array as $key => $val) {
+    if (is_array($val)) {
+      $clean[$filter($key)] = clean_array($val, $filter);
+    }
+    else {
+      $clean[$filter($key)] = $filter($val);
+    }
+  }
+  return $clean;
+}
+
+
+/*
+ * Ajax/JSON data retriever.
+ */
 function toewhiskers_json_query_function($sid){
 
   $verbose_test_mode = FALSE;
@@ -235,7 +410,9 @@ function toewhiskers_json_query_function($sid){
 }
 
 
-
+/*
+ * Utility to grab distinct values from ToE database which will be used as options offered to user. This is accessed at /
+ */
 function toewhiskers_cigtoeconfig_function(){
   
   $o = "";
@@ -265,155 +442,37 @@ function toewhiskers_cigtoeconfig_function(){
     }
   }
   db_set_active();
+  
+  $o .= "<pre>  				
+Dataset				Dataset
+GCM - Phase 2				GCM
+BCSD5				Statistically-downscaled (CMIP5 BCSD)
+WRF - Phase 2				Dynamically-downscaled
+				
+EmergThres				Tolerance:
+95				Low (90% historical range)
+80				High (60% historical range)
+				
+				
+SignalConfidence				Confidence:
+5				Low (5% confidence interval)
+50				Medium (50% confidence interval)
+95				High (95% confidence interval)
+				
+				
+ModelAgreement				Model agreement:
+25				Low (25%)
+50				Medium (50%)
+75				High (75%)
+				
+				
+EmisScenario				Emission Scenario:
+rcp45				RCP4.5
+rcp85				RCP8.5
+A1B				SRES A1B
+B1				SRES B1</pre>
+";
+  
   print($o);
-}
   
-  
-  
-function toewhiskers_renderwebformelement_function(){
-
-
-/*
-  $form_state = &$form_state;
-
-  if($form_state == null){
-    $form_state = form_state_defaults();
-  }
-  
-
-  $form_state['values']['dataset'] = 'BCSD5';
-  $form_state['values']['tolerance'] = '95';
-  $form_state['values']['confidence'] = '5';
-  
-  //drupal_set_message('formstate:<pre>'. print_r($form_state, TRUE) .'</pre>');
-  
-  return drupal_render(drupal_build_form('toewhiskers_compare_form', $form_state));
-*/
-  
-  
-  //This works to build initial forms that have no selections made yet.
-  $form = drupal_get_form('toewhiskers_compare_form');
-  $o = drupal_render($form);
-  return $o;
-  
-  
-  
-}
-
-
-function toewhiskers_compare_form($form,&$form_submit) {
-
-  // Session variable used to prepopulate if available.
-  $comparearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
-  
-  // 'variable' might get it's own function? How to separate form elements across different pages is still under review.
-  $form['variable'] = array(
-    '#type' => 'select',
-    '#title' => t('Variable'),
-    '#options' => array(
-      'V1.01' => t('Average temperature in January'),
-      'V1.02' => t('Average temperature in February'),
-      'V1.03' => t('Average temperature in March'),
-      'V1.04' => t('Average temperature in April'),
-      'V1.05' => t('Average temperature in May'),
-      'V1.06' => t('Average temperature in June'),
-      'V1.07' => t('Average temperature in July'),
-      'V1.08' => t('Average temperature in August'),
-      'V1.09' => t('Average temperature in September'),
-      'V1.10' => t('Average temperature in October'),
-      'V1.11' => t('Average temperature in November'),
-      'V1.12' => t('Average temperature in December'),
-      'V8' => t('Number of days per year with daily maximum temperature exceeding 90 degF (32.2 degC)'),
-    ),
-    //'#default_value' => $category['selected'],
-    '#description' => t('Select one or many hydroclimatic variable(s).'),
-    '#multiple' => TRUE,
-    '#required' => TRUE,
-    '#default_value' => isset($comparearray['variable'])?$comparearray['variable']:'',
-  );
-  $form['emission'] = array(
-    '#type' => 'radios',
-    '#title' => t('Emission scenario'),
-    '#options' => array(
-      'rcp45' => 'rcp45',
-      'rcp85' => 'rcp85',
-    ),
-    '#required' => TRUE,
-    '#default_value' => isset($comparearray['emission'])?$comparearray['emission']:'',
-  );
-  $form['dataset'] = array(
-    '#type' => 'radios',
-    '#title' => t('Dataset'),
-    '#options' => array(
-      'BCSD5' => 'BCSD5',
-    ),
-    '#required' => TRUE,
-    '#default_value' => isset($comparearray['dataset'])?$comparearray['dataset']:'',
-  );
-  $form['tolerance'] = array(
-    '#type' => 'radios',
-    '#title' => t('Tolerance (Emergence threshold)'),
-    '#options' => array(
-      '80' => '80',
-      '95' => '95',
-    ),
-    '#required' => TRUE,
-    '#default_value' => isset($comparearray['tolerance'])?$comparearray['tolerance']:'',
-  );
-  $form['confidence'] = array(
-    '#type' => 'radios',
-    '#title' => t('Confidence'),
-    '#options' => array(
-      '5' => '5',
-      '50' => '50',
-      '95' => '95',
-    ),
-    '#required' => TRUE,
-    '#default_value' => isset($comparearray['confidence'])?$comparearray['confidence']:'',
-  );
-  $form['submit'] = array(
-    '#title' => t('Submit'),
-    '#value' => 'Submit',
-    '#type' => 'submit',
-    );
-  return $form;
-}
-
-
-/**
- * Submit handler for the first form.
- */
-function toewhiskers_compare_form_submit($form, &$form_state) {
-
-  //drupal_set_message('formstate:<pre>'. print_r($form_state, TRUE) .'</pre>');
-
-  // Grab session values if present.
-  $comparearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
-  
-  $comparearray['variable'] = toewhiskers_clean_array($form_state['values']['variable']);
-  $comparearray['emission'] = check_plain($form_state['values']['emission']);
-  $comparearray['dataset'] = check_plain($form_state['values']['dataset']);
-  $comparearray['tolerance'] = check_plain($form_state['values']['tolerance']);
-  $comparearray['confidence'] = check_plain($form_state['values']['confidence']);
-  
-  $_SESSION['compare'] = $comparearray;
-
-  $compare = $_SESSION['compare'];
-
-  
-  $form_state['redirect'] = 'timeline';
-  
-}
-
-function toewhiskers_clean_array($array, $filter = 'check_plain') {
-  $clean = array();
-  foreach ($array as $key => $val) {
-    if (is_array($val)) {
-      $clean[$filter($key)] = clean_array($val, $filter);
-    }
-    else {
-      $clean[$filter($key)] = $filter($val);
-    }
-  }
-  return $clean;
 }
