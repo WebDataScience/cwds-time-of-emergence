@@ -3,12 +3,16 @@ svg {
 }
 
 #chart {
-  font: 10px sans-serif;
+  font: 9px sans-serif;
+}
+
+#chart text {
+  background-color:rgba(26, 105, 105, 0.5);
 }
 
 #counties path {
-  stroke: #fff;
-  stroke-width: 1px;
+  stroke: black;
+  stroke-width: .5px;
 }
 
 #states path {

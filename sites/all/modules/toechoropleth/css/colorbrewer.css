@@ -1325,13 +1325,18 @@
 .RdYlGn .q8-11{fill:rgb(102,189,99)}
 .RdYlGn .q9-11{fill:rgb(26,152,80)}
 
-.BlRdGnYl_custom .q0{fill:rgb(255, 255, 255)}
+/*changed*/
+/*.BlRdGnYl_custom .q0{fill:rgb(255, 255, 255)}*/
+.BlRdGnYl_custom .q0{fill:black}
 .BlRdGnYl_custom .q1{fill:rgb(225, 225, 225)}
 .BlRdGnYl_custom .q2{fill:rgb(255, 0, 0)}
 .BlRdGnYl_custom .q3{fill:rgb(128, 255, 0)}
 .BlRdGnYl_custom .q4{fill:rgb(255, 255, 0)}
 
-.Bl_custom .q0{fill:rgb(255, 255, 255)}
+/*changed*/
+/*.Bl_custom .q0{fill:rgb(255, 255, 255)}*/
+.Bl_custom .q0{fill:black}
+
 .Bl_custom .q1{fill:rgb(204, 230, 255)}
 .Bl_custom .q2{fill:rgb(102, 179, 255)}
 .Bl_custom .q3{fill:rgb(0, 128, 255)}

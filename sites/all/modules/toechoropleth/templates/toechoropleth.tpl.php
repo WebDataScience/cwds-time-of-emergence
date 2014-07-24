@@ -47,8 +47,8 @@ $path = drupal_get_path('module', 'toechoropleth');
         var path = d3.geo.path()
                     .projection(projection);
 
-        var title = d3.select("#chart").append("div")
-          .attr("style", "text-align:center");
+        var title = d3.select("#chart").append("div");
+//          .attr("style", "text-align:center");
 
         var svg = d3.select("#chart")
           .append("svg")
@@ -127,7 +127,7 @@ $path = drupal_get_path('module', 'toechoropleth');
                   // Null answers are out of state, and should be q0 (white),
                   // Otherwise return the lightest color of the spectrum
                   if(data[d.id] != null)
-                    return 'q1';
+                    return 'q4';
                   else
                     return 'q0';
                 }

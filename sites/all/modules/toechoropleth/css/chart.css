@@ -1,5 +1,6 @@
 #chart, #comments_chart {
-  font: 10px sans-serif;
+//  font: 9px sans-serif;
+  text-anchor: middle;
 }
 
 #container {
