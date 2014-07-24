@@ -10,3 +10,7 @@
 body.page-timeline div.form-item-variable{
   display:none;
 }
+
+#headline-page{
+  display: block;
+}
