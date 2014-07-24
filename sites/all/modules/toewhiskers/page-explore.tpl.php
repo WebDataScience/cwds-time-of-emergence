@@ -74,7 +74,6 @@
  
   
 <div id="page">
-  
+  <h2>Explore</h2>
   <?php print $explore_form; ?><br/>
-  
 <div>
