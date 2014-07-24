@@ -57,6 +57,7 @@ function toewhiskers_theme(){
 
 
 function toewhiskers_explore_page_function(){  
+  drupal_add_js(drupal_get_path('module', 'toewhiskers') . '/js/map.js');
   drupal_set_title('Explore');  
   return theme('explore_template');  
 }
@@ -92,7 +93,7 @@ function toewhiskers_explore_form($form, &$form_submit) {
     '#options' => $options,
     '#disabled' => TRUE,
   );
-  $options = array('2.1.17' => 'King County',);
+  $options = array('2.1.15' => 'King County1','2.1.16' => 'King County2','2.1.17' => 'King County',);
   $form['region'] = array(
     '#type' => 'select',
     '#title' => t('Region'),
@@ -232,7 +233,7 @@ function toewhiskers_compare_form($form,&$form_submit) {
     '#default_value' => isset($comparearray['emission'])?$comparearray['emission']:key($options),
   );
   $options = array(
-    'BCSD5' => 'GCM',
+    'BCSD5' => 'Statistically-downscaled (CMIP5 BCSD)',
   );
   $form['dataset'] = array(
     '#type' => 'radios',

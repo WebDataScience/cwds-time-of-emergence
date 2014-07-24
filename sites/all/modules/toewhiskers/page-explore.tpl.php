@@ -75,5 +75,6 @@
   
 <div id="page">
   <h2>Explore</h2>
-  <?php print $explore_form; ?><br/>
+    chart:<div id="chart"></div>
+    <?php print $explore_form; ?><br/>
 <div>
