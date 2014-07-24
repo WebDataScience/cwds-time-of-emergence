@@ -142,10 +142,10 @@ function drawD3Timeline(timelinedataarray, maxtoeyear){
 			.attr("y1", -5)
 			.attr("x2", function (d,i) { return 1 + x(d[0]); } )
 			.attr("y2", 20)
-			.attr("stroke-width", 1)
+			.attr("stroke-width", 2)
 			.style("shape-rendering", "crispEdges")
 		//	.attr("stroke", "black");
-			.attr("stroke", "#848383");
+			.attr("stroke", "white");
 
 		node.append("line:circle")
 		  .attr("cx", function (d,i) { return x(d[0]); } )

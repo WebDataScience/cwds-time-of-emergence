@@ -73,15 +73,16 @@
 
   <style>
 	  .main text {
-		    font: 10px sans-serif;	
-			fill: #848383;
+		    font: 11px sans-serif;	
+			fill: white; //#848383;
 			text-shadow: none;
 		}
 		.axis line, .axis path, line.scatter-point {
 		    shape-rendering: crispEdges;
 		    //stroke: black;
-		    stroke: #848383;
+		    stroke: white; //#848383;
 			fill: none;
+			stroke-width: 2;
 		}
 		h4 {
 			text-align: center;
@@ -91,7 +92,7 @@
 		}
 		circle {
 			//fill: black;
-			fill: #848383;
+			fill: white;
 		}
   		hr {
 			max-width: 915px;

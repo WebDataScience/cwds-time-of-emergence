@@ -764,6 +764,22 @@ max-width: 915px;
   max-width: 915px;
 }
 
+.page-timeline #maincontent, .page-timeline #page h2, .page-explore #page, .page-explore #page h2, .page-explore #page h1 {
+  color: #E6E6D4;
+}
+
+.page-explore #page h1 {
+  text-align: left;
+}
+
+.page-timeline #tabledata {
+  color: #4D4D4D;
+}
+
+.page-node-1 p, .page-node-5 {
+  color: #4D4D4D;
+}
+
 .page-node-1 .front-article-subcontent .front-subheader {
   color: #4D4D4D;
 }
