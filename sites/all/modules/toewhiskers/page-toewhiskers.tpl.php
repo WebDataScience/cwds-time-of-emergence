@@ -74,7 +74,6 @@
  
   
 <div id="page">
-  
+  <h2>Compare</h2>
   <?php print $explore_form; ?><br/>
-  
 <div>
