@@ -1,0 +1,106 @@
+
+/* --- header --- */
+
+#header	{
+  padding:0px;
+}
+header li {
+  float:left;
+  height:50px;
+}
+
+header li:hover ul {
+  margin: 30px 0 0 -80px;
+}
+
+header li:hover li {
+  float:none;
+  margin:0 0 -3px 0;
+  padding:0;
+  height:auto;	
+}
+
+header li:hover li a{
+  float:left;
+  width:140px;
+  margin: 0;
+  padding: 0 15px;	
+}
+
+/* --- ei-slider --- */
+
+ul.tweet_list{
+  padding:0px 0px 0px 0px;
+  margin:0;
+  background:none;
+}
+ul.tweet_list li{
+  padding:30px 15px 60px 15px;
+}
+
+/* --- ei-slider --- */
+.ei-slider-thumbs{
+  width:98.9%;
+}
+.ei-slider-thumbs li img{
+  filter:alpha(opacity=0);
+  bottom: 13px;
+}
+.ei-slider-thumbs li:hover img{
+  filter:alpha(opacity=100);
+}
+
+.flex-caption {
+  width:908px;
+  bottom:-15px;
+}
+/* ---- tagline ---*/
+
+#maincontent{
+  padding-top:30px;
+}
+
+/* Portfolio --*/
+
+#filter {
+  margin:0px 0px 30px 0px;
+  padding-bottom:20px;
+}
+#stage{
+  padding-bottom:20px;
+}
+.sidebar-widget{
+  width:300px;
+  padding-bottom:15px;	
+}
+.sidebar-widget h5{
+  float:left;
+  width:300px;
+}
+ul.sidebar-list{
+  float:left;
+  width:100%;	
+}
+ul.sidebar-list  li{ 
+  float:left;
+  width:100%;
+}
+
+ul.recent-list{
+  float:left;
+  width:300px;
+}
+
+ul.recent-list li{
+  float:left;
+  width:300px;
+}
+
+
+
+
+
+
+
+
+

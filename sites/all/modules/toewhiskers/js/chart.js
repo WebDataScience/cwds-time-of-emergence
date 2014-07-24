@@ -144,7 +144,8 @@ function drawD3Timeline(timelinedataarray, maxtoeyear){
 			.attr("y2", 20)
 			.attr("stroke-width", 1)
 			.style("shape-rendering", "crispEdges")
-			.attr("stroke", "black");
+		//	.attr("stroke", "black");
+			.attr("stroke", "#848383");
 
 		node.append("line:circle")
 		  .attr("cx", function (d,i) { return x(d[0]); } )
@@ -156,6 +157,7 @@ function drawD3Timeline(timelinedataarray, maxtoeyear){
 		  .attr("x", function (d,i) { return x(d[0]); } )
 		  .attr("y", function (d) { return y(d[1]); } )
 		  .attr("dy", -32)
+
 		  .style("text-anchor", "middle")
 		  .text(function(d) { return d[3]; })
 		  .attr('title', function(d) { return d[2]; }); 

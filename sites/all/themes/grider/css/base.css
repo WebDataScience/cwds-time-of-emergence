@@ -1,0 +1,278 @@
+
+html, body, div, span, applet,
+object, iframe, h1, h2, h3, h4,
+h5, h6, p, blockquote, pre, a,
+abbr, acronym, address, big, cite,
+code, del, dfn, em, img, ins, kbd,
+q, s, samp, small, strike, strong,
+sub, sup, tt, var, b, u, i, center,
+dl, dt, dd, ol, ul, li, fieldset,
+form, label, legend, table, caption,
+tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details,
+embed, figure, figcaption, footer,
+header, hgroup, menu, nav, output,
+ruby, section, summary, time, mark,
+audio, video 							{ margin: 0; padding: 0; border: 0; font-size:100%; font:inherit; vertical-align:baseline; }
+
+article, aside, details, figcaption, 
+figure, footer, header, hgroup, menu, 
+nav, section 							{ display:block; }
+
+body 								{ line-height:1; }
+
+ol, ul 								{ list-style:none; padding-left: 0px;}
+
+blockquote, q 							{ quotes:none; }
+
+blockquote:before, blockquote:after,
+q:before, q:after 					{ content:''; content:none; }
+
+table 								{ border-collapse:collapse; border-spacing:0; }
+
+
+/*====================================================================================================================================================*/
+
+
+/***** Template styles *****/
+
+html 									{ overflow-y:scroll; overflow:-moz-scrollbars-vertical; }
+body									{ padding:0; background:#FFF; font:12px Arial, Helvetica, sans-serif; color:#848383;-webkit-font-smoothing:antialiased; -webkit-text-size-adjust:none;line-height:1.5em; }
+
+#wrapper							{ margin:0; }
+
+
+
+
+/***** Typography *****/
+
+h1, h2, h3, h4, h5, h6 				{ margin:0; padding:0; font-family: 'ColaborateLight',Arial,sans-serif; font-weight:normal;text-transform:uppercase; line-height:1.5em;} 
+h1 a, h2 a, h3 a, h4 a, h5 a, h6 a 		{ font-weight: inherit; }
+h1 									{ margin:0 0 10px 0; padding:0; font-size:14px; color:#4d4d4d;  }
+h2									{ margin:0 0 10px 0; padding:0; font-size:14px; color:#4d4d4d;}
+h3 									{ margin:0 0 10px 0; padding:0; font-size:14px; color:#4d4d4d;  }
+h4 									{ margin:0 0 10px 0; padding:0; font-size:14px; color:#4d4d4d; }
+h5 									{ margin:0 0 10px 0; padding:0; font-size:14px; color:#4d4d4d; }
+h6 									{ margin:0 0 10px 0; padding:0; font-size:13px; color:#4d4d4d;  }
+
+.intro h3 { font-family:Georgia, Arial,sans-serif; text-transform:none;}
+
+p 									{ margin:0; padding:0 0 10px 0;}
+
+sup, sub 								{ height:0;	line-height:1px; vertical-align:baseline; _vertical-align:bottom; position:relative; }
+sup 									{ bottom:1px; }
+sub 									{ top:1px; font-size:.6em; }
+em 									{ font-style:italic; }
+strong 								{ font-weight:bold; }
+small 								{ font-size:80%; }
+
+/***** Blockquotes *****/
+
+blockquote, blockquote p 					{ font-size:12px; line-height:24px; color:#777; font-style:italic; }
+blockquote 							{ margin:0px 0 15px 0; padding:0 0 0 46px; background:url(../images/icons/quote.png) no-repeat 0% 4px;
+                    font-style:italic;  font-variant:normal; font-weight:normal; font-size:13px; font-family:Georgia,sans-serif; }
+blockquote cite 							{ display:block; font-size:12px; color:#555; }
+blockquote cite:before 					{ content:"\2014 \0020"; }
+blockquote cite a,
+blockquote cite a:visited,
+blockquote cite a:visited 				{ color:#555; }
+blockquote span							{ width:15px; display:inline-block; }
+
+
+/*------------------- preformated text, code --------------------*/
+code, pre {
+  border-top:1px solid #e9e9e9;
+  border-right:1px solid #e9e9e9;
+  border-bottom:1px solid #e9e9e9;
+  background:#fefefe;
+  padding:7px 10px;
+  font-size:11px;
+  display:block;
+  color:#858585;
+  margin-bottom:10px;
+  border-left:10px solid #e9e9e9;
+}
+
+
+/* ============================================================================================================================
+== BLOCKQUOTE WITH RIGHT-ANGLED TRIANGLE
+** ============================================================================================================================ */
+
+.example-right {
+  position:relative;
+  padding:15px 30px;
+  margin:0;
+  color:#fff;
+  background:#5a8f00; /* default background for browsers without gradient support */
+
+  /* css3 */
+  -moz-border-radius:10px;
+  -webkit-border-radius:10px;
+  border-radius:10px;
+  /* NOTE: webkit gradient implementation is not as per spec */
+  background:-webkit-gradient(linear, left top, left bottom, from(#b8db29), to(#5a8f00));
+  background:-moz-linear-gradient(top, #b8db29, #5a8f00);
+  background:-o-linear-gradient(top, #b8db29, #5a8f00);
+}
+
+/* display of quote author (alternatively use a class on the element following the blockquote) */
+.example-right + p {margin:15px 0 2em 85px; font-style:italic;}
+
+/* creates the triangle */
+.example-right:after {
+  content:"";
+  display:block; /* reduce the damage in FF3.0 */
+  position:absolute;
+  bottom:-50px;
+  left:50px;
+  width:0;
+  height:0;
+  border-width:0 20px 50px 0px;
+  border-style:solid;
+  border-color:transparent #5a8f00;
+}
+
+hr 									{ margin:20px 0 20px 0; border:0; border-top:1px solid #999; height:2px; width:100%; text-align:left; }
+
+/***** Links *****/
+
+a 								{ color:#4d4d4d; text-decoration:none; outline:0; }
+a:visited 							{ text-decoration:none; outline:0; }
+a:active 							{ text-decoration:none; outline:0; }
+a:hover 								{ text-decoration:none; outline:0; }
+a:focus 								{ -moz-outline-style:none; }
+
+/***** Lists *****/
+
+ul, ol 								{ margin-bottom:10px; }
+ul 									{ list-style:none; padding-left: 0px;}
+ol 									{ list-style:decimal; }
+ol, ul.square, ul.circle, ul.disc 		{ margin-left:15px; }
+ul.square 							{ list-style:square outside; }
+ul.circle 							{ list-style:circle outside; }
+ul.disc 								{ list-style:disc outside; }
+ul ul, ul ol, ol ol, ol ul 					{ margin:4px 0 5px 30px; font-size:90%;  }
+ul ul li, ul ol li,	ol ol li, ol ul li 				{ margin-bottom:6px; }
+li 									{ line-height:18px; margin-bottom:12px; }
+ul.large li 							{ line-height:21px; }
+li p 									{ line-height:21px; }
+
+/***** Images *****/
+
+img 									{ border:0; }
+.max-image 							{ width:100%; height:auto; }		
+.video-container 					{ position:relative; margin:0 0 15px 0;	padding-bottom:51%; padding-top:30px; height:0; overflow:hidden; border:1px solid #ccc; }
+.video-container iframe,
+.video-container object,  
+.video-container embed 				{ position:absolute; top:0; left:0; width:100%; height:100%; }
+
+/***** Buttons  *****/
+
+a.btn 								{ margin:5px 0 5px 0; padding:4px 28px 4px 8px; display:inline-block; font-size:11px; color:#fff; border:1px solid #444; background:#333 url(../images/btn-arrow.png) no-repeat right; border-radius:4px; -webkit-border-radius:4px; -moz-border-radius:4px; cursor:pointer; }
+a:hover.btn 							{ text-decoration:underline; }
+
+/***** Forms *****/
+
+input, textarea, select					{ padding:10px; color:#ccc }
+
+#stylized-form						{ margin:10px 0 20px 0; padding:20px; background-color:#f4f4f4; -webkit-border-radius:4px; -moz-border-radius:4px; }
+
+.wrapper-block label 					{ padding:0; display:block; font-weight:bold; text-align:right; width:140px; float:left; }
+.wrapper-block [type="text"]			{ font-size:12px; padding:4px 2px; border:solid 1px #f3f3f3; width:200px; margin:2px 0 15px 10px; }
+.wrapper-block select					{ font-size:12px; padding:2px; border:solid 1px #f3f3f3; margin:2px 0 15px 10px; }
+.wrapper-block [type="radio"]		{ line-height:16px; margin:0 2px 15px 10px; }
+.wrapper-block [type="checkbox"]		{ line-height:16px; margin:0 2px 15px 10px; }
+.wrapper-block textarea				{ padding:4px 2px; border:solid 1px #f3f3f3; width:200px; margin:2px 0 15px 10px; font:12px "Century Gothic", "Trebuchet MS", Helvetica, sans-serif; }
+
+.wrapper-inline label 					{ padding:0; display:block; font-weight:bold; text-align:right; width:140px; float:left; }
+.wrapper-inline [type="text"]		{ font-size:12px; padding:4px 2px; border:solid 1px #f3f3f3; width:200px; margin:2px 0 15px 10px;  float:left; }
+.wrapper-inline select					{ font-size:12px; padding:4px 2px; border:solid 1px #f3f3f3; margin:2px 0 15px 10px; float:left; }
+.wrapper-inline [type="radio"]		{ line-height:16px; margin:0 2px 15px 10px; float:left; }
+.wrapper-inline [type="checkbox"]	{ line-height:16px; margin:0 2px 15px 10px; float:left; }
+.wrapper-inline textarea				{ padding:4px 2px; border:solid 1px #f3f3f3; width:140px; margin:2px 0 15px 10px; font:12px "Century Gothic", "Trebuchet MS", Helvetica, sans-serif; float:left; }
+
+a.btn-form, input.btn-form			{ margin:5px 0 5px 150px; padding:4px 28px 4px 8px; display:inline-block; font-size:11px; color:#fff; border:1px solid #444; background:#333 url(../images/btn-arrow.png) no-repeat right; border-radius:4px; -webkit-border-radius:4px; -moz-border-radius:4px; cursor:pointer; }
+
+.small-label						{ display:block; font-size:10px; font-weight:normal; color:#666; text-align:right; width:140px; }
+
+input:focus[type="text"], textarea:focus{ color:#5b5b5d; }
+
+/***** Tables  *****/
+/*
+table { 
+	margin:0 0 0px 0; 
+	width:100%; 
+}
+table th { 
+	font-weight:bold; 
+	background-color:#e2e2e2; 
+	color:#333; 
+	font-weight:bold; 
+	border:1px solid #999;
+	padding: 0px;
+}
+table th a {
+	font-size: 12px;
+	font-weight:bold; 
+	text-align: left;
+}
+table td { 
+	background-color:#e2e2e2; 
+	color:#333; 
+	border:1px solid #999; 
+}
+table tr.even td { 
+	background-color:#fff; 
+}
+table tr.odd td { 
+	background-color:#f3f3f3; 
+}
+table td.highlight { 
+	color:#FFF; 
+	font-weight:bold; 
+}
+table tr td.highlight { 
+	background-color:#333;  
+}
+*/
+/***** Back to Top *****/
+
+#toTop 								{ display:none; text-decoration:none; position:fixed; bottom:10px; right:10px; overflow:hidden; width:40px; height:40px; border:none; text-indent:-999px; background:url(../images/ui.totop.png) no-repeat left top; }
+#toTopHover 							{ background:url(../images/ui.totop.png) no-repeat left -40px; width:40px; height:40px; display:block; overflow:hidden; float:left; opacity: 0; -moz-opacity: 0; filter:alpha(opacity=0); }
+#toTop:active, #toTop:focus 			{ outline:none; }
+
+
+/***** Global Classes *****/
+
+.img-left   							{ float:left; margin:0 30px 30px 0; border:none; }
+.img-right  							{ float:right; margin:0 0 30px 30px; border:none; }
+
+.clear       							{ clear:both; }
+.float-left 							{ float:left; }
+.float-right   						{ float:right; }
+
+.text-big							{ color:#a2bd30; font-weight:bold; line-height:26px; }
+.text-left    							{ text-align:left; }
+.text-right    						{ text-align:right; }
+.text-center   						{ text-align:center; }
+.text-justify  						{ text-align:justify; }
+
+.normal								{ font-weight:normal; }
+.bold          							{ font-weight:bold; }
+.italic        							{ font-style:italic; }
+.underline     						{ border-bottom:1px solid; }
+.highlight     						{ background:#ffc; }
+
+.nopadding 						   	{ padding:0; }
+.noindent  						   	{ margin-left:0; padding-left:0; }
+.nobullet  					   		{ list-style:none; list-style-image:none; }
+
+.block								{ display:block; }
+.hidden								{ display:none; }
+.hide 								{ display:none; }
+
+/* Added */
+.editButton {
+ 
+}
+

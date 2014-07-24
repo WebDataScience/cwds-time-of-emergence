@@ -1,0 +1,160 @@
+name = Grider
+description = Grider theme, developed by <a href="http://tabvn.com/">Tabvn</a>.
+core = 7.x
+
+
+scripts[] = js/jquery.easing.1.3.js
+scripts[] = js/skitter/jquery.skitter.min.js
+scripts[] = js/skitter/setting.js
+scripts[] = js/flexslider/jquery.flexslider.js
+scripts[] = js/flexslider/setting.js
+scripts[] = js/eislide/jquery.eislideshow.js
+scripts[] = js/eislide/setting.js
+
+;portfolio
+
+scripts[] = js/portfolio/jquery.isotope.min.js
+scripts[] = js/portfolio/hover_setting.js
+
+;prettyPhoto
+scripts[] = js/prettyPhoto/jquery.prettyPhoto.js
+scripts[] = js/prettyPhoto/setting.js
+
+;ticker
+scripts[] = js/ticker/ticker.js
+scripts[] = js/ticker/setting.js
+;tweets
+scripts[] = js/tweet/twitter.js
+
+;to top script
+scripts[] = js/smoothscroll.js
+scripts[] = js/jquery.ui.totop.js
+
+scripts[] = js/social/setting.js
+scripts[] = js/custom.js
+scripts[] = js/grider.js
+
+
+
+regions[help] = Help
+regions[page_top] = Page top
+regions[page_bottom] = Page bottom
+regions[highlighted] = Highlighted
+regions[featured] = Featured
+
+regions[content] = Content
+regions[sidebar_first] = Sidebar first
+regions[sidebar_second] = Sidebar second
+
+regions[footer_firstcolumn] = Footer first column
+regions[footer_secondcolumn] = Footer second column
+regions[footer_thirdcolumn] = Footer third column
+;regions[footer_fourthcolumn] = Footer fourth column
+regions[footer] = Footer
+
+
+features[] = logo
+features[] = node_user_picture
+features[] = comment_user_picture
+features[] = comment_user_verification
+features[] = favicon
+features[] = main_menu
+
+
+settings[theme_grider_first_install] = 1
+;home slogan
+settings[show_home_slogan] = 1
+settings[home_slogan] = We are an established and trusted web agency with a reputation for commitment and high integrity 
+settings[home_tagline] = Hello, I am clean and <span>responsive</span> website template
+
+;home twitter feed
+settings[show_home_twitter_feed] = 1
+settings[twitter_username] = tabvn
+settings[auto_join_text_default] = we said,
+settings[auto_join_text_ed] = we
+settings[auto_join_text_ing] = we were
+settings[auto_join_text_reply] = we replied
+settings[auto_join_text_url] = we were checking out
+settings[loading_text] = loading tweets...
+
+;layout settings
+settings[grider_sidebar_first_size] = 4
+settings[grider_sidebar_second_size] = 4
+
+;slider
+settings[home_slider_type] = default
+
+
+settings[default_banners][1][image_path]        = images/slide/elastic/large/1.jpg
+settings[default_banners][1][image_title]       = Always
+settings[default_banners][1][image_description] = Odio nominati in bonorumins
+settings[default_banners][1][image_published]   = TRUE
+settings[default_banners][1][image_url]         = <front>
+settings[default_banners][1][image_url_title]   = Get it now
+settings[default_banners][1][image_weight]      = 0
+
+settings[default_banners][2][image_path]        = images/slide/elastic/large/2.jpg
+settings[default_banners][2][image_title]       = Creative
+settings[default_banners][2][image_description] = Proiciens te princeps
+settings[default_banners][2][image_published]   = TRUE
+settings[default_banners][2][image_url]         = <front>
+settings[default_banners][2][image_url_title]   = Get it now
+settings[default_banners][2][image_weight]      = 1
+
+settings[default_banners][3][image_path]        = images/slide/elastic/large/3.jpg
+settings[default_banners][3][image_title]       = Responsive
+settings[default_banners][3][image_description] = Aliorum naufragium fieri
+settings[default_banners][3][image_published]   = TRUE
+settings[default_banners][3][image_url]         = <front>
+settings[default_banners][3][image_url_title]   = Get it now
+settings[default_banners][3][image_weight]      = 2
+
+settings[default_banners][4][image_path]        = images/slide/elastic/large/4.jpg
+settings[default_banners][4][image_title]       = User friendly
+settings[default_banners][4][image_description] = Proiciens te princeps
+settings[default_banners][4][image_published]   = TRUE
+settings[default_banners][4][image_url]         = <front>
+settings[default_banners][4][image_url_title]  = Get it now
+settings[default_banners][4][image_weight]      = 3
+
+settings[default_banners][5][image_path]        = images/slide/elastic/large/5.jpg
+settings[default_banners][5][image_title]       = Commented
+settings[default_banners][5][image_description] = Proiciens te princeps
+settings[default_banners][5][image_published]   = TRUE
+settings[default_banners][5][image_url]         = <front>
+settings[default_banners][5][image_url_title]  = Get it now
+settings[default_banners][5][image_weight]      = 4
+
+settings[default_banners][6][image_path]        = images/slide/elastic/large/6.jpg
+settings[default_banners][6][image_title]       = With premium
+settings[default_banners][6][image_description] = Support
+settings[default_banners][6][image_published]   = TRUE
+settings[default_banners][6][image_url]         = <front>
+settings[default_banners][6][image_url_title]  = Get it now
+settings[default_banners][6][image_weight]      = 5
+
+settings[default_banners][7][image_path]        = images/slide/elastic/large/6.jpg
+settings[default_banners][7][image_title]       = Modern
+settings[default_banners][7][image_description] = Designs
+settings[default_banners][7][image_published]   = TRUE
+settings[default_banners][7][image_url]         = <front>
+settings[default_banners][7][image_url_title]  = Get it now
+settings[default_banners][7][image_weight]      = 6
+;portfolio
+settings[default_portfolio] = 4c
+settings[default_nodes_portfolio] = 12
+
+;footer 
+
+settings[footer_copyright_message] = &copy; Copyright 2012 Grider
+settings[facebook_url] = http://facebook.com/TabvnGroup
+settings[twitter_url] = http://twitter.com/tabvn
+settings[gplus_url] = #
+settings[linkedin_url] = #
+settings[skype] = #
+settings[rss_url] = #
+
+;contact
+
+settings[contact_map] = <img alt="" class="max-image map" src="/sites/all/themes/grider/images/map.jpg" />
+settings[theme_color] = grey

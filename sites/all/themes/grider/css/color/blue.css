@@ -1,0 +1,280 @@
+/* 
+Template skin : blue
+
+*/
+
+.highlight{
+	padding:2px 6px;
+	color:#fff;
+	background:#3bade2;
+}
+
+/* ---- general link --- */
+
+a:active, a:hover   {
+	color:#3bade2;
+}
+
+a.textlink:hover{
+	background:url(../../images/color/blue/textlink.png) no-repeat left 8px;
+}
+/* color button */
+
+.blue {
+	background:#3bade2;
+	color:#fff;
+}
+
+/* darkgray button hover */
+
+.darkgray:hover {
+	background:#3bade2;
+	color:#fff;
+}
+
+
+/*=== button type 2 ===*/
+
+/* small button */
+
+a.smallbtn2 { background:url(../../images/button/blue/smallbtn2-r.png) no-repeat top right; }
+
+a.smallbtn2 span { 
+	background:url(../../images/button/blue/smallbtn2-l.png) no-repeat; 
+	color: #fff; 
+}
+
+a.smallbtn2:hover span { color: #fff; }
+
+/* medium button */
+
+a.mediumbtn2 { background:url(../../images/button/blue/mediumbtn2-r.png) no-repeat top right; }
+
+a.mediumbtn2 span { 
+	background:url(../../images/button/blue/mediumbtn2-l.png) no-repeat; 
+	color: #fff; 
+}
+
+a.mediumbtn2:hover span { color: #fff; }
+
+/* big button */
+
+a.bigbtn2 { background:url(../../images/button/blue/bigbtn2-r.png) no-repeat top right; }
+
+a.bigbtn2 span { 
+	background:url(../../images/button/blue/bigbtn2-l.png) no-repeat; 
+	color: #fff; 
+}
+
+a.bigbtn2:hover span { color: #fff; }
+
+
+
+/*=====================================================================================*/
+
+/* ---- General form --- */
+
+input:focus[type="text"], textarea:focus{
+	border:1px solid #3bade2; 
+}
+
+/* --- header area --- */
+
+#header	{
+	border-top:2px solid #3bade2;
+}
+
+header li:hover li:hover a {
+    background-color: #3bade2;
+}
+
+header li:hover li a {
+    border-top: 1px solid #878686;
+}
+
+header li:hover a, header li.selected a {
+    color: #3bade2;
+}
+
+header li:hover ul li a,header li ul li:hover a {
+    color: #fff;
+}
+
+/***** iPhone (portrait 300px) *****/
+@media only screen and (max-width: 767px) {
+header li:hover ul li{
+    background-color: #3d3d3d;
+}	
+
+header li:hover ul li:hover{
+    background-color: #3bade2;
+}	
+	
+}
+
+/* Mobile Portrait Size to Mobile Landscape Size (devices and browsers) */
+@media only screen and (max-width: 479px) {
+	header li:hover ul {
+		background-color: #3bade2;
+	}
+}
+
+/* --- Tweet list --- */
+
+ul.tweet_list {
+	background:#3bade2; /* default background for browsers without gradient support */
+}
+ul.tweet_list li:after{
+	border-color:#fff #3bade2;
+}	
+
+*+html ul.tweet_list li{
+	background:#3bade2 url(../../images/color/blue/tweet-bg.jpg) no-repeat left bottom;
+}
+
+/* --- Search form --- */
+
+form#searchForm input#s {
+	border:1px solid #1999dc;
+}
+
+form#searchForm input:focus#s {
+	border:1px solid #09a8fa;
+	color:#3bade2;
+}
+
+/* --- Headline page --- */
+
+#headline-page{
+	background:#3bade2 url(../../images/color/blue/page-title-bg.png) no-repeat left bottom;
+}
+
+/* --- Tagline --- */
+
+#tagline span {
+	color:#3bade2;
+}
+
+/* --- Portfolio -- */
+
+#filter a:active, #filter .active  a{
+    background: #3bade2;
+}
+
+/* --- Blog --- */
+
+a:hover span.comment{
+	color:#3bade2;
+}
+
+.title-post a:hover{
+	color:#3bade2;
+}
+
+ul.sidebar-list  li a:hover, ul.sidebar-list  li span, ul.recent-list li a:hover{ 
+	color:#3bade2;
+}
+
+.comment_input:focus, .contact_input:focus, .comment_textarea:focus, input:focus#email, input:focus#name , .contact_textarea:focus{
+	border:1px solid #3bade2;;
+}
+
+.button:hover,.form-submit:hover{
+	background:#3bade2;
+}
+
+/* --- pagination --- */
+
+.pagination a:hover span, .pagination a:active span, .pagination a.active span{
+	color: #3bade2;
+	border:1px solid #3bade2;	
+	text-decoration: none;
+}
+a:hover span.prev-next{
+	border: none;
+	color: #3bade2
+}
+
+/* --- Contact --- */
+
+iframe.map, img.map{
+	border-bottom:2px solid #3bade2;
+}
+
+/* --- Tabs --- */
+
+ul.tabs a.current, ul.tabs a.current:hover, ul.tabs li.current a {
+	cursor:default !important;
+    background: #3bade2;
+
+}
+
+/* --- Toggle --- */
+
+.toggle h6.title span.title_content {
+	background:url(../../images/color/blue/plus.png) no-repeat center left;
+}
+
+.tstyle1 h6.active span.title_content {
+	background: #666666 url(../../images/color/blue/minus.png) no-repeat center left;
+	color:#fff;	
+}
+
+/* --- Tabs --- */
+ul.tabs a.current, ul.tabs a.current:hover, ul.tabs li.current a {
+	cursor:default !important;
+    background: #3bade2;
+	color:#fff;
+
+}
+
+/* --- Accordion --- */
+#accordion h6 {
+	background:#f5f5f5 url(../../images/color/blue/plus.png) no-repeat center left;
+}
+
+#accordion h6:hover{
+	background:#666666 url(../../images/color/blue/plus.png) no-repeat center left;
+	color:#fff;
+}
+#accordion h6.current {
+	background:#666666 url(../../images/color/blue/minus.png) no-repeat center left;
+	color:#fff;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

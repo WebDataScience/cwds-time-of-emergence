@@ -74,11 +74,14 @@
   <style>
 	  .main text {
 		    font: 10px sans-serif;	
+			fill: #848383;
+			text-shadow: none;
 		}
 		.axis line, .axis path, line.scatter-point {
 		    shape-rendering: crispEdges;
-		    stroke: black;
-		    fill: none;
+		    //stroke: black;
+		    stroke: #848383;
+			fill: none;
 		}
 		h4 {
 			text-align: center;
@@ -87,9 +90,15 @@
 			background-color: #edeef1;
 		}
 		circle {
-			fill: black;
+			//fill: black;
+			fill: #848383;
 		}
-  </style>
+  		hr {
+			max-width: 915px;
+			//display: none;
+			margin: 0;
+		}
+</style>
   
 <div id="page">
   <h2>Multi-Model Median Time of Emergence for <span class="region">King County</span> under <span class="emission"></span></h2>
