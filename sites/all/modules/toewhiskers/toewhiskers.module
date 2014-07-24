@@ -72,7 +72,7 @@ function toewhiskers_explore_form($form, &$form_submit) {
   $options = array(0 => 'Pacific NW',1 => 'State',2 => 'County',3 => 'Tribal land',4 => 'Watershed',5 => 'Puget Sound',6 => 'Stream');
   $form['geodomain'] = array(
     '#type' => 'radios',
-    '#title' => t('Geographic Domain'),
+    '#title' => t('Geographic Domain (disabled)'),
     '#options' => $options,
     '#disabled' => TRUE,
   );
@@ -100,7 +100,7 @@ function toewhiskers_explore_form($form, &$form_submit) {
     '#title' => t('Submit'),
     '#value' => 'Submit',
     '#type' => 'submit',
-    );
+  );
     
   $form_submit['redirect'] = 'compare';
     
@@ -162,21 +162,21 @@ function toewhiskers_compare_form($form,&$form_submit) {
   $options = array(0 => 'Temperature', 1 => 'Precipitation', 2 => 'Hydrological', 3 => 'Stream',);
   $form['theme'] = array(
     '#type' => 'radios',
-    '#title' => t('Theme'),
+    '#title' => t('Theme (disabled)'),
     '#options' => $options,
     '#disabled' => TRUE,
   );
   $options = array(0 => 'Drought', 1 => 'Energy', 2 => 'Fish', 3 => 'Flood',4 => 'General', 5 => 'Human health', 6 => 'Infrastructure', 7 => 'Streamflow',8 => 'Water quality',);
   $form['impact'] = array(
     '#type' => 'radios',
-    '#title' => t('Impact'),
+    '#title' => t('Impact (disabled)'),
     '#options' => $options,
     '#disabled' => TRUE,
   ); 
   $options = array(0 => 'Average', 1 => 'Extreme',);
   $form['descriptor'] = array(
     '#type' => 'radios',
-    '#title' => t('Descriptor'),
+    '#title' => t('Descriptor (disabled)'),
     '#options' => $options,
     '#disabled' => TRUE,
   );  
