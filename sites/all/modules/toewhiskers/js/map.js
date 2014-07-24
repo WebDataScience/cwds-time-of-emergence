@@ -60,7 +60,7 @@ var data; // loaded asynchronously
           d3.json(module_path + "/json/counties-autism-outreach-sample.json", function(json) {
             // Choropleth
             data = json['#choropleth'];
-            title.html("<h1>" + json['#title'] + "</h1>");
+            //title.html("<h1>" + json['#title'] + "</h1>");
             counties_data = json['#choropleth'];
             counties.selectAll("path")
                 .attr("class", quantize)
@@ -143,6 +143,28 @@ var data; // loaded asynchronously
           mywindow.print();
           return true;
         }
+      
+
+      
+  // Show and hide form elements depending on user selections.
+  if(!$('input[name=compare]:radio').is(':checked')) {
+    $('div.form-item-region').hide();     
+    $('div.form-item-geodomain').hide(); 
+    $('#edit-submit').attr('disabled', 'disabled');
+  }      
+  $('input[name=compare]:radio').click(function(){
+    //alert("yogurt");
+    //enable 'region' dropdown.
+    
+    // this solution requires newer version of jQuery: $("#edit-region").prop("disabled", false);
+    //$('#edit-region').removeAttr('disabled');
+    $('div.form-item-region').show(); 
+    $('div.form-item-geodomain').show();   
+    $('#edit-submit').removeAttr('disabled');  
+    
+  });
+        
+        
         
         
 }); 

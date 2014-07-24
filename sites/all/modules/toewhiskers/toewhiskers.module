@@ -86,22 +86,6 @@ function toewhiskers_explore_form($form, &$form_submit) {
   // Session variable used to prepopulate if available.
   $previousvaluesearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
   
-  $options = array(0 => 'Pacific NW',1 => 'State',2 => 'County',3 => 'Tribal land',4 => 'Watershed',5 => 'Puget Sound',6 => 'Stream');
-  $form['geodomain'] = array(
-    '#type' => 'radios',
-    '#title' => t('Geographic Domain (disabled)'),
-    '#options' => $options,
-    '#disabled' => TRUE,
-  );
-  $options = array('2.1.15' => 'King County1','2.1.16' => 'King County2','2.1.17' => 'King County',);
-  $form['region'] = array(
-    '#type' => 'select',
-    '#title' => t('Region'),
-    '#options' => $options,
-    '#multiple' => FALSE,
-    '#required' => TRUE,
-    '#default_value' => isset($previousvaluesearray['region'])?$previousvaluesearray['region']:key($options),
-  );
   $options = array(
     0 => 'Compare multiple hydroclimatic variables in a single geographic domain',
     1 => 'Explore the spatial variability of one hydro-climatic variable across a specific geographic domain',
@@ -111,12 +95,30 @@ function toewhiskers_explore_form($form, &$form_submit) {
     '#title' => t('Compare or Explore'),
     '#options' => $options,
     '#required' => TRUE,
-    '#default_value' => isset($previousvaluesearray['compare'])?$previousvaluesearray['compare']:key($options),
+    //'#default_value' => isset($previousvaluesearray['compare'])?$previousvaluesearray['compare']:key($options),
+  );
+  $options = array(0 => 'Pacific NW',1 => 'State',2 => 'County',3 => 'Tribal land',4 => 'Watershed',5 => 'Puget Sound',6 => 'Stream');
+  $form['geodomain'] = array(
+    '#type' => 'radios',
+    '#title' => t('Geographic Domain'),
+    '#options' => $options,
+    '#default_value' => '2',
+    '#disabled' => TRUE,
+  );
+  $options = array('2.1.17' => 'King County',);
+  $form['region'] = array(
+    '#type' => 'select',
+    '#title' => t('Region'),
+    '#options' => $options,
+    '#multiple' => FALSE,
+    '#required' => TRUE,
+    //'#default_value' => isset($previousvaluesearray['region'])?$previousvaluesearray['region']:key($options),
   );
   $form['submit'] = array(
-    '#title' => t('Submit'),
-    '#value' => 'Submit',
+    '#title' => t('Next Step'),
+    '#value' => 'Next Step',
     '#type' => 'submit',
+    //'#disabled' => TRUE,
   );
     
   $form_submit['redirect'] = 'compare';
