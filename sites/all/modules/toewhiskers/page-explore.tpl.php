@@ -76,7 +76,6 @@
 <div id="page">
 
   <h2>Explore</h2>
-  <p><img src="sites/default/files/wamap.png"></p>
   
   <?php print $explore_form; ?><br/>
   

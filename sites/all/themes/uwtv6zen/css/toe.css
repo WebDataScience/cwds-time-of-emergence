@@ -38,16 +38,11 @@ border-bottom: 1px solid #CDCDCD;
 .front #page-title {
 	font-size: 20px;
 }
-
 .front .front-article-subcontent {
       clear: left;
       margin-bottom: 25px;
 }
-
 .front .field-items .field-item p a:hover {
 	text-decoration: none;
         color: #3E2E5B;
-}
-body.page-timeline div.form-item-variable{
-  display:none;
 }
