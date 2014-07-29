@@ -1,5 +1,11 @@
 <?php
 
+// Error reporting code
+error_reporting(E_ALL);
+ini_set('display_errors', TRUE);
+ini_set('display_startup_errors', TRUE);
+
+
 function toewhiskers_menu() {
   $items['explore'] = array(
     'page callback' => 'toewhiskers_explore_page_function',

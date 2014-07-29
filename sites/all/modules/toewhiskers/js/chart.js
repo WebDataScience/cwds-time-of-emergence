@@ -98,6 +98,8 @@ function drawD3Timeline(timelinedataarray, maxtoeyear){
 		  , width = 960 - margin.left - margin.right
 		  , height = chartheight - margin.top - margin.bottom;
 
+		var format = d3.format("0000");
+
 		var x = d3.scale.linear()
 		          .domain([2000, 2100])
 		          .range([ 0, width ]);
@@ -122,6 +124,7 @@ function drawD3Timeline(timelinedataarray, maxtoeyear){
 		var xAxis = d3.svg.axis()
 		.scale(x)
 		.orient('bottom')
+		.tickFormat(format)
 		.tickSize(11,-1);
 
 

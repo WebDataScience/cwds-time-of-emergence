@@ -1,4 +1,10 @@
 <?php
+
+// Error reporting code
+error_reporting(E_ALL);
+ini_set('display_errors', TRUE);
+ini_set('display_startup_errors', TRUE);
+
 /**
  * @file
  * Zen theme's implementation to display a single Drupal page.

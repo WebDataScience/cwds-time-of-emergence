@@ -7,27 +7,6 @@
   <!-- start header -->
   <header id="header">
 
-<style>
-#header {
-  border-color: #E6E6D4;
-  height: 120px;
-}
-header li a {
-  //color: #E6E6D4;
-  float: right;
-}
-
-#header nav, #header nav ul {
-  float: right;
-}
-.row {
-  margin-top: -30px;
-}
-#footer {
-  border-top: 0;
-}
-</style>
-
 
     <div class="row">
 
