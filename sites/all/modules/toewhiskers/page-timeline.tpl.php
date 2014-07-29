@@ -99,6 +99,14 @@
 			//display: none;
 			margin: 0;
 		}
+		.minor-axis-date g.tick {
+			stroke: green;
+			stroke-width: 3;
+		}
+		.minor-axis-date text {
+			display: none;
+		}
+
 </style>
   
 <div id="page">

@@ -123,6 +123,21 @@ function drawD3Timeline(timelinedataarray, maxtoeyear){
 		.scale(x)
 		.orient('bottom');
 
+
+/*added*/
+		var xAxisMinor = d3.svg.axis()
+		  .scale(x)
+		  .orient('bottom')
+		  .ticks(100);
+
+main.append('g')
+                .attr('transform', 'translate(0,' + height + ')')
+                .attr('class', 'minor-axis-date')
+                .call(xAxisMinor);
+
+
+/* */ 
+
 		main.append('g')
 		.attr('transform', 'translate(0,' + height + ')')
 		.attr('class', 'main axis date')
@@ -138,19 +153,22 @@ function drawD3Timeline(timelinedataarray, maxtoeyear){
 		node.append("line")
 		  .attr("class", "scatter-point")
 		  	.attr("class", "tick")
-		  .attr("x1", function (d,i) { return 1 + x(d[0]); } )
+		  .attr("x1", function (d,i) { return x(d[0]); } )
 			.attr("y1", -5)
-			.attr("x2", function (d,i) { return 1 + x(d[0]); } )
+			.attr("x2", function (d,i) { return x(d[0]); } )
 			.attr("y2", 20)
 			.attr("stroke-width", 2)
 			.style("shape-rendering", "crispEdges")
 		//	.attr("stroke", "black");
 			.attr("stroke", "white");
 
+
+
+
 		node.append("line:circle")
 		  .attr("cx", function (d,i) { return x(d[0]); } )
 		  .attr("cy", function (d) { return y(d[1]); } )
-		  .attr("r", 2);
+		  .attr("r", 3);
 
 		node.append("line:text")
 		  .attr("class", "point-label")

@@ -1,8 +1,30 @@
-<div id="wrapper">
+<!--custom header added-->
+<!--<div id="page-header-custom">-->
+<!-- navigation -->
+      <?php if (isset($navigation)): ?>
+       <!-- <nav> -->
+          <?php # print $navigation; ?>
+       <!-- </nav> -->
+      <?php endif; ?>
+      <!-- // navigation -->
+<!--</div>
 
+<style>
+#page-header-custom {
+  width: 100%;
+  height: 120px;
+  background-color: purple;
+}
+</style>
+-->
+
+
+
+<div id="wrapper">
   <!-- start header -->
   <header id="header">
     <div class="row">
+
 
       <!-- logo -->
       <div class="logo">

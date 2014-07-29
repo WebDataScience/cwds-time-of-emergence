@@ -757,11 +757,22 @@ max-width: 915px;
 
 .page-node-1 .front-article-subcontent img {
 //  float: left;
-  margin-right: 15px;
+  margin-right: 30px;
 }
 
 .page-node-1 .front-article-subcontent {
   max-width: 915px;
+  font-size: 14px;
+  margin-bottom: 25px;
+}
+
+.page-node-1 #welcome-acknowledgments, .page-node-1 #welcome-disclaimer {
+  font-size: 10px;
+  clear: both;
+}
+
+.page-node-1 #welcome-acknowledgments .front-subheader, .page-node-1 #welcome-disclaimer .front-subheader {
+  font-size: 11px;
 }
 
 .page-timeline #maincontent, .page-timeline #page h2, .page-explore #page, .page-explore #page h2, .page-explore #page h1 {
@@ -795,14 +806,28 @@ max-width: 915px;
   float: left;
 }
 
-.page-node-1 .front-article-subcontent #cig-logo {
-  height: 100px;
-  width: auto;
+.page-node-1 .front-article-subcontent #usace-logo-2 {
+  width: 225px;
+  float: left;
+  margin-top: -10px;
+  clear: left;
+  margin-top: -50px;
+  margin-left: 145px;
 }
 
 .page-node-1 .front-article-subcontent #cig-logo {
-//clear: right;
+  height: 100px;
+  float: left;
+  width: auto;
+  clear: right;
 }
+
+.page-node-1 .front-article-subcontent #cig-logo {
+  clear: right;
+}
+
+
+
 
 /* ============== Sidebar ================ */
 
