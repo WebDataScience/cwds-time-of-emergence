@@ -121,7 +121,8 @@ function drawD3Timeline(timelinedataarray, maxtoeyear){
 		// draw the x axis
 		var xAxis = d3.svg.axis()
 		.scale(x)
-		.orient('bottom');
+		.orient('bottom')
+		.tickSize(11,-1);
 
 
 /*added*/
@@ -140,7 +141,7 @@ main.append('g')
 
 		main.append('g')
 		.attr('transform', 'translate(0,' + height + ')')
-		.attr('class', 'main axis date')
+		.attr('class', 'main axis date main-axis-date')
 		.call(xAxis);
 
 		var g = main.append("svg:g"); 
@@ -168,7 +169,7 @@ main.append('g')
 		node.append("line:circle")
 		  .attr("cx", function (d,i) { return x(d[0]); } )
 		  .attr("cy", function (d) { return y(d[1]); } )
-		  .attr("r", 3);
+		  .attr("r", 4);
 
 		node.append("line:text")
 		  .attr("class", "point-label")
