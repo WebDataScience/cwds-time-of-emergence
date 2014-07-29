@@ -62,7 +62,7 @@ function toewhiskers_explore_page_function(){
   return theme('explore_template');  
 }
 
-function toewhiskers_compare_page_function(){  
+function toewhiskers_compare_page_function(){ 
   drupal_set_title('Compare'); 
   return theme('compare_template');  
 }
@@ -178,26 +178,37 @@ function toewhiskers_compare_form($form,&$form_submit) {
   // Session variable used to prepopulate if available.
   $comparearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
   
-  $options = array(0 => 'Temperature', 1 => 'Precipitation', 2 => 'Hydrological', 3 => 'Stream',);
-  $form['theme'] = array(
-    '#type' => 'radios',
-    '#title' => t('Theme (disabled)'),
-    '#options' => $options,
-    '#disabled' => TRUE,
+  $form['narrow'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Narrow list of available Variables by following:'),
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
   );
-  $options = array(0 => 'Drought', 1 => 'Energy', 2 => 'Fish', 3 => 'Flood',4 => 'General', 5 => 'Human health', 6 => 'Infrastructure', 7 => 'Streamflow',8 => 'Water quality',);
-  $form['impact'] = array(
+  
+  $options = array(0 => 'Temperature', 1 => 'Precipitation', 2 => 'Hydrological', 3 => 'Stream', 4 => 'All',);
+  $form['narrow']['theme'] = array(
     '#type' => 'radios',
-    '#title' => t('Impact (disabled)'),
+    '#title' => t('Theme'),
     '#options' => $options,
     '#disabled' => TRUE,
+    '#default_value' => '4',
+  );
+  $options = array(0 => 'Drought', 1 => 'Energy', 2 => 'Fish', 3 => 'Flood',4 => 'General', 5 => 'Human health', 6 => 'Infrastructure', 7 => 'Streamflow',8 => 'Water quality',9 => 'All',);
+  $form['narrow']['impact'] = array(
+    '#type' => 'radios',
+    '#title' => t('Impact'),
+    '#options' => $options,
+    '#disabled' => TRUE,
+    '#default_value' => '9',
   ); 
-  $options = array(0 => 'Average', 1 => 'Extreme',);
-  $form['descriptor'] = array(
+  $options = array(0 => 'Average', 1 => 'Extreme',2 => 'All',);
+  $form['narrow']['descriptor'] = array(
     '#type' => 'radios',
-    '#title' => t('Descriptor (disabled)'),
+    '#title' => t('Descriptor'),
     '#options' => $options,
     '#disabled' => TRUE,
+    '#default_value' => '2',
+    '#suffix' => '<div class="clearfix"></div>',
   );  
   $form['variable'] = array(
     '#type' => 'select',
@@ -268,8 +279,8 @@ function toewhiskers_compare_form($form,&$form_submit) {
     '#default_value' => isset($comparearray['confidence'])?$comparearray['confidence']:key($options),
   );
   $form['submit'] = array(
-    '#title' => t('Submit'),
-    '#value' => 'Submit',
+    '#title' => t('Calculate'),
+    '#value' => 'Query for Time of Emergence',
     '#type' => 'submit',
     );
   return $form;

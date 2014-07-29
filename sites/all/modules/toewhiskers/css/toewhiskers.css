@@ -1,3 +1,19 @@
+
+
+/* /compare form */
+#toewhiskers-compare-form  div.form-type-radios.form-item-theme,
+#toewhiskers-compare-form  div.form-type-radios.form-item-impact,
+#toewhiskers-compare-form  div.form-type-radios.form-item-descriptor{
+  float: left;
+  /*margin-right: 20px;*/
+  width: 25%;
+}
+
+
+#toewhiskers-compare-form  div.form-type-radios.form-item-variable{
+  clear:both;
+}
+
 .h-form  div.form-type-radios {
   float:left;
   margin-right: 20px;
@@ -7,6 +23,10 @@
   margin: 1.5em 0px;
 }
 
+/* /timeline form */
+body.page-timeline #edit-narrow{
+  display:none;
+}
 body.page-timeline div.form-item-variable{
   display:none;
 }
