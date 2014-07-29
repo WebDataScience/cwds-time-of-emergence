@@ -13,6 +13,10 @@
 #toewhiskers-compare-form  div.form-type-radios.form-item-variable{
   clear:both;
 }
+#toewhiskers-compare-form .form-item-variable  #edit-variable {
+  width: auto;
+  max-width: none;
+}
 
 .h-form  div.form-type-radios {
   float:left;

@@ -180,12 +180,12 @@ function toewhiskers_compare_form($form,&$form_submit) {
   
   $form['narrow'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Narrow list of available Variables by following:'),
+    '#title' => t('Narrow list of available Hydroclimatic Variables by following:'),
     '#collapsible' => FALSE,
     '#collapsed' => FALSE,
   );
   
-  $options = array(0 => 'Temperature', 1 => 'Precipitation', 2 => 'Hydrological', 3 => 'Stream', 4 => 'All',);
+  $options = array(4 => 'All',0 => 'Temperature', 1 => 'Precipitation', 2 => 'Hydrological', 3 => 'Stream', );
   $form['narrow']['theme'] = array(
     '#type' => 'radios',
     '#title' => t('Theme'),
@@ -193,7 +193,7 @@ function toewhiskers_compare_form($form,&$form_submit) {
     '#disabled' => TRUE,
     '#default_value' => '4',
   );
-  $options = array(0 => 'Drought', 1 => 'Energy', 2 => 'Fish', 3 => 'Flood',4 => 'General', 5 => 'Human health', 6 => 'Infrastructure', 7 => 'Streamflow',8 => 'Water quality',9 => 'All',);
+  $options = array(9 => 'All',0 => 'Drought', 1 => 'Energy', 2 => 'Fish', 3 => 'Flood',4 => 'General', 5 => 'Human health', 6 => 'Infrastructure', 7 => 'Streamflow',8 => 'Water quality',);
   $form['narrow']['impact'] = array(
     '#type' => 'radios',
     '#title' => t('Impact'),
@@ -201,7 +201,7 @@ function toewhiskers_compare_form($form,&$form_submit) {
     '#disabled' => TRUE,
     '#default_value' => '9',
   ); 
-  $options = array(0 => 'Average', 1 => 'Extreme',2 => 'All',);
+  $options = array(2 => 'All',0 => 'Average', 1 => 'Extreme',);
   $form['narrow']['descriptor'] = array(
     '#type' => 'radios',
     '#title' => t('Descriptor'),
@@ -212,7 +212,7 @@ function toewhiskers_compare_form($form,&$form_submit) {
   );  
   $form['variable'] = array(
     '#type' => 'select',
-    '#title' => t('Variable'),
+    '#title' => t('Hydroclimatic Variables'),
     '#options' => array(
       'V1.01' => t('Average temperature in January'),
       'V1.02' => t('Average temperature in February'),
@@ -229,16 +229,24 @@ function toewhiskers_compare_form($form,&$form_submit) {
       'V8' => t('Number of days per year with daily maximum temperature exceeding 90 degF (32.2 degC)'),
     ),
     //'#default_value' => $category['selected'],
-    '#description' => t('Select one or many hydroclimatic variable(s).'),
+    '#description' => t('Select one or many hydroclimatic variable(s). Holding down &#39;ctrl&#39; key enables multiple select option.'),
     '#multiple' => TRUE,
     '#required' => TRUE,
     '#default_value' => isset($comparearray['variable'])?$comparearray['variable']:'',
+    '#cols' => 120,
+    '#size' => 10,
+  );
+  $form['parameter'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Apply the following parameters to the query:'),
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
   );
   $options = array(
     'rcp45' => 'RCP Low (RCP4.5)',
     'rcp85' => 'RCP High (RCP8.5)',
   );
-  $form['emission'] = array(
+  $form['parameter']['emission'] = array(
     '#type' => 'radios',
     '#title' => t('Emission scenario'),
     '#options' => $options,
@@ -248,7 +256,7 @@ function toewhiskers_compare_form($form,&$form_submit) {
   $options = array(
     'BCSD5' => 'Statistically-downscaled (CMIP5 BCSD)',
   );
-  $form['dataset'] = array(
+  $form['parameter']['dataset'] = array(
     '#type' => 'radios',
     '#title' => t('Dataset'),
     '#options' => $options,
@@ -259,7 +267,7 @@ function toewhiskers_compare_form($form,&$form_submit) {
     '95' => 'Low (90% historical range)',
     '80' => 'High (60% historical range)',
   );
-  $form['tolerance'] = array(
+  $form['parameter']['tolerance'] = array(
     '#type' => 'radios',
     '#title' => t('Tolerance (Emergence threshold)'),
     '#options' => $options,
@@ -271,7 +279,7 @@ function toewhiskers_compare_form($form,&$form_submit) {
     '50' => 'Medium (50% confidence interval)',
     '95' => 'High (95% confidence interval)',
   );
-  $form['confidence'] = array(
+  $form['parameter']['confidence'] = array(
     '#type' => 'radios',
     '#title' => t('Confidence'),
     '#options' => $options,
