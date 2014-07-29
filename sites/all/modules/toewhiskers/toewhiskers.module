@@ -92,7 +92,7 @@ function toewhiskers_explore_form($form, &$form_submit) {
   );
   $form['compare'] = array(
     '#type' => 'radios',
-    '#title' => t('Compare or Explore'),
+    '#title' => t('I want to...'),
     '#options' => $options,
     '#required' => TRUE,
     //'#default_value' => isset($previousvaluesearray['compare'])?$previousvaluesearray['compare']:key($options),
@@ -243,8 +243,10 @@ function toewhiskers_compare_form($form,&$form_submit) {
     '#collapsed' => FALSE,
   );
   $options = array(
-    'rcp45' => 'RCP Low (RCP4.5)',
-    'rcp85' => 'RCP High (RCP8.5)',
+    //'rcp45' => 'RCP Low (RCP4.5)',
+    //'rcp85' => 'RCP High (RCP8.5)',
+    'rcp45' => 'RCP4.5',
+    'rcp85' => 'RCP8.5',
   );
   $form['parameter']['emission'] = array(
     '#type' => 'radios',
@@ -264,8 +266,8 @@ function toewhiskers_compare_form($form,&$form_submit) {
     '#default_value' => isset($comparearray['dataset'])?$comparearray['dataset']:key($options),
   );
   $options = array(
-    '95' => 'Low (90% historical range)',
-    '80' => 'High (60% historical range)',
+    '95' => 'Low (middle 90% of historical fluctuations)',
+    '80' => 'High (middle 60% of historical fluctuations)',
   );
   $form['parameter']['tolerance'] = array(
     '#type' => 'radios',
@@ -275,9 +277,9 @@ function toewhiskers_compare_form($form,&$form_submit) {
     '#default_value' => isset($comparearray['tolerance'])?$comparearray['tolerance']:key($options),
   );
   $options = array(
-    '5' => 'Low (5% confidence interval)',
-    '50' => 'Medium (50% confidence interval)',
-    '95' => 'High (95% confidence interval)',
+    '5' => 'Lower bound (earlier ToE)',
+    '50' => 'Central tendency',
+    '95' => 'Upper bound (later ToE)',
   );
   $form['parameter']['confidence'] = array(
     '#type' => 'radios',
@@ -496,17 +498,22 @@ GCM - Phase 2				GCM
 BCSD5				Statistically-downscaled (CMIP5 BCSD)
 WRF - Phase 2				Dynamically-downscaled
 				
-EmergThres				Tolerance:
-95				Low (90% historical range)
-80				High (60% historical range)
+EmergThres				Tolerance:          Text to appear on website (e.g. in timeline title)
+95				Low (90% historical range)  Low (middle 90% of historical fluctuations)
+80				High (60% historical range) High (middle 60% of historical fluctuations)
 				
 				
-SignalConfidence				Confidence:
+SignalConfidence				
+Confidence:
 5				Low (5% confidence interval)
 50				Medium (50% confidence interval)
 95				High (95% confidence interval)
-				
-				
+v				
+Lower bound (earlier ToE)
+Central tendency
+Upper bound (later ToE)
+			
+      
 ModelAgreement				Model agreement:
 25				Low (25%)
 50				Medium (50%)

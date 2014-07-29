@@ -8,13 +8,13 @@ jQuery( document ).ready(function( $ ) {
 
   var websitetextarray = new Object();
   var confidence = new Object();
-  confidence['5'] = 'Low (5% confidence interval)';
-  confidence['50'] = 'Medium (50% confidence interval)';
-  confidence['95'] = 'High (95% confidence interval)';
+  confidence['5'] = 'Lower bound (earlier ToE)';
+  confidence['50'] = 'Central tendency';
+  confidence['95'] = 'Upper bound (later ToE)';
   websitetextarray['confidence'] = confidence;
   var tolerance = new Object;
-  tolerance['95'] = 'Low (90% historical range)';
-  tolerance['80'] = 'High (60% historical range)';
+  tolerance['95'] = 'Low (middle 90% of historical fluctuations)';
+  tolerance['80'] = 'High (middle 60% of historical fluctuations)';
   websitetextarray['tolerance'] = tolerance;
   var dataset = new Object;
   dataset['BCSD5'] = 'Statistically-downscaled (CMIP5 BCSD)';
