@@ -799,6 +799,7 @@ max-width: 915px;
   height: 50px;
   display: block;
   float: left;
+  clear: left;
 }
 
 .page-node-1 .front-article-subcontent #usace-logo {
@@ -819,10 +820,6 @@ max-width: 915px;
   height: 100px;
   float: left;
   width: auto;
-  clear: right;
-}
-
-.page-node-1 .front-article-subcontent #cig-logo {
   clear: right;
 }
 
