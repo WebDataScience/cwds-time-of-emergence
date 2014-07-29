@@ -255,6 +255,19 @@ function toewhiskers_compare_form($form,&$form_submit) {
     '#required' => TRUE,
     '#default_value' => isset($comparearray['emission'])?$comparearray['emission']:key($options),
   );
+  /*
+  $options = array(
+    'rcp45' => 'RCP4.5',
+    'rcp85' => 'RCP8.5',
+  );
+  $form['parameter']['emission'] = array(
+    '#type' => 'checkboxes',
+    '#title' => t('Emission scenario'),
+    '#options' => $options,
+    '#required' => TRUE,
+    '#default_value' => isset($comparearray['emission'])?$comparearray['emission']:'',
+  );
+  */
   $options = array(
     'BCSD5' => 'Statistically-downscaled (CMIP5 BCSD)',
   );
@@ -301,28 +314,22 @@ function toewhiskers_compare_form($form,&$form_submit) {
  * Submit handler for the 'compare' form.
  */
 function toewhiskers_compare_form_submit($form, &$form_state) {
-
   //drupal_set_message('formstate:<pre>'. print_r($form_state, TRUE) .'</pre>');
-
   // Grab session values if present.
   $comparearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
-  
   $comparearray['theme'] = check_plain($form_state['values']['theme']);
   $comparearray['impact'] = check_plain($form_state['values']['impact']);
   $comparearray['descriptor'] = check_plain($form_state['values']['descriptor']);
   $comparearray['variable'] = toewhiskers_clean_array($form_state['values']['variable']);
   $comparearray['emission'] = check_plain($form_state['values']['emission']);
+  //$comparearray['emission'] = toewhiskers_clean_array($form_state['values']['emission']);
   $comparearray['dataset'] = check_plain($form_state['values']['dataset']);
   $comparearray['tolerance'] = check_plain($form_state['values']['tolerance']);
   $comparearray['confidence'] = check_plain($form_state['values']['confidence']);
-  
+  // Set session variable.
   $_SESSION['compare'] = $comparearray;
-
   $compare = $_SESSION['compare'];
-
-  
   $form_state['redirect'] = 'timeline';
-  
 }
 
 
@@ -345,6 +352,8 @@ function toewhiskers_clean_array($array, $filter = 'check_plain') {
  */
 function toewhiskers_json_query_function($sid){
 
+  //drupal_set_message('formstate:<pre>'. print_r($_SESSION['compare'], TRUE) .'</pre>');
+  
   $max_TOE_year = 2100;
 
   $verbose_test_mode = FALSE;
@@ -362,14 +371,24 @@ function toewhiskers_json_query_function($sid){
   // Multiple variables allowed.
   $variables = implode("','",$compare['variable']);
   $variables = str_replace(" ", "", $variables);
+  
+  // Radios
   $emission = trim($compare['emission']);
+  
+  // Checkboxes
+  //$emissions = implode("','",$compare['emission']);
+  //$emissions = str_replace(" ", "", $emissions);
+  
   $dataset = trim($compare['dataset']);
   $tolerance = trim($compare['tolerance']);
   $confidence = trim($compare['confidence']);
  
-  
+  // radios:        AND SCEN1_DATA_V1.EMISSCENARIO = '" . $emission .   "' 
+  // checkboxes:    AND SCEN1_DATA_V1.EMISSCENARIO in ('" . $emissions . "') 
   //Query for the timeline chart portion of /timeline page.
-  $query = "SELECT {SCEN1_DATA_V1}.TOE,{SCEN1_DATA_V1}.VARIABLEID,{SCEN1_DATA_V1}.CHANGEDIR,{TOE_DATA_V1}.VARIABLENAME,{TOE_DATA_V1}.VARIABLESHORTNAME FROM {SCEN1_DATA_V1} LEFT JOIN {TOE_DATA_V1} on (TOE_DATA_V1.VARIABLEID = SCEN1_DATA_V1.VARIABLEID) WHERE 
+  $query = "SELECT 
+  {SCEN1_DATA_V1}.TOE,{SCEN1_DATA_V1}.VARIABLEID,{SCEN1_DATA_V1}.CHANGEDIR,{TOE_DATA_V1}.VARIABLENAME,{TOE_DATA_V1}.VARIABLESHORTNAME,{SCEN1_DATA_V1}.EMISSCENARIO 
+  FROM {SCEN1_DATA_V1} LEFT JOIN {TOE_DATA_V1} on (TOE_DATA_V1.VARIABLEID = SCEN1_DATA_V1.VARIABLEID) WHERE 
   SCEN1_DATA_V1.VARIABLEID in ('" . $variables . "') 
   AND SCEN1_DATA_V1.REGION = '" . $region .   "' 
   AND SCEN1_DATA_V1.EMISSCENARIO = '" . $emission .   "' 
@@ -400,7 +419,15 @@ function toewhiskers_json_query_function($sid){
     // Function to translate ugly short name value in DB to pretty names:
     if($record->VARIABLESHORTNAME == "#Tmax>90degF(32.2deg"){$record->VARIABLESHORTNAME = "#Tmax>90°F(32.2°C)";}
     
-    $toe[$record->VARIABLEID] = array($record->CHANGEDIR,intval($record->TOE),$record->VARIABLENAME,$record->VARIABLEID,ceil($record->TOE/5)*5,$record->VARIABLESHORTNAME);
+    $toe[] = array(
+      $record->CHANGEDIR,
+      intval($record->TOE),
+      $record->VARIABLENAME,
+      $record->VARIABLEID,
+      ceil($record->TOE/5)*5,
+      $record->VARIABLESHORTNAME,
+      $record->EMISSCENARIO,
+    );
   }
 
   // Query for 'table' portion of /timeline page.
@@ -413,8 +440,6 @@ function toewhiskers_json_query_function($sid){
   AND SCEN1_DATA_V1.SIGNALCONFIDENCE = " . $confidence . "
   AND (SCEN1_DATA_V1.MODELAGREEMENT = '25' OR SCEN1_DATA_V1.MODELAGREEMENT = '75') 
   AND SCEN1_DATA_V1.GCM = 'GCM_ensemble' ORDER BY SCEN1_DATA_V1.VARIABLEID ";
-  //print($query . "<br/>");
-  
   $result = db_query($query);
   
   $tabledataarray = array();

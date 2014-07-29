@@ -51,7 +51,7 @@ jQuery( document ).ready(function( $ ) {
        dataarray.push([onerow[2],onerow[1],'opacity: 0',1,'opacity: 1']);
        //jsondataarray.push([onerow[2],onerow[1],onerow[2]]);
        jsondataarray.push([ onerow[2],onerow[4], colorarray.shift() ]);
-       timelinedataarray.push([ onerow[4] , 0, onerow[2], onerow[5]]); //Math.floor(Math.random()*2)
+       timelinedataarray.push([ onerow[4] , 0, onerow[2], onerow[5], onerow[6]]); 
     }
 
     
@@ -89,7 +89,7 @@ jQuery( document ).ready(function( $ ) {
   
   
 function drawD3Timeline(timelinedataarray, maxtoeyear){
- var data = [[2000,0,"tooltip1","label1"], [2020,0,"tooltip2","label2"], [2085,0,"tooltip3","label3"], [2040,0,"tooltip4","label4"]];
+ var data = [[2000,0,"tooltip1","label1","rcp45"], [2020,0,"tooltip2","label2","rcp85"], [2085,0,"tooltip3","label3","rcp45"], [2040,0,"tooltip4","label4","rcp45"]];
  
  var chartheight = 100;
  data = timelinedataarray;
