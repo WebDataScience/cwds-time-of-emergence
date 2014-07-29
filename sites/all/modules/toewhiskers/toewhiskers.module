@@ -335,11 +335,11 @@ function toewhiskers_clean_array($array, $filter = 'check_plain') {
  */
 function toewhiskers_json_query_function($sid){
 
+  $max_TOE_year = 2100;
+
   $verbose_test_mode = FALSE;
   
   $compare = $_SESSION['compare'];
-  
-  $max_TOE_year = 2100;
 
   // The nid of the webform.
   //$webformnid = '4';
@@ -386,6 +386,10 @@ function toewhiskers_json_query_function($sid){
     // Perform operations on $record->title, etc. here. In this example the available data would be mapped to object properties:
     // $record->nid, $record->title, $record->created
     //$output .= "variableid: " . $record->VARIABLEID . " toe: " . $record->TOE;
+    
+    // Function to translate ugly short name value in DB to pretty names:
+    if($record->VARIABLESHORTNAME == "#Tmax>90degF(32.2deg"){$record->VARIABLESHORTNAME = "#Tmax>90°F(32.2°C)";}
+    
     $toe[$record->VARIABLEID] = array($record->CHANGEDIR,intval($record->TOE),$record->VARIABLENAME,$record->VARIABLEID,ceil($record->TOE/5)*5,$record->VARIABLESHORTNAME);
   }
 
@@ -408,10 +412,20 @@ function toewhiskers_json_query_function($sid){
   // Result is returned as a iterable object that returns a stdClass object on each iteration
   foreach ($result as $record) {
     //print_r($record);
-    if($record->MODELAGREEMENT == '25'){$tabledataarray[$record->VARIABLEID]['toe25']=ceil($record->TOE/5)*5;}
-    if($record->MODELAGREEMENT == '75'){$tabledataarray[$record->VARIABLEID]['toe75']=ceil($record->TOE/5)*5;}
+    if($record->MODELAGREEMENT == '25'){
+      $roundedtoe = ceil($record->TOE/5)*5;
+      $roundedtoe = ($roundedtoe > $max_TOE_year)?'beyond 2100':$roundedtoe;
+      $tabledataarray[$record->VARIABLEID]['toe25']=$roundedtoe;
+    }
+    if($record->MODELAGREEMENT == '75'){
+      $roundedtoe = ceil($record->TOE/5)*5;
+      $roundedtoe = ($roundedtoe > $max_TOE_year)?'beyond 2100':$roundedtoe;
+      $tabledataarray[$record->VARIABLEID]['toe75']=$roundedtoe;
+    }
     $tabledataarray[$record->VARIABLEID]['changedir']=$record->CHANGEDIR;
     $tabledataarray[$record->VARIABLEID]['shortname']=$record->VARIABLESHORTNAME;
+    // Pretty function to replace this code soon.
+    if($record->VARIABLESHORTNAME == "#Tmax>90degF(32.2deg"){$tabledataarray[$record->VARIABLEID]['shortname'] = "#Tmax>90°F(32.2°C)";}
   }
   
   db_set_active();

@@ -119,13 +119,9 @@
   <div id="horizontal-bar-chart"></div>
   <div id="timeline-chart"></div>  
 
-  <hr/>
   
   <h2>Projected Range of Time of Emergence for <span class="region">King County</span> under <span class="emission"></span> </h2>
       <p>
-    Confidence: <span class="confidence"></span><br/>
-    Tolerance: <span class="tolerance"></span><br/>
-    Dataset: <span class="dataset"></span></p>
   <table id="tabledata">
       <th>Hydro-climatic Variable</th><th>ToE Range</th><th>Direction of Change</th>
       <!--<tr><td>Variable Shortname (Column G)</td><td>{Year A} – {Year B}</td><td>ChangeDir (Column C)</td></tr>
