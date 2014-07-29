@@ -91,20 +91,23 @@
 			background-color: #edeef1;
 		}
 		circle {
-			//fill: black;
-			fill: white;
+			stroke: white;
+			fill: #151412;
 		}
   		hr {
 			max-width: 915px;
 			//display: none;
 			margin: 0;
 		}
-		.minor-axis-date g.tick {
-			stroke: green;
-			stroke-width: 3;
-		}
 		.minor-axis-date text {
 			display: none;
+		}
+		.minor-axis-date .domain {
+			opacity: 0;
+		}
+		.tick {
+    			 stroke: white;
+    			 stroke-width: 1;
 		}
 
 </style>
