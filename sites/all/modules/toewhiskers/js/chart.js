@@ -167,17 +167,20 @@ function drawD3Timeline(timelinedataarray, maxtoeyear){
 		node.append("line:circle")
 		  .attr("cx", function (d,i) { return x(d[0]); } )
 		  .attr("cy", function (d) { return y(d[1]); } )
-		  .attr("r", 4);
+		  .attr("r", "4");
 
 		node.append("line:text")
 		  .attr("class", "point-label")
-		  .attr("x", function (d,i) { return x(d[0]); } )
+		  .attr("x", function (d,i) { return x(d[0]); } ) 
 		  //.attr("y", function (d) { return y(d[1]); } )
-      .attr("y", function (d,i) { return (45-(5*(d[0]%10))); } )
+      		.attr("y", function (d,i) { return (45-(5*(d[0]%10))); } ) 
 		  //.attr("dy", -75)
 		  .style("text-anchor", "middle")
 		  .text(function(d) { return d[3]; })
-		  .attr('title', function(d) {  return d[2]; }); 
+		  .attr('title', function(d) {  return d[2]; })
+		.on("click", function(d) {
+		document.location.href="/boxplot" }); 
+
 }
 
 
