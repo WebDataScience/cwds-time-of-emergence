@@ -100,7 +100,7 @@ ini_set('display_startup_errors', TRUE);
 			stroke: white;
 			fill: #151412;
 		}
-  		hr {
+  	hr {
 			max-width: 915px;
 			//display: none;
 			margin: 0;
@@ -118,7 +118,6 @@ ini_set('display_startup_errors', TRUE);
 
 </style>
   
-<div id="page">
   <h2>Multi-Model Median Time of Emergence for <span class="region">King County</span> under <span class="emission"></span></h2>
     <p>    
     Confidence: <span class="confidence"></span><br/>
@@ -140,14 +139,10 @@ ini_set('display_startup_errors', TRUE);
   
   <hr/>
   
+  <h2>Revise and recalculate</h2>
   <div class="h-form">
   <?php print $parameterform; ?><br/>
   <div style="clear:both"></div>
   <div>
 
-  
-  
-  
 
-  
-  <div>

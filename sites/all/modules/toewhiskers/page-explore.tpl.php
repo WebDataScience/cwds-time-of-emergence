@@ -73,8 +73,7 @@
 
  
   
-<div id="page">
-  <h2>Explore</h2>
+
     <div id="chart"></div>
     <?php print $explore_form; ?><br/>
-<div>
+
