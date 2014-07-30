@@ -91,10 +91,10 @@ jQuery( document ).ready(function( $ ) {
 function drawD3Timeline(timelinedataarray, maxtoeyear){
  var data = [[2000,0,"tooltip1","label1","rcp45"], [2020,0,"tooltip2","label2","rcp85"], [2085,0,"tooltip3","label3","rcp45"], [2040,0,"tooltip4","label4","rcp45"]];
  
- var chartheight = 100;
+ var chartheight = 200;
  data = timelinedataarray;
 		   
-		var margin = {top: 20, right: 15, bottom: 60, left: 60}
+		var margin = {top: 20, right: 50, bottom: 60, left: 30}
 		  , width = 960 - margin.left - margin.right
 		  , height = chartheight - margin.top - margin.bottom;
 
@@ -125,22 +125,17 @@ function drawD3Timeline(timelinedataarray, maxtoeyear){
 		.scale(x)
 		.orient('bottom')
 		.tickFormat(format)
-		.tickSize(11,-1);
+		.tickSize(21,-1);
 
-
-/*added*/
 		var xAxisMinor = d3.svg.axis()
 		  .scale(x)
 		  .orient('bottom')
 		  .ticks(100);
 
-main.append('g')
+    main.append('g')
                 .attr('transform', 'translate(0,' + height + ')')
                 .attr('class', 'minor-axis-date')
-                .call(xAxisMinor);
-
-
-/* */ 
+                .call(xAxisMinor); 
 
 		main.append('g')
 		.attr('transform', 'translate(0,' + height + ')')
@@ -152,22 +147,22 @@ main.append('g')
 		var node = g.selectAll("g")
                 .data(data)
                 .enter()
-                .append("g");
-
+                .append("g");         
+                
 		node.append("line")
 		  .attr("class", "scatter-point")
-		  	.attr("class", "tick")
+		  .attr("class", "tick")
 		  .attr("x1", function (d,i) { return x(d[0]); } )
-			.attr("y1", -5)
+      
+			//.attr("y1", 50)
+      .attr("y1", function (d,i) { return (50-(5*(d[0]%10))); } )
+      
 			.attr("x2", function (d,i) { return x(d[0]); } )
-			.attr("y2", 20)
+			.attr("y2", 120)
 			.attr("stroke-width", 2)
 			.style("shape-rendering", "crispEdges")
 		//	.attr("stroke", "black");
 			.attr("stroke", "white");
-
-
-
 
 		node.append("line:circle")
 		  .attr("cx", function (d,i) { return x(d[0]); } )
@@ -177,12 +172,12 @@ main.append('g')
 		node.append("line:text")
 		  .attr("class", "point-label")
 		  .attr("x", function (d,i) { return x(d[0]); } )
-		  .attr("y", function (d) { return y(d[1]); } )
-		  .attr("dy", -32)
-
+		  //.attr("y", function (d) { return y(d[1]); } )
+      .attr("y", function (d,i) { return (45-(5*(d[0]%10))); } )
+		  //.attr("dy", -75)
 		  .style("text-anchor", "middle")
 		  .text(function(d) { return d[3]; })
-		  .attr('title', function(d) { return d[2]; }); 
+		  .attr('title', function(d) {  return d[2]; }); 
 }
 
 
