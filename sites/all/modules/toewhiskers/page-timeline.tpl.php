@@ -139,6 +139,7 @@ ini_set('display_startup_errors', TRUE);
   
   <hr/>
   
+  <br/>
   <h2>Revise and recalculate</h2>
   <div class="h-form">
   <?php print $parameterform; ?><br/>
