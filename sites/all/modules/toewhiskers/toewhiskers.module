@@ -338,7 +338,15 @@ function toewhiskers_compare_form_submit($form, &$form_state) {
   // Set session variable.
   $_SESSION['compare'] = $comparearray;
   $compare = $_SESSION['compare'];
+
+
+// If initial compare option was 'explore how ToE results vary spatially across the Pacific Northwest' send user to /density-maps instead of /timeline
+if ($compare['compare'] == 2) {
+  $form_state['redirect'] = 'density-maps';
+} else {
   $form_state['redirect'] = 'timeline';
+}
+
 }
 
 
