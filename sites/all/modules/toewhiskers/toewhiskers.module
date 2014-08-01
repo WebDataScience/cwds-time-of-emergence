@@ -95,6 +95,9 @@ function toewhiskers_explore_form($form, &$form_submit) {
   $options = array(
     0 => 'Compare multiple hydroclimatic variables in a single geographic domain',
     1 => 'Explore the spatial variability of one hydro-climatic variable across a specific geographic domain',
+  
+    2 => 'For one hydro-climatic variable, explore how ToE results vary spatially across the Pacific Northwest', 
+
   );
   $form['compare'] = array(
     '#type' => 'radios',
