@@ -126,7 +126,8 @@ ini_set('display_startup_errors', TRUE);
   <div id="chartmessage"></div>
   <div id="horizontal-bar-chart"></div>
   <div id="timeline-chart"></div>  
-
+<div id="range-revise-wrapper">
+  <div id="toe-range">
   
   <h2>Projected Range of Time of Emergence for <span class="region">King County</span> under <span class="emission"></span> </h2>
       <p>
@@ -137,13 +138,13 @@ ini_set('display_startup_errors', TRUE);
       <span class="tablerows"></span>
   </table>
   
-  <hr/>
-  
-  <br/>
-  <h2>Revise and recalculate</h2>
+ </div> 
+<div id="toe-revise">  <h2>Revise and recalculate</h2>
   <div class="h-form">
   <?php print $parameterform; ?><br/>
   <div style="clear:both"></div>
   <div>
+  </div>
+  </div>
 
 
