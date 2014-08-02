@@ -14,6 +14,10 @@ body.colourise {
 }
 #page {
   color: #aaa;
+  /* background: #070707 url(../images/bg.jpg) center top no-repeat; */
+  background: #070707  center top no-repeat;
+}
+.front #page {
   background: #070707 url(../images/bg.jpg) center top no-repeat;
 }
 
