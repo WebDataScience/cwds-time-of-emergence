@@ -122,6 +122,7 @@ function toewhiskers_explore_form($form, &$form_submit) {
     '#multiple' => FALSE,
     '#required' => TRUE,
     //'#default_value' => isset($previousvaluesearray['region'])?$previousvaluesearray['region']:key($options),
+    '#default_value' => '2.1.17',
   );
   $form['submit'] = array(
     '#title' => t('Next Step'),
@@ -299,9 +300,9 @@ function toewhiskers_compare_form($form,&$form_submit) {
     '#default_value' => isset($comparearray['tolerance'])?$comparearray['tolerance']:key($options),
   );
   $options = array(
-    '5' => 'Lower bound (earlier ToE)',
+    '95' => 'Lower bound (earlier ToE)',
     '50' => 'Central tendency',
-    '95' => 'Upper bound (later ToE)',
+    '5' => 'Upper bound (later ToE)',
   );
   $form['parameter']['confidence'] = array(
     '#type' => 'radios',

@@ -153,9 +153,12 @@ var data; // loaded asynchronously
     $('#edit-submit').attr('disabled', 'disabled');
   }      
   $('input[name=compare]:radio').click(function(){
-    //alert("yogurt");
+    // If user chooses 'explore' then submit with region already default selected.
+    if($('input:radio[name=compare]:checked').val() == '2'){ 
+      $( "#toewhiskers-explore-form" ).submit();
+      return;
+    }
     //enable 'region' dropdown.
-    
     // this solution requires newer version of jQuery: $("#edit-region").prop("disabled", false);
     //$('#edit-region').removeAttr('disabled');
     $('div.form-item-region').show(); 
