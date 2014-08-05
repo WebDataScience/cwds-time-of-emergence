@@ -95,9 +95,7 @@ function toewhiskers_explore_form($form, &$form_submit) {
   $options = array(
     0 => 'Compare multiple hydroclimatic variables in a single geographic domain',
     1 => 'Explore the spatial variability of one hydro-climatic variable across a specific geographic domain',
-  
     2 => 'For one hydro-climatic variable, explore how ToE results vary spatially across the Pacific Northwest', 
-
   );
   $form['compare'] = array(
     '#type' => 'radios',
@@ -155,13 +153,12 @@ function toewhiskers_explore_form_submit($form, &$form_state) {
 
 
 function toewhiskers_page_function(){
-
     drupal_add_js('https://www.google.com/jsapi');
     drupal_add_js("https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['timeline']}]}");
     drupal_add_js(drupal_get_path('module', 'toewhiskers') . '/js/chart.js');
-    
     drupal_add_css(drupal_get_path('module', 'toewhiskers') . '/css/toewhiskers.css');
-    
+    // Set the value of the 'I want' to be 'compare' so that subsequent form submissions redirect to this page.
+    $_SESSION['compare']['compare'] = 0;
     return theme('timeline_template');
 }
 
@@ -340,13 +337,12 @@ function toewhiskers_compare_form_submit($form, &$form_state) {
   $_SESSION['compare'] = $comparearray;
   $compare = $_SESSION['compare'];
 
-
-// If initial compare option was 'explore how ToE results vary spatially across the Pacific Northwest' send user to /density-maps instead of /timeline
-if ($compare['compare'] == 2) {
-  $form_state['redirect'] = 'density-maps';
-} else {
-  $form_state['redirect'] = 'timeline';
-}
+  // If initial compare option was 'explore how ToE results vary spatially across the Pacific Northwest' send user to /density-maps instead of /timeline
+  if ($compare['compare'] == 2) {
+    $form_state['redirect'] = 'density-maps';
+  } else {
+    $form_state['redirect'] = 'timeline';
+  }
 
 }
 
