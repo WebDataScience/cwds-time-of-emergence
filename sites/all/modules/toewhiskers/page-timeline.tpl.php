@@ -97,8 +97,21 @@ ini_set('display_startup_errors', TRUE);
 			background-color: #edeef1;
 		}
 		circle {
-			stroke: white;
-			fill: #151412;
+			stroke-width: 1;
+
+			/*white - no-fill*/
+			//stroke: white;
+			//fill: #151412;
+
+			/*purple*/
+			//fill: #9775aa;
+			//stroke: #764b8e;
+			//stroke: #E0B2E0;
+
+			/*green*/
+			//fill: #00FF00;
+			fill: #248F24;
+			stroke: #99FF99;
 		}
   	hr {
 			max-width: 915px;
