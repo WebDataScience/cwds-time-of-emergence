@@ -24,6 +24,7 @@
 
 .page-node-7 #block-nivo_slider-nivo_slider {
   //margin-top: -50px;
+  clear:both;
 }
 #block-views-puget_sound_nivo_slider-block{
   padding: 0px 20px;
