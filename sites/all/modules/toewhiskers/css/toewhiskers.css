@@ -39,4 +39,10 @@ body.page-timeline div.form-item-variable{
   display: block;
 }
 
-
+.page-timeline div.timeline-thumbnail {
+  float: right;
+}
+.page-timeline div.timeline-thumbnail img{
+  width: 105px;
+  height: 105px;
+}
