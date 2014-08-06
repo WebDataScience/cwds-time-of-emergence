@@ -168,7 +168,7 @@ function drawD3Timeline(timelinedataarray, maxtoeyear){
 		node.append("line:circle")
 		  .attr("cx", function (d,i) { return x(d[0]); } )
 		  .attr("cy", function (d) { return y(d[1]); } )
-		  .attr("r", "4");
+		  .attr("r", "6");
 
 		node.append("line:text")
 		  .attr("class", "point-label")
