@@ -51,7 +51,8 @@ jQuery( document ).ready(function( $ ) {
        dataarray.push([onerow[2],onerow[1],'opacity: 0',1,'opacity: 1']);
        //jsondataarray.push([onerow[2],onerow[1],onerow[2]]);
        jsondataarray.push([ onerow[2],onerow[4], colorarray.shift() ]);
-       timelinedataarray.push([ onerow[4] , 0, onerow[2], onerow[5], onerow[6]]); 
+       timelinedataarray.push([ onerow[4] , 0, onerow[2], onerow[5], onerow[6], 0]);
+            /* val 0 at [5] represents default vertical height between the axis and variable label */ 
     }
 
     
@@ -89,10 +90,31 @@ jQuery( document ).ready(function( $ ) {
   
   
 function drawD3Timeline(timelinedataarray, maxtoeyear){
- var data = [[2000,0,"tooltip1","label1","rcp45"], [2020,0,"tooltip2","label2","rcp85"], [2085,0,"tooltip3","label3","rcp45"], [2040,0,"tooltip4","label4","rcp45"]];
+ var data = [[2000,0,"tooltip1","label1","rcp45",50], [2020,0,"tooltip2","label2","rcp85",50], [2085,0,"tooltip3","label3","rcp45",50], [2040,0,"tooltip4","label4","rcp45",50]];
  
  var chartheight = 200;
  data = timelinedataarray;
+
+
+/* Code to prevent label text overlapping */
+
+var temparr = [[0,0]];
+
+for (var i = 0; i < data.length; i++) {
+	var found = false;
+	for (var j = 0; j < temparr.length; j++) {
+		if (data[i][0] == temparr[j][0]) {
+			var count = temparr[j][1];
+			data[i][5] = data[i][5] + (5 + count * 10);
+			temparr[j][1] = count + 1;
+			found = true;
+		}
+	}
+
+	if (found == false) {
+		temparr.push([data[i][0], 1]);
+	}
+} 
 		   
 		var margin = {top: 20, right: 50, bottom: 60, left: 30}
 		  , width = 960 - margin.left - margin.right
@@ -156,8 +178,8 @@ function drawD3Timeline(timelinedataarray, maxtoeyear){
 		  .attr("x1", function (d,i) { return x(d[0]); } )
       
 			//.attr("y1", 50)
-      .attr("y1", function (d,i) { return (50-(5*(d[0]%10))); } )
-      
+      //.attr("y1", function (d,i) { return (50-(5*(d[0]%10))); } )
+      .attr("y1", function(d,i) { return d[5]; })
 			.attr("x2", function (d,i) { return x(d[0]); } )
 			.attr("y2", 120)
 			.attr("stroke-width", 2)
@@ -170,11 +192,18 @@ function drawD3Timeline(timelinedataarray, maxtoeyear){
 		  .attr("cy", function (d) { return y(d[1]); } )
 		  .attr("r", "6");
 
+		node.append("line:rect") 
+                  .attr("x", function (d,i) { return x(d[0]) - 5; } )
+                  .attr("y", function (d) { return d[5] - 10; } )
+                  .attr("height", "15")
+                  .attr("width", "10")
+                  .attr("fill", "#070707");
+
 		node.append("line:text")
 		  .attr("class", "point-label")
 		  .attr("x", function (d,i) { return x(d[0]); } ) 
-		  //.attr("y", function (d) { return y(d[1]); } )
-      		.attr("y", function (d,i) { return (45-(5*(d[0]%10))); } ) 
+		  .attr("y", function (d) { return d[5]; } )
+      	//	.attr("y", function (d,i) { return (45-(5*(d[0]%10))); } ) 
 		  //.attr("dy", -75)
 		  .style("text-anchor", "middle")
 		  .text(function(d) { return d[3]; })
