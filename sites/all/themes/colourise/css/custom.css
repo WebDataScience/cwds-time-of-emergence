@@ -26,7 +26,8 @@
   //margin-top: -50px;
 }
 #block-views-puget_sound_nivo_slider-block{
-  padding: 10px 20px;
+  padding: 0px 20px;
+  float: left;
 }
 #views-nivo-slider-puget-sound-nivo-slider-block img,
 .nivo-controlNav{
