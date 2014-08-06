@@ -117,7 +117,7 @@ ini_set('display_startup_errors', TRUE);
 		}
 
 </style>
-  
+  <div class="timeline-thumbnail"><img src="/sites/all/modules/toewhiskers/images/kingcounty200x200.png"></div>
   <h2>Multi-Model Median Time of Emergence for <span class="region">King County</span> under <span class="emission"></span></h2>
     <p>    
     Confidence: <span class="confidence"></span><br/>
