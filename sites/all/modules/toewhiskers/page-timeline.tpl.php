@@ -128,7 +128,9 @@ ini_set('display_startup_errors', TRUE);
     			 stroke: white;
     			 stroke-width: 1;
 		}
-
+		.point-label {
+		z-index: 100;
+		} 
 </style>
   <div class="timeline-thumbnail"><img src="/sites/all/modules/toewhiskers/images/kingcounty200x200.png"></div>
   <h2>Multi-Model Median Time of Emergence for <span class="region">King County</span> under <span class="emission"></span></h2>

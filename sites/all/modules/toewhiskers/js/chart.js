@@ -150,15 +150,15 @@ for (var i = 0; i < data.length; i++) {
 		.tickFormat(format)
 		.tickSize(15,-1);
 
-		var xAxisMinor = d3.svg.axis()
+	/*	var xAxisMinor = d3.svg.axis()
 		  .scale(x)
 		  .orient('bottom')
-		  .ticks(100);
+		  .ticks(100);		
 
-    main.append('g')
+    		main.append('g')
                 .attr('transform', 'translate(0,' + height + ')')
                 .attr('class', 'minor-axis-date')
-                .call(xAxisMinor); 
+                .call(xAxisMinor); */
 
 		main.append('g')
 		.attr('transform', 'translate(0,' + height + ')')
@@ -208,6 +208,7 @@ for (var i = 0; i < data.length; i++) {
 		  .style("text-anchor", "middle")
 		  .text(function(d) { return d[3]; })
 		  .attr('title', function(d) {  return d[2]; })
+		  .attr('alt', function(d) { return d[2]; })
 		.on("click", function(d) {
 		document.location.href="/boxplot" }); 
 
