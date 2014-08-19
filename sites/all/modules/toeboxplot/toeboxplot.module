@@ -1,0 +1,26 @@
+<?php
+/* Error reporting */
+error_reporting(E_ALL);
+ini_set('display_errors', TRUE);
+ini_set('display_startup_errors', TRUE);
+
+function toeboxplot_menu() {
+  $items['boxplot_test'] = array(
+    'page callback' => 'toeboxplot_page_function',
+    'access callback' => TRUE,
+  );
+  return $items;
+}
+
+function toeboxplot_page_function(){
+    return theme('toeboxplot_template');
+}
+
+function toeboxplot_theme(){
+    return array(
+        'toeboxplot_template' => array(
+            // file name will be page-timeline.tpl.php
+            'template' => 'templates/toeboxplot',
+        ),
+    );
+}
