@@ -1,6 +1,7 @@
 <?php
-# Template for basic page displaying boxplots
-$path = drupal_get_path('module', 'toeboxplot');
+  # Template for basic page displaying boxplots
+  $path = drupal_get_path('module', 'toeboxplot');
+
 ?>
 
 <!DOCTYPE html>
@@ -8,30 +9,29 @@ $path = drupal_get_path('module', 'toeboxplot');
 
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="d3/d3.js"></script>
+  <!--<script src="d3/d3.js"></script>-->
+  <?php
+    drupal_add_js($path . '/d3/d3.js');
+  ?>
 </head>
 
-<body>
+<body style="background-color: white;">
   <h1>High Emissions (RCP 8.5)</h1>
 
   <!--x/y axis category labels-->
   <div class="ylabel" id="lowerbound">Lower bound<br />(earlier ToE)</div>
   <div class="ylabel" id="centraltendency">Central tendency</div>
   <div class="ylabel" id="upperbound">Upper bound<br />(later ToE)</div>
+  <input id="module_path" type="hidden" value="<?php echo base_path() . $path ?>" />
 
-  <script src="js/boxplot.js"></script>
-
-</head>
-
-<body>
-    <div id="map" <!--style="width: 900px; height: 500px"--></div>
-    <div id='chart'>
-    </div>
-    <input id="module_path" type="hidden" value="<?php echo base_path() . $path ?>" />
+  <!--<script src="js/boxplot.js"></script>-->
+  <?php
+    drupal_add_js($path . '/js/boxplot.js');
+  ?>
 
     <script>
         var labels = true; 
+        var module_path = document.getElementById('module_path').value;
 
         var margin = {top: 30, right: 50, bottom: 70, left: 50};
         var width = 500 - margin.left - margin.right;
@@ -40,7 +40,7 @@ $path = drupal_get_path('module', 'toeboxplot');
         var min = Infinity,
             max = -Infinity;
           
-        d3.csv("csv/test.csv", function(error, csv) {
+        d3.csv(module_path + "/csv/test.csv", function(error, csv) {
 
           var data = [];
           data[0] = [];
@@ -162,6 +162,99 @@ $path = drupal_get_path('module', 'toeboxplot');
         <?php
           drupal_add_css($path . '/css/boxplot.css');
         ?>
+
+  <style>
+
+      body {
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      }
+
+      .box {
+        font: 10px sans-serif;
+      }
+
+      .box line,
+      .box rect,
+      .box circle {
+        fill: steelblue;
+        stroke: #000;
+        stroke-width: 1px;
+      }
+
+      .box .center {
+        stroke-dasharray: 3,3;
+      }
+
+      .box .outlier {
+        fill: #4682B4;
+        stroke: #000;
+        r: 2;
+      }
+
+      .axis {
+        font: 12px sans-serif;
+      }
+       
+      .axis path,
+      .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+      }
+       
+      .x.axis path { 
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+      }
+
+      h1 {
+        position: absolute;
+        top: 35px;
+        left: 275px;
+        font-size: 18px;
+        font-weight: normal;
+      }
+
+      text {
+        -webkit-transform: rotate(90deg);
+        -moz-transform: rotate(90deg);
+        -ms-transform: rotate(90deg);
+        -o-transform: rotate(90deg);
+      }
+
+      svg, g, rect, line, circle, text {
+        transform-origin: -10px -5px -5px;
+      }
+
+      .x g.tick {
+        display: none;
+      }
+
+      .x g.tick text {
+        display: block;
+      }
+
+      .ylabel {
+        position: absolute;
+        font-size: 14px;
+      }
+
+      #lowerbound {
+          top: 125px;
+        left: 90px;
+      } 
+
+      #centraltendency {
+       top: 270px;
+        left: 80px;
+      } 
+
+      #upperbound {
+       top: 400px;
+        left: 100px;
+      }
+  </style>
 
   </body>
 </html>
