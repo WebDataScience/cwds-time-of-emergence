@@ -132,34 +132,76 @@ ini_set('display_startup_errors', TRUE);
 		z-index: 100;
 		} 
 </style>
-  <div class="timeline-thumbnail"><img src="/sites/all/modules/toewhiskers/images/kingcounty200x200.png"></div>
+  <div class="timeline-thumbnail"><img src="/sites/all/modules/toewhiskers/images/kingcounty200x200.png"></img></div>
   <h2>Multi-Model Median Time of Emergence for <span class="region">King County</span> under <span class="emission"></span></h2>
     <p>    
     Confidence: <span class="confidence"></span><br/>
     Tolerance: <span class="tolerance"></span><br/>
-    Dataset: <span class="dataset"></span></p>
+    Dataset: <span class="dataset"></span>
+    </p>
   <div id="chartmessage"></div>
   <div id="horizontal-bar-chart"></div>
-  <div id="timeline-chart"></div>  
+  <div id="timeline-chart"></div> 
+  
+<div>
+<canvas id="svg-canvas" style="display:none"></canvas> 
+<a id="svg-img-wrapper" href="" download="yogurt.png">
+<button id="print-button" type="button">Save</button>
+<img style="display:none" id="svg-img"></img>
+</a>  
+</div>
+
 <div id="range-revise-wrapper">
   <div id="toe-range">
   
   <h2>Projected Range of Time of Emergence for <span class="region">King County</span> under <span class="emission"></span> </h2>
-      <p>
-  <table id="tabledata">
+    <p>
+      <table id="tabledata">
       <th>Hydro-climatic Variable</th><th>ToE Range</th><th>Direction of Change</th>
       <!--<tr><td>Variable Shortname (Column G)</td><td>{Year A} – {Year B}</td><td>ChangeDir (Column C)</td></tr>
       <tr><td>Tmax>90degF(32.2degC)</td><td>2045 - 2065</td><td>Negative</td></tr>-->
       <span class="tablerows"></span>
-  </table>
+      </table>
+    </p>
   
  </div> 
-<div id="toe-revise">  <h2>Revise and recalculate</h2>
-  <div class="h-form">
-  <?php print $parameterform; ?><br/>
-  <div style="clear:both"></div>
-  <div>
-  </div>
-  </div>
+    <div id="toe-revise">  
+      <h2>Revise and recalculate</h2>
+      <div class="h-form">
+        <?php print $parameterform; ?><br/>
+      <div style="clear:both"></div>
+    </div>
+  </div>  
+</div>
+    
+        
+    
+<script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/rgbcolor.js"></script> 
+<script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/StackBlur.js"></script>
+<script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/canvg.js"></script> 
+    
+<script type="text/javascript">
 
+jQuery( document ).ready(function( $ ) {
+
+  $('#print-button').click(function(){
+    var $container = $('#timeline-chart'),
+        // Canvg requires trimmed content
+        content = $container.html().trim(),
+        canvas = document.getElementById('svg-canvas');
+
+    // Draw svg on canvas
+    canvg(canvas, content);
+    
+    
+    var theImage = canvas.toDataURL('image/png');
+    
+    $('#svg-img').attr('src', theImage);
+    $('#svg-img-wrapper').attr('href', theImage);
+   
+    
+  });
+  
+});
+</script>
 

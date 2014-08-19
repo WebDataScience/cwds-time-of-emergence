@@ -26,6 +26,7 @@ var data; // loaded asynchronously
 
         var svg = d3.select("#chart")
           .append("svg")
+          .attr("id", 'chartsvg')
           .attr("width", width)
           .attr("height", height)
           .style("margin", "0 auto");
@@ -33,7 +34,8 @@ var data; // loaded asynchronously
         var counties = svg.append("g")
             .attr("id", "counties")
             .attr("class", "Bl_custom")
-            .attr("transform", "rotate(-14 100 100)");
+            .attr("transform", "rotate(-14 100 100)")
+            //.attr("fill", "green");
             
         var county_labels = svg.append("g")
             .attr("id", "county_labels")

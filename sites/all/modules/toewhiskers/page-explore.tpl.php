@@ -76,4 +76,5 @@
 
     <div id="chart"></div>
     <?php print $explore_form; ?><br/>
-
+    
+    
