@@ -2,7 +2,7 @@ name = Time of Emergence - Boxplot Data Visualization
 description = Provides a boxplot visualization generator for time of emergence climate data.
 core = 7.x
 
-stylesheets[all][] = css/boxplot.css
+stylesheets[] = css/boxplot.css
 
 scripts[] = d3/d3.js
 scripts[] = js/boxplot.js

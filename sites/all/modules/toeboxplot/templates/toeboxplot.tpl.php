@@ -5,10 +5,9 @@
 ?>
 
 <!DOCTYPE html>
-<html>
+<meta charset="utf-8">
 
 <head>
-  <meta charset="utf-8" />
   <!--<script src="d3/d3.js"></script>-->
   <?php
     drupal_add_js($path . '/d3/d3.js');
@@ -16,7 +15,7 @@
 </head>
 
 <body style="background-color: white;">
-  <h1>High Emissions (RCP 8.5)</h1>
+  <div id="boxplot-chart-header">High Emissions (RCP 8.5)</div>
 
   <!--x/y axis category labels-->
   <div class="ylabel" id="lowerbound">Lower bound<br />(earlier ToE)</div>
@@ -48,9 +47,9 @@
           data[2] = [];
           //num rows should match num cols in a csv
 
-          /* data[0][0] = "Lower bound (earlier ToE)";
+          data[0][0] = "Lower bound (earlier ToE)";
           data[1][0] = "Central tendency";
-          data[2][0] = "Upper bound (later ToE)"; */
+          data[2][0] = "Upper bound (later ToE)"; 
           //num rows should match num cols in a csv
 
           data[0][1] = [];
@@ -65,6 +64,7 @@
               
             var rowMax = Math.max(v1, Math.max(v2, v3));
             var rowMin = Math.min(v1, Math.min(v2, v3));
+
 
             data[0][1].push(v1);
             data[1][1].push(v2);
@@ -111,12 +111,14 @@
             .orient("left")
             .ticks(5);
 
+
           //draw boxplots  
           svg.selectAll(".box")    
               .data(data)
             .enter().append("g")
             .attr("transform", function(d) { return "translate(" +  x(d[0])  + "," + margin.top + ")"; } )
               .call(chart.width(x.rangeBand()));
+
          
            //draw y axis
           svg.append("g")
@@ -159,13 +161,9 @@
 
         </script>
 
-        <?php
-          drupal_add_css($path . '/css/boxplot.css');
-        ?>
-
   <style>
 
-      body {
+      body, svg {
         font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
       }
 
@@ -208,12 +206,13 @@
         shape-rendering: crispEdges;
       }
 
-      h1 {
+      #boxplot-chart-header {
         position: absolute;
-        top: 35px;
+        top: 395px;
         left: 275px;
         font-size: 18px;
         font-weight: normal;
+        color: black;
       }
 
       text {
@@ -238,22 +237,24 @@
       .ylabel {
         position: absolute;
         font-size: 14px;
+        color: black;
       }
 
       #lowerbound {
-          top: 125px;
+          top: 470px;
         left: 90px;
       } 
 
       #centraltendency {
-       top: 270px;
-        left: 80px;
+       top: 615px;
+        left: 70px;
       } 
 
       #upperbound {
-       top: 400px;
-        left: 100px;
+       top: 745px;
+        left: 95px;
       }
+      
   </style>
 
   </body>
