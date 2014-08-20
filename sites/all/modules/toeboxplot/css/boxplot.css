@@ -1,0 +1,89 @@
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.box {
+  font: 10px sans-serif;
+}
+
+.box line,
+.box rect,
+.box circle {
+  fill: steelblue;
+  stroke: #000;
+  stroke-width: 1px;
+}
+
+.box .center {
+  stroke-dasharray: 3,3;
+}
+
+.box .outlier {
+  fill: #4682B4;
+  stroke: #000;
+  r: 2;
+}
+
+.axis {
+  font: 12px sans-serif;
+}
+ 
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+ 
+.x.axis path { 
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+h1 {
+  position: absolute;
+  top: 35px;
+  left: 275px;
+  font-size: 18px;
+  font-weight: normal;
+}
+
+text {
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+}
+
+svg, g, rect, line, circle, text {
+  transform-origin: -10px -5px -5px;
+}
+
+.x g.tick {
+  display: none;
+}
+
+.x g.tick text {
+  display: block;
+}
+
+.ylabel {
+  position: absolute;
+  font-size: 14px;
+}
+
+#lowerbound {
+    top: 125px;
+  left: 90px;
+} 
+
+#centraltendency {
+ top: 270px;
+  left: 80px;
+} 
+
+#upperbound {
+ top: 400px;
+  left: 100px;
+}
