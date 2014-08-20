@@ -2,47 +2,33 @@
 //  font: 9px sans-serif;
   text-anchor: middle;
 }
-
 #container {
   padding-right: 100px;
 }
-
 #main, #footer {
   width: 1090px;
 }
-
-.axis {
-  shape-rendering: crispEdges;
-}
-
-.axis path, .axis line {
-  fill: none;
-  stroke: #000;
-}
-
 .response {
   border:0px;
   text-align:center;
 }
-
-
 /*Added '.label'*/
 .rotate45, .q_label {
 
-/* Safari */
--webkit-transform: rotate(-45deg);
+  /* Safari */
+  -webkit-transform: rotate(-45deg);
 
-/* Firefox */
--moz-transform: rotate(-45deg);
+  /* Firefox */
+  -moz-transform: rotate(-45deg);
 
-/* IE */
--ms-transform: rotate(-45deg);
+  /* IE */
+  -ms-transform: rotate(-45deg);
 
-/* Opera */
--o-transform: rotate(-45deg);
+  /* Opera */
+  -o-transform: rotate(-45deg);
 
-/* Internet Explorer */
-filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+  /* Internet Explorer */
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
 
 }
 
@@ -58,12 +44,10 @@ filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
   margin-top: 161px;
   margin-left: 90px;
 }
-
 canvas {
   padding-top: 161px;
   padding-left: 90px;
 }
-
 .page-reports-parallel-coordinate svg {  
   width: 800px;
   height: 800px;

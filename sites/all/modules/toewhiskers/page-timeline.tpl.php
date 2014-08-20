@@ -77,80 +77,36 @@ ini_set('display_startup_errors', TRUE);
 ?>
 <!-- toewhiskers/page-timeline.tpl.php-->
 
-  <style>
-	  .main text {
-		    font: 11px sans-serif;	
-			fill: white; //#848383;
-			text-shadow: none;
-		}
-		.axis line, .axis path, line.scatter-point {
-		    shape-rendering: crispEdges;
-		    //stroke: black;
-		    stroke: white; //#848383;
-			fill: none;
-			stroke-width: 2;
-		}
+<style>    
 		h4 {
 			text-align: center;
-		}
-		#main {
-			background-color: #edeef1;
-		}
-		circle {
-			stroke-width: 1;
-
-			/*white - no-fill*/
-			//stroke: white;
-			//fill: #151412;
-
-			/*purple*/
-			//fill: #9775aa;
-			//stroke: #764b8e;
-			//stroke: #E0B2E0;
-
-			/*green*/
-			//fill: #00FF00;
-			fill: #248F24;
-			stroke: #99FF99;
-		}
+		}  
   	hr {
 			max-width: 915px;
-			//display: none;
 			margin: 0;
-		}
-		.minor-axis-date text {
-			display: none;
-		}
-		.minor-axis-date .domain {
-			opacity: 0;
-		}
-		.tick {
-    			 stroke: white;
-    			 stroke-width: 1;
-		}
-		.point-label {
-		z-index: 100;
 		} 
 </style>
-  <div class="timeline-thumbnail"><img src="/sites/all/modules/toewhiskers/images/kingcounty200x200.png"></img></div>
-  <h2>Multi-Model Median Time of Emergence for <span class="region">King County</span> under <span class="emission"></span></h2>
-    <p>    
-    Confidence: <span class="confidence"></span><br/>
-    Tolerance: <span class="tolerance"></span><br/>
-    Dataset: <span class="dataset"></span>
-    </p>
-  <div id="chartmessage"></div>
-  <div id="horizontal-bar-chart"></div>
-  <div id="timeline-chart"></div> 
-  
+<div class="timeline-thumbnail"><img src="/sites/all/modules/toewhiskers/images/kingcounty200x200.png"></img></div>
+<h2>Multi-Model Median Time of Emergence for <span class="region">King County</span> under <span class="emission"></span></h2>
+  <p>    
+  Confidence: <span class="confidence"></span><br/>
+  Tolerance: <span class="tolerance"></span><br/>
+  Dataset: <span class="dataset"></span>
+  </p>
+<div id="chartmessage"></div>
+<div id="horizontal-bar-chart"></div>
+<div id="timeline-chart"></div> 
+
 <div>
-<canvas id="svg-canvas" style="display:none"></canvas> 
-<a id="svg-img-wrapper" href="" download="yogurt.png">
-<button id="print-button" type="button">Save</button>
-<img style="display:none" id="svg-img"></img>
-</a>  
+  <canvas id="svg-canvas" style="display:none"></canvas> 
+  <a id="svg-img-wrapper" href="" download="timeline.png">
+    <!--<button id="print-button" type="button">Save</button>-->
+    <input id="print-button" name="op" value="Export Timeline Image" class="form-submit" type="submit">
+    <img style="display:none" id="svg-img"></img>
+  </a>  
 </div>
 
+  
 <div id="range-revise-wrapper">
   <div id="toe-range">
   
@@ -185,21 +141,17 @@ ini_set('display_startup_errors', TRUE);
 jQuery( document ).ready(function( $ ) {
 
   $('#print-button').click(function(){
-    var $container = $('#timeline-chart'),
-        // Canvg requires trimmed content
-        content = $container.html().trim(),
-        canvas = document.getElementById('svg-canvas');
-
-    // Draw svg on canvas
+    // Find existing svg content.
+    var $container = $('#timeline-chart');
+    var content = $container.html().trim();
+    // Prep and draw to canvas with canfg() function.
+    var canvas = document.getElementById('svg-canvas');
     canvg(canvas, content);
-    
-    
+    // Pull canvas content as .png data.
     var theImage = canvas.toDataURL('image/png');
-    
+    // Populate some html elements with the image content.
     $('#svg-img').attr('src', theImage);
     $('#svg-img-wrapper').attr('href', theImage);
-   
-    
   });
   
 });
