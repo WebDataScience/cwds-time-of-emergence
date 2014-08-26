@@ -14,14 +14,41 @@
   ?>
 </head>
 
-<body style="background-color: white;">
-  <div id="boxplot-chart-header">High Emissions (RCP 8.5)</div>
+<body>
+<input id="module_path" type="hidden" value="<?php echo base_path() . $path ?>" />
+<div id="main-chart-area">
+  <div id="chart-area-1">
+     <!-- <div id="boxplot-chart-header">High Emissions (RCP 8.5)</div>  -->
+      <!--x/y axis category labels-->
+    <!--  <div class="ylabel" id="lowerbound">Lower bound<br />(earlier ToE)</div>
+      <div class="ylabel" id="centraltendency">Central tendency</div>
+      <div class="ylabel" id="upperbound">Upper bound<br />(later ToE)</div> -->
+  </div>
 
-  <!--x/y axis category labels-->
-  <div class="ylabel" id="lowerbound">Lower bound<br />(earlier ToE)</div>
-  <div class="ylabel" id="centraltendency">Central tendency</div>
-  <div class="ylabel" id="upperbound">Upper bound<br />(later ToE)</div>
-  <input id="module_path" type="hidden" value="<?php echo base_path() . $path ?>" />
+  <div id="chart-area-2">
+     <!-- <div id="boxplot-chart-header">High Emissions (RCP 8.5)</div>  -->
+      <!--x/y axis category labels-->
+    <!--  <div class="ylabel" id="lowerbound">Lower bound<br />(earlier ToE)</div>
+      <div class="ylabel" id="centraltendency">Central tendency</div>
+      <div class="ylabel" id="upperbound">Upper bound<br />(later ToE)</div> -->
+  </div>
+
+  <div id="chart-area-3">
+     <!-- <div id="boxplot-chart-header">High Emissions (RCP 8.5)</div>  -->
+      <!--x/y axis category labels-->
+    <!--  <div class="ylabel" id="lowerbound">Lower bound<br />(earlier ToE)</div>
+      <div class="ylabel" id="centraltendency">Central tendency</div>
+      <div class="ylabel" id="upperbound">Upper bound<br />(later ToE)</div> -->
+  </div>
+
+  <div id="chart-area-4">
+     <!-- <div id="boxplot-chart-header">High Emissions (RCP 8.5)</div>  -->
+      <!--x/y axis category labels-->
+    <!--  <div class="ylabel" id="lowerbound">Lower bound<br />(earlier ToE)</div>
+      <div class="ylabel" id="centraltendency">Central tendency</div>
+      <div class="ylabel" id="upperbound">Upper bound<br />(later ToE)</div> -->
+  </div>
+</div>
 
   <!--<script src="js/boxplot.js"></script>-->
   <?php
@@ -29,6 +56,12 @@
   ?>
 
     <script>
+   drawBoxplot("chart-area-1", 700, 475);
+   drawBoxplot("chart-area-2", 700, 475);
+   drawBoxplot("chart-area-3", 700, 475);
+   drawBoxplot("chart-area-4", 700, 475);
+
+    function drawBoxplot(containingElementID, charty, chartx) {
         var labels = true; 
         var module_path = document.getElementById('module_path').value;
 
@@ -80,13 +113,15 @@
             .domain([min, max])
             .showLabels(labels);
 
-          var svg = d3.select("body").append("svg")
+          //var svg = d3.select("body").append("svg")
+          var svg = d3.select("#" + containingElementID).append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
             .attr("class", "box")  
             .attr("width", "700")
             .attr("height", "600")
-            .attr("transform", "translate(550, 700) rotate(-90, -90, -90) scale(1, -1)")
+            //.attr("transform", "translate(475, 700) rotate(-90, -90, -90) scale(1, -1)")
+            .attr("transform", "translate(" + chartx + ", " + charty + ") rotate(-90, -90, -90) scale(1, -1)")
             .attr("transform-origin", "-10px -5px -5px")
             .append("g")
               .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
@@ -158,14 +193,50 @@
             return [i, j];
           };
         }
+    }
+  </script>
 
-        </script>
 
   <style>
 
       body, svg {
         font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
       }
+
+      #main-chart-area {
+        background-color: white;
+        width: 100%;
+        height: 100%;
+
+      }
+
+      #chart-area-1, #chart-area-2, #chart-area-3, #chart-area-4 {
+        background-color: white;
+        width: 445px;
+        height: 100%;
+      }
+
+       #chart-area-2 {
+          position: absolute;
+          top: 206px;
+          left: 540px;
+
+       }
+
+        #chart-area-3 {
+          position: absolute;
+          top: 706px;
+          left: 103px;
+
+       }
+
+       #chart-area-4 {
+          position: absolute;
+          top: 706px;
+          left: 540px;
+          width: 503px;
+       }
+
 
       .box {
         font: 10px sans-serif;
