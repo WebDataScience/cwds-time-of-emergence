@@ -95,7 +95,6 @@ function drawD3Timeline(timelinedataarray, maxtoeyear){
  var chartheight = 200;
  data = timelinedataarray;
 
-
 /* Code to prevent label text overlapping */
 
 var temparr = [[0,0]];
@@ -116,8 +115,8 @@ for (var i = 0; i < data.length; i++) {
 	}
 } 
 		   
-		var margin = {top: 20, right: 50, bottom: 60, left: 30}
-		  , width = 960 - margin.left - margin.right
+		var margin = {top: 20, right: 40, bottom: 60, left: 30}
+		  , width = 940 - margin.left - margin.right
 		  , height = chartheight - margin.top - margin.bottom;
 
 		var format = d3.format("0000");
@@ -133,9 +132,15 @@ for (var i = 0; i < data.length; i++) {
 		var chart = d3.select('#timeline-chart')
 		.append('svg:svg')
 		.attr('width', width + margin.right + margin.left)
-		.attr('height', height + margin.top + margin.bottom)
-		.attr('class', 'chart')
+		.attr('height', height + margin.top + margin.bottom);
 
+    // Color the background.
+    chart.append("rect")
+    .attr("width", width + margin.right + margin.left -2)
+    .attr("height", "100%")
+    .attr('border', 0)
+    .attr("fill", "black");
+    
 		var main = chart.append('g')
 		.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
 		.attr('width', width)
@@ -150,48 +155,43 @@ for (var i = 0; i < data.length; i++) {
 		.tickFormat(format)
 		.tickSize(15,-1);
 
-	/*	var xAxisMinor = d3.svg.axis()
-		  .scale(x)
-		  .orient('bottom')
-		  .ticks(100);		
-
-    		main.append('g')
-                .attr('transform', 'translate(0,' + height + ')')
-                .attr('class', 'minor-axis-date')
-                .call(xAxisMinor); */
-
 		main.append('g')
 		.attr('transform', 'translate(0,' + height + ')')
 		.attr('class', 'main axis date main-axis-date')
 		.call(xAxis);
-
+    
+    // Attributes for the xAxis.
+    d3.select('.axis')
+      .attr("stroke", "white")
+      .attr("stroke-width", 2)
+      .attr('shape-rendering','crispEdges');
+         
 		var g = main.append("svg:g"); 
 
 		var node = g.selectAll("g")
                 .data(data)
                 .enter()
                 .append("g");         
-                
+        
+    // vertical variable line.        
 		node.append("line")
-		  .attr("class", "scatter-point")
-		  .attr("class", "tick")
 		  .attr("x1", function (d,i) { return x(d[0]); } )
-      
-			//.attr("y1", 50)
-      //.attr("y1", function (d,i) { return (50-(5*(d[0]%10))); } )
       .attr("y1", function(d,i) { return d[5]; })
 			.attr("x2", function (d,i) { return x(d[0]); } )
 			.attr("y2", 120)
-			.attr("stroke-width", 2)
+			.attr("stroke-width", 1)
 			.style("shape-rendering", "crispEdges")
-		//	.attr("stroke", "black");
+      .attr('opacity', 1)
 			.attr("stroke", "white");
 
 		node.append("line:circle")
 		  .attr("cx", function (d,i) { return x(d[0]); } )
 		  .attr("cy", function (d) { return y(d[1]); } )
+      .attr("fill", "#248F24")
+      .attr("stroke", "#99FF99")
 		  .attr("r", "6");
 
+    // Hide some of the vertical line as necessary with a black rectangle.
 		node.append("line:rect") 
                   .attr("x", function (d,i) { return x(d[0]) - 5; } )
                   .attr("y", function (d) { return d[5] - 10; } )
@@ -199,18 +199,30 @@ for (var i = 0; i < data.length; i++) {
                   .attr("width", "10")
                   .attr("fill", "#070707");
 
+    // Add variable short names.
 		node.append("line:text")
-		  .attr("class", "point-label")
 		  .attr("x", function (d,i) { return x(d[0]); } ) 
 		  .attr("y", function (d) { return d[5]; } )
-      	//	.attr("y", function (d,i) { return (45-(5*(d[0]%10))); } ) 
-		  //.attr("dy", -75)
+		  .style("stroke", "white")
+      .style('font-size', '11px')
+            .style('font-family', 'sans-serif')
+      .attr("stroke-width", .3)
 		  .style("text-anchor", "middle")
+      //.style("shape-rendering", "geometricPrecision")
 		  .text(function(d) { return d[3]; })
 		  .attr('title', function(d) {  return d[2]; })
 		  .attr('alt', function(d) { return d[2]; })
 		.on("click", function(d) {
 		document.location.href="/boxplot" }); 
+    
+    // Attributes for all other text.
+    d3.selectAll('text')
+      .attr('fill', 'white')
+      .style('font-size', '11px')
+      .attr("stroke-width", .3)
+      .style('font-family', 'sans-serif')
+			.style('text-shadow', 'none')
+    ;
 
 }
 
