@@ -104,6 +104,9 @@ ini_set('display_startup_errors', TRUE);
     <input id="print-button" name="op" value="Export Timeline Image" class="form-submit" type="submit">
     <img style="display:none" id="svg-img"></img>
   </a>  
+  <a id="downloadtextanchor" href="/timelinedata/text" download="timelinedata.txt">
+    <input id="print-text-button" name="op" value="Export Timeline Data" class="form-submit" type="submit">
+  </a>  
 </div>
 
   

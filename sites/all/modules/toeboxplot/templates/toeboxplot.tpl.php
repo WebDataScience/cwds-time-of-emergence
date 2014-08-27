@@ -11,6 +11,7 @@
   <!--<script src="d3/d3.js"></script>-->
   <?php
     drupal_add_js($path . '/d3/d3.js');
+    drupal_add_css($path . '/cs/boxplot.css');
   ?>
 </head>
 

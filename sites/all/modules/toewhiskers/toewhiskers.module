@@ -25,11 +25,7 @@ function toewhiskers_menu() {
   );
   $items['timelinedata'] = array(
     'page callback' => 'toewhiskers_json_query_function',
-    'access callback' => TRUE,
-  );
-  $items['timelinedatatext'] = array(
-    'page callback' => 'toewhiskers_json_query_function',
-    'page arguments' => array(1, 'text'),
+    'page arguments' => array(1, 'mode'),
     'access callback' => TRUE,
   );
   $items['boxplotdata'] = array(
@@ -490,18 +486,52 @@ function toewhiskers_json_query_function($mode){
   
   
   $toedata = array(
-    "toedata" => $toe,
     //"query" => $query,
     "maxtoeyear" => $max_TOE_year,
     "emission" => $emission,
     "confidence" => $confidence,
     "tolerance" => $tolerance,
     "dataset" => $dataset,
+    "toedata" => $toe,
     "tabledata" => $tabledataarray,
   );  
   
   if($mode == 'text'){
-    drupal_json_output(print_r($toedata));
+    $prettynames['emission'] = array(
+      'rcp45'	=>	'RCP4.5',
+      'rcp85'	=>	'RCP8.5',
+      'A1B'	=>	'SRES A1B',
+      'B1'	=>	'SRES B1',
+    );
+    $prettynames['confidence'] = array(
+      '5'	=>	'Low (5% confidence interval)',
+      '50'	=>	'Medium (50% confidence interval)',
+      '95'	=>	'High (95% confidence interval)',
+    );
+    $prettynames['tolerance'] = array(
+      '95'	=>	'Low (middle 90% of historical fluctuations)',
+      '80'	=>	'High (middle 60% of historical fluctuations)',
+    );
+    $prettynames['dataset'] = array(
+      'BCSD5'	=>	'Statistically-downscaled (CMIP5 BCSD)',
+    );
+    
+    $o = "
+Region: King County
+Emission Scenario: " . $prettynames['emission'][$emission] . "
+Confidence: " . $prettynames['confidence'][$confidence] . "
+Tolerance: " . $prettynames['tolerance'][$tolerance] . "
+Dataset: " . $prettynames['dataset'][$dataset] . "
+";
+    $o .= "Multi-Model Median Timeline data points:
+" . print_r($toedata['toedata'], TRUE);
+    $o .= "Projected Range data points:
+" . print_r($toedata['tabledata'], TRUE);
+    
+    drupal_json_output(print($o));
+    
+    //drupal_json_output(print_r($toedata));
+    
   } else {
     drupal_json_output($toedata);  
   }
@@ -633,8 +663,8 @@ BCSD5				Statistically-downscaled (CMIP5 BCSD)
 WRF - Phase 2				Dynamically-downscaled
 				
 EmergThres				Tolerance:          Text to appear on website (e.g. in timeline title)
-95				Low (90% historical range)  Low (middle 90% of historical fluctuations)
-80				High (60% historical range) High (middle 60% of historical fluctuations)
+95				  Low (middle 90% of historical fluctuations)
+80				 High (middle 60% of historical fluctuations)
 				
 				
 SignalConfidence				
