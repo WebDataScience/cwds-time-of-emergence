@@ -17,36 +17,18 @@
 <body>
 <input id="module_path" type="hidden" value="<?php echo base_path() . $path ?>" />
 <div id="main-chart-area">
+  <h2 id="top-x-title">Increased Annual Frequency of Maximum Daily Temperaturs > 90&deg;F (32&deg;C)</h2>
+  <h2 id="top-y-title">Baseline "Noise" Range</h2>
   <div id="chart-area-1">
-     <!-- <div id="boxplot-chart-header">High Emissions (RCP 8.5)</div>  -->
-      <!--x/y axis category labels-->
-    <!--  <div class="ylabel" id="lowerbound">Lower bound<br />(earlier ToE)</div>
-      <div class="ylabel" id="centraltendency">Central tendency</div>
-      <div class="ylabel" id="upperbound">Upper bound<br />(later ToE)</div> -->
   </div>
 
   <div id="chart-area-2">
-     <!-- <div id="boxplot-chart-header">High Emissions (RCP 8.5)</div>  -->
-      <!--x/y axis category labels-->
-    <!--  <div class="ylabel" id="lowerbound">Lower bound<br />(earlier ToE)</div>
-      <div class="ylabel" id="centraltendency">Central tendency</div>
-      <div class="ylabel" id="upperbound">Upper bound<br />(later ToE)</div> -->
   </div>
 
   <div id="chart-area-3">
-     <!-- <div id="boxplot-chart-header">High Emissions (RCP 8.5)</div>  -->
-      <!--x/y axis category labels-->
-    <!--  <div class="ylabel" id="lowerbound">Lower bound<br />(earlier ToE)</div>
-      <div class="ylabel" id="centraltendency">Central tendency</div>
-      <div class="ylabel" id="upperbound">Upper bound<br />(later ToE)</div> -->
   </div>
 
   <div id="chart-area-4">
-     <!-- <div id="boxplot-chart-header">High Emissions (RCP 8.5)</div>  -->
-      <!--x/y axis category labels-->
-    <!--  <div class="ylabel" id="lowerbound">Lower bound<br />(earlier ToE)</div>
-      <div class="ylabel" id="centraltendency">Central tendency</div>
-      <div class="ylabel" id="upperbound">Upper bound<br />(later ToE)</div> -->
   </div>
 </div>
 
@@ -56,12 +38,12 @@
   ?>
 
     <script>
-   drawBoxplot("chart-area-1", 700, 475);
-   drawBoxplot("chart-area-2", 700, 475);
-   drawBoxplot("chart-area-3", 700, 475);
-   drawBoxplot("chart-area-4", 700, 475);
+   drawBoxplot("chart-area-1", "High Emissions (RCP 8.5)");
+   drawBoxplot("chart-area-2", "Low Emissions (RCP 4.5)");
+   drawBoxplot("chart-area-3", "");
+   drawBoxplot("chart-area-4", "");
 
-    function drawBoxplot(containingElementID, charty, chartx) {
+    function drawBoxplot(containingElementID, ytitle) {
         var labels = true; 
         var module_path = document.getElementById('module_path').value;
 
@@ -121,11 +103,12 @@
             .attr("width", "700")
             .attr("height", "600")
             //.attr("transform", "translate(475, 700) rotate(-90, -90, -90) scale(1, -1)")
-            .attr("transform", "translate(" + chartx + ", " + charty + ") rotate(-90, -90, -90) scale(1, -1)")
-            .attr("transform-origin", "-10px -5px -5px")
-            .append("g")
-              .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-              .attr("transform-origin", "-10px -5px -5px");
+            //.attr("transform", "translate(" + chartx + ", " + charty + ") rotate(-90, -90, -90) scale(1, -1)")
+          //  .attr("transform", "translate(" + chartx + ", " + charty + ")")
+            //.attr("transform-origin", "-10px -5px -5px")
+          //  .append("g")
+              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+              //.attr("transform-origin", "-10px -5px -5px");
           
           //x-axis
           var x = d3.scale.ordinal()     
@@ -143,8 +126,8 @@
           
           var yAxis = d3.svg.axis()
             .scale(y)
-            .orient("left")
-            .ticks(5);
+            .orient("right")
+            .ticks(10);
 
 
           //draw boxplots  
@@ -154,23 +137,37 @@
             .attr("transform", function(d) { return "translate(" +  x(d[0])  + "," + margin.top + ")"; } )
               .call(chart.width(x.rangeBand()));
 
+          // add a title
+          svg.append("text")
+            //.attr("y", (width / 2))             
+            //.attr("x", 0 + (margin.top / 2))
+            .attr("y", 0)             
+            .attr("x", (width / -1.4))
+            .attr("text-anchor", "start")  
+            .attr("transform", "rotate(-90)")
+            .style("font-size", "18px") 
+            //.style("text-decoration", "underline")  
+            .text(ytitle); 
          
            //draw y axis
           svg.append("g")
                 .attr("class", "y axis")
-                .attr("transform", "scale(1, -1) translate(0, -365.5)")
+                //.attr("transform", "scale(1, -1) translate(0, -365.5)")
+                .attr("transform", "translate(" + width + ", 0)")
                 .call(yAxis)
             .append("text") 
-              .attr("transform", "rotate(-90)")
+              //.attr("transform", "rotate(-90)") ////////////////////
               .attr("y", 6)
               .attr("dy", ".71em")
-              .style("text-anchor", "end")
+              .style("text-anchor", "middle")
               .style("font-size", "16px");
+              //.text("Year");
           
           //draw x axis  
           svg.append("g")
               .attr("class", "x axis")
-              .attr("transform", "translate(0," + (height  + margin.top + 10) + ") scale(1, -1)")
+              //.attr("transform", "translate(0," + (height  + margin.top + 10) + ") scale(1, -1)")
+              .attr("transform", "translate(0," + (height  + margin.top) + ")")
               .call(xAxis)
             .append("text") // text label for the x axis
                 .attr("x", (width / 2))
@@ -199,44 +196,56 @@
 
   <style>
 
-      body, svg {
+      body, svg, h2 {
         font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color: black;
+        font-weight: normal;
+      }
+      body {
+       padding: 100px;
+      
+      }
+
+      h2 {
+        padding: 0;
+        margin: 0;
+      }
+
+      #top-x-title {
+        text-align: center;
+
+      }
+
+      #top-y-title {
+        position: absolute;
+        top: 700px;
+        left: 50px;
+        z-index: 1000;
+        -webkit-transform: rotate(-90deg);
+        -moz-transform: rotate(-90deg);
+        -o-transform: rotate(-90deg);
+        -ms-transform: rotate(-90deg);
+        transform: rotate(-90deg);
       }
 
       #main-chart-area {
         background-color: white;
-        width: 100%;
-        height: 100%;
-
+        width: 1000px;
+        height: 1100px;
+        padding-left: 50px;
       }
 
       #chart-area-1, #chart-area-2, #chart-area-3, #chart-area-4 {
         background-color: white;
-        width: 445px;
-        height: 100%;
+        float: left;
+        width: 500px;
+        height: 500px;
+        -webkit-transform: rotate(90deg);
+        -moz-transform: rotate(90deg);
+        -o-transform: rotate(90deg);
+        -ms-transform: rotate(90deg);
+        transform: rotate(90deg);
       }
-
-       #chart-area-2 {
-          position: absolute;
-          top: 206px;
-          left: 540px;
-
-       }
-
-        #chart-area-3 {
-          position: absolute;
-          top: 706px;
-          left: 103px;
-
-       }
-
-       #chart-area-4 {
-          position: absolute;
-          top: 706px;
-          left: 540px;
-          width: 503px;
-       }
-
 
       .box {
         font: 10px sans-serif;
@@ -286,44 +295,21 @@
         color: black;
       }
 
-      text {
-        -webkit-transform: rotate(90deg);
-        -moz-transform: rotate(90deg);
-        -ms-transform: rotate(90deg);
-        -o-transform: rotate(90deg);
-      }
-
       svg, g, rect, line, circle, text {
         transform-origin: -10px -5px -5px;
       }
 
       .x g.tick {
-        display: none;
+      //  display: none;
       }
 
       .x g.tick text {
         display: block;
-      }
-
-      .ylabel {
-        position: absolute;
-        font-size: 14px;
-        color: black;
-      }
-
-      #lowerbound {
-          top: 470px;
-        left: 90px;
-      } 
-
-      #centraltendency {
-       top: 615px;
-        left: 70px;
-      } 
-
-      #upperbound {
-       top: 745px;
-        left: 95px;
+        -webkit-transform: rotate(-90deg);
+      -moz-transform: rotate(-90deg);
+      -ms-transform: rotate(-90deg);
+      -o-transform: rotate(-90deg);
+      filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
       }
       
   </style>
