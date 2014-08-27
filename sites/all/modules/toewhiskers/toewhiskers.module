@@ -25,7 +25,16 @@ function toewhiskers_menu() {
   );
   $items['timelinedata'] = array(
     'page callback' => 'toewhiskers_json_query_function',
-    'page arguments' => array(1, 'sid'),
+    'access callback' => TRUE,
+  );
+  $items['timelinedatatext'] = array(
+    'page callback' => 'toewhiskers_json_query_function',
+    'page arguments' => array(1, 'text'),
+    'access callback' => TRUE,
+  );
+  $items['boxplotdata'] = array(
+    'page callback' => 'toewhiskers_json_query_boxplot_function',
+    'page arguments' => array(1, 'variable'),
     'access callback' => TRUE,
   );
   $items['cigtoeconfig'] = array(
@@ -47,7 +56,7 @@ function toewhiskers_theme(){
       'compare_template' => array(
         'template' => 'page-toewhiskers',
       ),
-        'timeline_template' => array(
+      'timeline_template' => array(
             // file name will be page-timeline.tpl.php
             'template' => 'page-timeline',
             /*'variables' => array(
@@ -364,7 +373,7 @@ function toewhiskers_clean_array($array, $filter = 'check_plain') {
 /*
  * Ajax/JSON data retriever.
  */
-function toewhiskers_json_query_function($sid){
+function toewhiskers_json_query_function($mode){
 
   //drupal_set_message('formstate:<pre>'. print_r($_SESSION['compare'], TRUE) .'</pre>');
   
@@ -482,20 +491,106 @@ function toewhiskers_json_query_function($sid){
   
   $toedata = array(
     "toedata" => $toe,
-    "tabledata" => $tabledataarray,
-    "query" => $query,
+    //"query" => $query,
     "maxtoeyear" => $max_TOE_year,
-    "sid" => $sid,
     "emission" => $emission,
     "confidence" => $confidence,
     "tolerance" => $tolerance,
     "dataset" => $dataset,
-    //"webform" => $webform,
-    //"output" => $output,
+    "tabledata" => $tabledataarray,
   );  
-  drupal_json_output($toedata);
+  
+  if($mode == 'text'){
+    drupal_json_output(print_r($toedata));
+  } else {
+    drupal_json_output($toedata);  
+  }
   
 }
+
+
+
+/*
+ * Ajax/JSON data retriever.
+ * This function returns data for the boxplot page.
+ */
+function toewhiskers_json_query_boxplot_function($variable){
+  $verbose_test_mode = TRUE;
+  //Todo: validate $variable value.
+  
+  $maindatatable = "SCEN1_DATA_V2";
+  
+  $jasondata = array();
+  $csvdata = "Q1,Q2,Q3\n";
+  $emergencethreshold_array = array('95','80');
+  $emissionscenario_array = array('rcp85','rcp45');
+  $signalconfidence_array = array('95','50','5');
+  
+  // Setup to query non Drupal database.
+  db_set_active('cig_toe');
+  foreach ($emergencethreshold_array as $key=>$emergencethreshold){
+    foreach ($emissionscenario_array as $key=>$emissionscenario){
+      foreach ($signalconfidence_array as $key=>$signalconfidence){
+  
+        $dots = array();
+        $box = array();
+        
+        $query="select * from " . $maindatatable . " WHERE variableid='" . $variable . "' and  emisscenario='" . $emissionscenario . "' and modelagreement='XX' and emergthres=" . $emergencethreshold . " and signalconfidence=" . $signalconfidence;
+        // ?? Which dataset??  'BCSD5' => 'BCSD5', 
+        
+        $result = db_query($query);
+        // Result is returned as a iterable object that returns a stdClass object on each iteration
+        foreach ($result as $record) {
+          $pos = strpos($record->GCM, 'ensemble');
+          if ($pos === false) {
+            $dots[$record->GCM] = $record->TOE;
+          } else {
+            $box[$record->GCM] = $record->TOE;
+          }
+        }
+
+        $oneboxplot = array(
+          "box" => $box,
+          "dots" => $dots,
+          "query" => $query,
+        );  
+        $csvdata .= array_pop($dots) . "," . array_pop($dots) . "," . array_pop($dots) . "\n";
+        
+        $jasondata['emergencethreshold' . $emergencethreshold]['emissionscenario' . $emissionscenario]['signalconfidence' . $signalconfidence] = $oneboxplot;
+        
+      }
+    }
+  }
+  db_set_active();
+
+  if($verbose_test_mode){ 
+    drupal_json_output(print_r($jasondata));
+    print($csvdata);
+  }
+  else{drupal_json_output($jasondata);}
+  
+}
+
+
+/*
+General:
+   - Y-axis title should read: Baseline "Noise" Range
+   - The exact TOE [B] should be used - no need to round up to 5 year
+   - X-axis: 10-year increments, only up to 2100
+   - All boxplots use ModelAgreement [Column K] = XX
+   - Left panels: EmisScenario [F] = rcp85.  Right panels: EmisScenario [F]
+   = rcp45.
+   - Top panels: EmergThres [I] = 95.  Bottom panels: EmergThres [I] = 80.
+   *Note: this is reversed on the static boxplot image*
+   - The dots: GCM [D] = Model_1, Model_2, ..., Model_21
+   - The box indicates 25th, 50th, 75th percentile: GCM [D] =
+   GCM_ensemble_25, GCM_ensemble, GCM_ensemble_75, respectively
+
+Within each subplot:
+   - Top: SignalConfidence [J] = 95
+   - Middle: SignalConfidence [J] = 50
+   - Bottom: SignalConfidence [J] = 5
+ */
 
 
 /*
