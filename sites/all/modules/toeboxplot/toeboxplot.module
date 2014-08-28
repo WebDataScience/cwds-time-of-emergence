@@ -9,11 +9,18 @@ function toeboxplot_menu() {
     'page callback' => 'toeboxplot_page_function',
     'access callback' => TRUE,
   );
+  $items['boxplots_test'] = array(
+    'page callback' => 'toeboxplots_page_function',
+    'access callback' => TRUE,
+  );
   return $items;
 }
 
 function toeboxplot_page_function(){
     return theme('toeboxplot_template');
+}
+function toeboxplots_page_function(){
+    return theme('toeboxplots_template');
 }
 
 function toeboxplot_theme(){
@@ -21,6 +28,9 @@ function toeboxplot_theme(){
         'toeboxplot_template' => array(
             // file name will be page-timeline.tpl.php
             'template' => 'templates/toeboxplot',
+        ),
+        'toeboxplots_template' => array(
+            'template' => 'templates/toeboxplots',
         ),
     );
 }

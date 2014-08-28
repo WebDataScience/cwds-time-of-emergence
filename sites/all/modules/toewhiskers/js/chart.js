@@ -80,7 +80,7 @@ jQuery( document ).ready(function( $ ) {
     tabledata = jsonobj.tabledata;
     for (var key in tabledata) {
       var onerow = tabledata[key];
-      $('#tabledata tr:last').after("<tr><td><a href='/boxplot'>" + onerow.shortname + "</a></td><td>" + onerow.toe25 + " - " + onerow.toe75 + "</td><td>" + (onerow.changedir == '1'?'Positive':'Negative')  + "</td></tr>");  
+      $('#tabledata tr:last').after("<tr><td><a href='/boxplots_test/" + key + "'>" + onerow.shortname + "</a></td><td>" + onerow.toe25 + " - " + onerow.toe75 + "</td><td>" + (onerow.changedir == '1'?'Positive':'Negative')  + "</td></tr>");  
     }
     
     

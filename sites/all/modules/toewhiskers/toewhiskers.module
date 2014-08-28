@@ -545,12 +545,13 @@ Dataset: " . $prettynames['dataset'][$dataset] . "
  * This function returns data for the boxplot page.
  */
 function toewhiskers_json_query_boxplot_function($variable){
-  $verbose_test_mode = TRUE;
+  $verbose_test_mode = FALSE;
   //Todo: validate $variable value.
   
   $maindatatable = "SCEN1_DATA_V2";
   
   $jasondata = array();
+  $jasondata['variable'] = $variable;
   $csvdata = "Q1,Q2,Q3\n";
   $emergencethreshold_array = array('95','80');
   $emissionscenario_array = array('rcp85','rcp45');
@@ -558,6 +559,13 @@ function toewhiskers_json_query_boxplot_function($variable){
   
   // Setup to query non Drupal database.
   db_set_active('cig_toe');
+  
+  // Query for variable name.
+  $query = "SELECT variablename FROM toe_data_v1 where variableid='" . $variable . "' LIMIT 1";
+  $row = (object)db_query($query)->fetchAssoc();
+  $jasondata['variablename'] = $row->variablename;
+  
+  // Query for TOE values.
   foreach ($emergencethreshold_array as $key=>$emergencethreshold){
     foreach ($emissionscenario_array as $key=>$emissionscenario){
       foreach ($signalconfidence_array as $key=>$signalconfidence){
@@ -573,14 +581,16 @@ function toewhiskers_json_query_boxplot_function($variable){
         foreach ($result as $record) {
           $pos = strpos($record->GCM, 'ensemble');
           if ($pos === false) {
-            $dots[$record->GCM] = $record->TOE;
+            if($record->TOE <= 2100){
+              $dots[$record->GCM] = $record->TOE;
+            }
           } else {
             $box[$record->GCM] = $record->TOE;
           }
         }
 
         $oneboxplot = array(
-          "box" => $box,
+          "box" => array($box['GCM_ensemble_25'],$box['GCM_ensemble'],$box['GCM_ensemble_75']),
           "dots" => $dots,
           "query" => $query,
         );  
@@ -591,6 +601,8 @@ function toewhiskers_json_query_boxplot_function($variable){
       }
     }
   }
+  
+  
   db_set_active();
 
   if($verbose_test_mode){ 
