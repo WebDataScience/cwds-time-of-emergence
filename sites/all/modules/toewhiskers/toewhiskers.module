@@ -561,7 +561,7 @@ function toewhiskers_json_query_boxplot_function($variable){
   db_set_active('cig_toe');
   
   // Query for variable name.
-  $query = "SELECT variablename FROM toe_data_v1 where variableid='" . $variable . "' LIMIT 1";
+  $query = "SELECT variablename FROM TOE_DATA_V1 where variableid='" . $variable . "' LIMIT 1";
   $row = (object)db_query($query)->fetchAssoc();
   $jasondata['variablename'] = $row->variablename;
   
