@@ -8,9 +8,9 @@
 <meta charset="utf-8">
 
 <head>
-  <!--<script src="d3/d3.js"></script>-->
   <?php
-    drupal_add_js($path . '/d3/d3.js');
+    //drupal_add_js($path . '/d3/d3.js');
+    drupal_add_js($path . '/js/boxplots.js');
     drupal_add_css($path . '/cs/boxplot.css');
   ?>
 </head>
@@ -33,11 +33,6 @@
   <div id="chart-area-4">
   </div>
 </div>
-
-  <!--<script src="js/boxplot.js"></script>-->
-  <?php
-    drupal_add_js($path . '/js/boxplots.js');
-  ?>
 
 <script>
 jQuery( document ).ready(function( $ ) {
