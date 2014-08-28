@@ -37,11 +37,8 @@
 <script>
 jQuery( document ).ready(function( $ ) {
     
-  
-  var variableid = location.pathname.match(/.*\/(V.*)/)[1];
-    
-  var url = "http://toe/boxplotdata/v1.01"; 
-  url =  "http://toe/boxplotdata/"  + variableid;
+ 
+  var url =  location.protocol + "//" + location.host + "/boxplotdata/"  + location.pathname.match(/.*\/(V.*)/)[1];
   $.post( url, function( jsonobj ) {  
     
     $("#top-x-title").html( jsonobj.variablename );
