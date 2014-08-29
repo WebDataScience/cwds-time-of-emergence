@@ -18,9 +18,24 @@
 <body>
 <input id="module_path" type="hidden" value="<?php echo base_path() . $path ?>" />
 <div id="main-chart-area">
-  <h1 id="top-y-title">Baseline "Noise" Range</h1>
+
+<h1 id="top-y-title">Baseline "Noise" Range</h1>
   <h1 id="top-x-title"></h1>
 
+<div id="boxplot-key">
+        <div id="lowerbound-key">
+                <div id="lowerbound-key-swatch"></div>
+                <div id="lowerbound-key-text">Lower bound (earlier ToE)</div>
+        </div>
+        <div id="central-key">
+                <div id="central-key-swatch"></div>
+                <div id="central-key-text">Central tendency</div>
+        </div>
+        <div id="upperbound-key">
+                <div id="upperbound-key-swatch"></div>
+                <div id="upperbound-key-text">Upper bound (later ToE)</div>
+        </div>
+</div>
   <div id="chart-area-1">
   </div>
 
@@ -33,7 +48,6 @@
   <div id="chart-area-4">
   </div>
 </div>
-
 <script>
 jQuery( document ).ready(function( $ ) {
     
@@ -55,7 +69,7 @@ jQuery( document ).ready(function( $ ) {
         var module_path = document.getElementById('module_path').value;
 
         var margin = {top: 30, right: 50, bottom: 70, left: 50};
-        var width = 500 - margin.left - margin.right;
+        var width = 400 - margin.left - margin.right;
         var height = 400 - margin.top - margin.bottom;
 
           
@@ -84,7 +98,7 @@ jQuery( document ).ready(function( $ ) {
           //  .attr("transform", "translate(" + chartx + ", " + charty + ")")
             //.attr("transform-origin", "-10px -5px -5px")
           //  .append("g")
-              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+              .attr("transform", "translate(" + (margin.left - 30) + "," + margin.top + ")");
               //.attr("transform-origin", "-10px -5px -5px");
           
           //x-axis
@@ -204,15 +218,22 @@ jQuery( document ).ready(function( $ ) {
 
   <style>
 
-      body, svg, h2 {
+      *, body, svg, h2 {
         font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
         color: black;
         font-weight: normal;
+	overflow: visible;
       }
       body {
        padding: 100px;
       
       }
+
+      #top-x-title, #top-y-title {
+	font-size: 22px;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	
+	}
 
       h2 {
         padding: 0;
@@ -220,6 +241,7 @@ jQuery( document ).ready(function( $ ) {
       }
 
       #top-x-title {
+	padding-top: 25px;
         text-align: center;
         color: black;
       }
@@ -227,7 +249,7 @@ jQuery( document ).ready(function( $ ) {
         color: black;
         position: absolute;
         top: 600px;
-        left: 160px;
+        left: 60px;
         z-index: 1000;
         -webkit-transform: rotate(-90deg);
         -moz-transform: rotate(-90deg);
@@ -236,6 +258,47 @@ jQuery( document ).ready(function( $ ) {
         transform: rotate(-90deg);
       }
 
+	#boxplot-key {
+float: left;
+width: 100%;
+clear: both;
+margin-left: auto;
+margin-right: auto;
+margin-top: 30px;
+margin-bottom: 30px;
+}
+
+#lowerbound-key, #central-key, #upperbound-key {
+float: left;
+margin-right: 30px;
+}
+#lowerbound-key-swatch {
+height: 15px;
+width: 15px;
+border: 1px solid black;
+background-color: #a92a55;
+float: left;
+margin: 10px;
+}
+
+#central-key-swatch {
+height: 15px;
+width: 15px;
+border: 1px solid black;
+background-color: #01939a;
+float: left;
+margin: 10px;
+}
+
+#upperbound-key-swatch {
+height: 15px;
+width: 15px;
+border: 1px solid black;
+background-color: #ff6400;
+float: left;
+margin: 10px;
+}
+
       #main-chart-area {
         background-color: white;
         width: 1000px;
@@ -243,17 +306,29 @@ jQuery( document ).ready(function( $ ) {
         padding-left: 50px;
       }
 
+	#chart-area-1, #chart-area-3 {
+		margin-left: 50px;
+	}
+
       #chart-area-1, #chart-area-2, #chart-area-3, #chart-area-4 {
         background-color: white;
         float: left;
-        width: 500px;
-        height: 500px;
+        width: 420px;
+        height: 400px;
         -webkit-transform: rotate(90deg);
         -moz-transform: rotate(90deg);
         -o-transform: rotate(90deg);
         -ms-transform: rotate(90deg);
         transform: rotate(90deg);
       }
+
+	#chart-area-1, #chart-area-2 {
+		margin-top:25px;
+	}
+
+	#chart-area-3 svg.box>text:first-of-type, #chart-area-4 svg.box>text:first-of-type {
+display: none;
+	}
 
       .box {
         font: 10px sans-serif;
@@ -265,10 +340,48 @@ jQuery( document ).ready(function( $ ) {
       .box line,
       .box rect,
       .box circle {
-        fill: steelblue;
+        //fill: steelblue;
         stroke: #000;
         stroke-width: 1px;
       }
+
+.box g:nth-child(1) line.median {     
+stroke: #d45d85;
+stroke-width: 2px;
+}
+
+.box g:nth-child(2) line.median {     
+stroke: #5dc8cd;
+stroke-width: 2px;
+}
+
+.box g:nth-child(3) line.median { 
+stroke: #ff8b40;
+stroke-width: 2px;
+}
+
+.box g:nth-child(3) rect {
+        fill:#ff6400;
+        }
+.box g:nth-child(3) circle {
+fill:#ffb100;
+}
+
+	.box g:nth-child(1) rect {
+	fill:#a92a55; 
+	}
+.box g:nth-child(1) circle {
+fill: #4212af;
+}
+
+.box g:nth-child(2) rect {
+        fill:#01939a;
+        }
+.box g:nth-child(2) circle {
+fill: #5ccccc;
+}
+
+
 
       .box .center {
         stroke-dasharray: 3,3;
@@ -310,8 +423,9 @@ jQuery( document ).ready(function( $ ) {
         transform-origin: -10px -5px -5px;
       }
 
-      .x g.tick {
-      //  display: none;
+	/*show or hide y axis labels and ticks*/
+      .x g.tick, .x g text, .x g line {
+        display: none;
       }
 
       .x g.tick text {
