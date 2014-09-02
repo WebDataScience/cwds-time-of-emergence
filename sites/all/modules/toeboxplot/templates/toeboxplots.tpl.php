@@ -1,7 +1,7 @@
 <?php
   # Template for basic page displaying boxplots
   $path = drupal_get_path('module', 'toeboxplot');
-
+  drupal_set_title("Boxplot");
 ?>
 
 <!DOCTYPE html>
