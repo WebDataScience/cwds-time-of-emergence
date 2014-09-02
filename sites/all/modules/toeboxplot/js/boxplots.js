@@ -2,10 +2,10 @@
 
 d3.box = function() {
   var width = 1,
-      height = 1,
-      duration = 0,
-      domain = null,
-      value = Number,
+  height = 1,
+  duration = 0,
+  domain = null,
+  value = Number,
     whiskers = boxWhiskers,
     quartiles = boxQuartiles,
     showLabels = false, // whether or not to show text labels

@@ -55,7 +55,13 @@ jQuery( document ).ready(function( $ ) {
   var url =  location.protocol + "//" + location.host + "/boxplotdata/"  + location.pathname.match(/.*\/(V.*)/)[1];
   $.post( url, function( jsonobj ) {  
     
-    $("#top-x-title").html( jsonobj.variablename );
+    var charttitle = "Time of Emergence for " + jsonobj.variablename ;
+    charttitle += "<br/>Multi-Model Projections (21 global climate models)";
+    charttitle = charttitle + "<br/>Region: " + jsonobj.regionname ;
+    charttitle += "<br/>Climate Data: " + jsonobj.dataname;
+    
+    
+    $("#top-x-title").html(charttitle);
     
     drawBoxplot("chart-area-1", "High Emissions (RCP 8.5)", parse4data(jsonobj.emergencethreshold95.emissionscenariorcp85));
     drawBoxplot("chart-area-2", "Low Emissions (RCP 4.5)", parse4data(jsonobj.emergencethreshold95.emissionscenariorcp45));
@@ -280,35 +286,31 @@ background-color: #a92a55;
 float: left;
 margin: 10px;
 }
-
 #central-key-swatch {
-height: 15px;
-width: 15px;
-border: 1px solid black;
-background-color: #01939a;
-float: left;
-margin: 10px;
+  height: 15px;
+  width: 15px;
+  border: 1px solid black;
+  background-color: #01939a;
+  float: left;
+  margin: 10px;
 }
-
 #upperbound-key-swatch {
-height: 15px;
-width: 15px;
-border: 1px solid black;
-background-color: #ff6400;
-float: left;
-margin: 10px;
+  height: 15px;
+  width: 15px;
+  border: 1px solid black;
+  background-color: #ff6400;
+  float: left;
+  margin: 10px;
 }
-
-      #main-chart-area {
-        background-color: white;
-        width: 1000px;
-        height: 1100px;
-        padding-left: 50px;
-      }
-
-	#chart-area-1, #chart-area-3 {
-		margin-left: 50px;
-	}
+#main-chart-area {
+  background-color: white;
+  width: 1000px;
+  height: 1125px;
+  padding-left: 50px;
+}
+#chart-area-1, #chart-area-3 {
+	margin-left: 50px;
+}
 
       #chart-area-1, #chart-area-2, #chart-area-3, #chart-area-4 {
         background-color: white;

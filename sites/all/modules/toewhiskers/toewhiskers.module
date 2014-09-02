@@ -262,7 +262,7 @@ function toewhiskers_compare_form($form,&$form_submit) {
   );
   $form['parameter']['emission'] = array(
     '#type' => 'radios',
-    '#title' => t('Emission scenario'),
+    '#title' => t('Emission Scenario'),
     '#options' => $options,
     '#required' => TRUE,
     '#default_value' => isset($comparearray['emission'])?$comparearray['emission']:key($options),
@@ -285,7 +285,7 @@ function toewhiskers_compare_form($form,&$form_submit) {
   );
   $form['parameter']['dataset'] = array(
     '#type' => 'radios',
-    '#title' => t('Dataset'),
+    '#title' => t('Climate Data'),
     '#options' => $options,
     '#required' => TRUE,
     '#default_value' => isset($comparearray['dataset'])?$comparearray['dataset']:key($options),
@@ -296,7 +296,7 @@ function toewhiskers_compare_form($form,&$form_submit) {
   );
   $form['parameter']['tolerance'] = array(
     '#type' => 'radios',
-    '#title' => t('Tolerance (Emergence threshold)'),
+    '#title' => t('Historical "Noise" Range'),
     '#options' => $options,
     '#required' => TRUE,
     '#default_value' => isset($comparearray['tolerance'])?$comparearray['tolerance']:key($options),
@@ -308,7 +308,7 @@ function toewhiskers_compare_form($form,&$form_submit) {
   );
   $form['parameter']['confidence'] = array(
     '#type' => 'radios',
-    '#title' => t('Confidence'),
+    '#title' => t('ToE Range'),
     '#options' => $options,
     '#required' => TRUE,
     '#default_value' => isset($comparearray['confidence'])?$comparearray['confidence']:key($options),
@@ -511,9 +511,9 @@ function toewhiskers_json_query_function($mode){
       'B1'	=>	'SRES B1',
     );
     $prettynames['confidence'] = array(
-      '5'	=>	'Low (5% confidence interval)',
-      '50'	=>	'Medium (50% confidence interval)',
-      '95'	=>	'High (95% confidence interval)',
+      '5'	=>	'Upper bound (later ToE)',
+      '50'	=>	'Central tendency',
+      '95'	=>	'Lower bound (earlier ToE)',
     );
     $prettynames['tolerance'] = array(
       '95'	=>	'Low (middle 90% of historical fluctuations)',
@@ -525,9 +525,9 @@ function toewhiskers_json_query_function($mode){
     
     $o = "Region: King County
 Emission Scenario: " . $prettynames['emission'][$emission] . "
-Confidence: " . $prettynames['confidence'][$confidence] . "
-Tolerance: " . $prettynames['tolerance'][$tolerance] . "
-Dataset: " . $prettynames['dataset'][$dataset] . "\n\n";
+ToE Range: " . $prettynames['confidence'][$confidence] . "
+Historical 'Noise' Range: " . $prettynames['tolerance'][$tolerance] . "
+Climate Data: " . $prettynames['dataset'][$dataset] . "\n\n";
     $o .= $csv;
     
     //drupal_json_output(print($o));
@@ -556,7 +556,10 @@ function toewhiskers_json_query_boxplot_function($variable){
   
   $jasondata = array();
   $jasondata['variable'] = $variable;
-  $csvdata = "Q1,Q2,Q3\n";
+  // Database contains only the King County region. This will need updating when additional regions are added to data in db.
+  $jasondata['regionname'] = "King County";
+  // Database contains only the BCSD5 dataset. This will need updating when additional datasets are added to data in db.
+  $jasondata['dataname'] = "Statistically-downscaled (CMIP5 BCSD)";
   $emergencethreshold_array = array('95','80');
   $emissionscenario_array = array('rcp85','rcp45');
   $signalconfidence_array = array('95','50','5');
@@ -598,7 +601,6 @@ function toewhiskers_json_query_boxplot_function($variable){
           "dots" => $dots,
           "query" => $query,
         );  
-        $csvdata .= array_pop($dots) . "," . array_pop($dots) . "," . array_pop($dots) . "\n";
         
         $jasondata['emergencethreshold' . $emergencethreshold]['emissionscenario' . $emissionscenario]['signalconfidence' . $signalconfidence] = $oneboxplot;
         
@@ -611,7 +613,6 @@ function toewhiskers_json_query_boxplot_function($variable){
 
   if($verbose_test_mode){ 
     drupal_json_output(print_r($jasondata));
-    print($csvdata);
   }
   else{drupal_json_output($jasondata);}
   

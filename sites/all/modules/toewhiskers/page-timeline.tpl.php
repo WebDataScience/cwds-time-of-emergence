@@ -89,9 +89,9 @@ ini_set('display_startup_errors', TRUE);
 <div class="timeline-thumbnail"><img src="/sites/all/modules/toewhiskers/images/kingcounty200x200.png"></img></div>
 <h2>Multi-Model Median Time of Emergence for <span class="region">King County</span> under <span class="emission"></span></h2>
   <p>    
-  Confidence: <span class="confidence"></span><br/>
-  Tolerance: <span class="tolerance"></span><br/>
-  Dataset: <span class="dataset"></span>
+  ToE Range: <span class="confidence"></span><br/>
+  Historical "Noise" Range: <span class="tolerance"></span><br/>
+  Climate Data: <span class="dataset"></span>
   </p>
 <div id="chartmessage"></div>
 <div id="horizontal-bar-chart"></div>
