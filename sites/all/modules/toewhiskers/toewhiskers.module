@@ -366,6 +366,7 @@ function toewhiskers_clean_array($array, $filter = 'check_plain') {
 }
 
 
+
 /*
  * Ajax/JSON data retriever.
  */
@@ -378,12 +379,6 @@ function toewhiskers_json_query_function($mode){
   $verbose_test_mode = FALSE;
   
   $compare = $_SESSION['compare'];
-
-  // The nid of the webform.
-  //$webformnid = '4';
-  //module_load_include('inc', 'webform', 'includes/webform.submissions');
-  //$webform = webform_get_submission($webformnid, $sid);
-  //$dataarray = $webform->data;
   
   $region = trim($compare['region']);
   
@@ -404,6 +399,7 @@ function toewhiskers_json_query_function($mode){
  
   // radios:        AND SCEN1_DATA_V1.EMISSCENARIO = '" . $emission .   "' 
   // checkboxes:    AND SCEN1_DATA_V1.EMISSCENARIO in ('" . $emissions . "') 
+  
   //Query for the timeline chart portion of /timeline page.
   $query = "SELECT 
   {SCEN1_DATA_V1}.TOE,{SCEN1_DATA_V1}.VARIABLEID,{SCEN1_DATA_V1}.CHANGEDIR,{TOE_DATA_V1}.VARIABLENAME,{TOE_DATA_V1}.VARIABLESHORTNAME,{SCEN1_DATA_V1}.EMISSCENARIO 
@@ -421,7 +417,8 @@ function toewhiskers_json_query_function($mode){
   
   if($verbose_test_mode){print($query . "<br/><br/>");}
   
-  $output = "";
+  $csvvariables = array('VARIABLEID','VARIABLESHORTNAME','TOE','CHANGEDIR','MODELAGREEMENT');
+  $csv = implode(",", $csvvariables) . "\n";
   $toe = array();
   
   
@@ -431,9 +428,6 @@ function toewhiskers_json_query_function($mode){
   $result = db_query($query);
   // Result is returned as a iterable object that returns a stdClass object on each iteration
   foreach ($result as $record) {
-    // Perform operations on $record->title, etc. here. In this example the available data would be mapped to object properties:
-    // $record->nid, $record->title, $record->created
-    //$output .= "variableid: " . $record->VARIABLEID . " toe: " . $record->TOE;
     
     // Function to translate ugly short name value in DB to pretty names:
     if($record->VARIABLESHORTNAME == "#Tmax>90degF(32.2deg"){$record->VARIABLESHORTNAME = "#Tmax>90°F(32.2°C)";}
@@ -447,6 +441,7 @@ function toewhiskers_json_query_function($mode){
       $record->VARIABLESHORTNAME,
       $record->EMISSCENARIO,
     );
+    
   }
 
   // Query for 'table' portion of /timeline page.
@@ -457,7 +452,7 @@ function toewhiskers_json_query_function($mode){
   AND SCEN1_DATA_V1.DATASET = '" . $dataset . "' 
   AND SCEN1_DATA_V1.EMERGTHRES = " . $tolerance . "
   AND SCEN1_DATA_V1.SIGNALCONFIDENCE = " . $confidence . "
-  AND (SCEN1_DATA_V1.MODELAGREEMENT = '25' OR SCEN1_DATA_V1.MODELAGREEMENT = '75') 
+  AND (SCEN1_DATA_V1.MODELAGREEMENT = '25' OR SCEN1_DATA_V1.MODELAGREEMENT = '75' OR SCEN1_DATA_V1.MODELAGREEMENT = 'XX') 
   AND SCEN1_DATA_V1.GCM = 'GCM_ensemble' ORDER BY SCEN1_DATA_V1.VARIABLEID ";
   $result = db_query($query);
   
@@ -476,10 +471,20 @@ function toewhiskers_json_query_function($mode){
       $roundedtoe = ($roundedtoe > $max_TOE_year)?'beyond 2100':$roundedtoe;
       $tabledataarray[$record->VARIABLEID]['toe75']=$roundedtoe;
     }
-    $tabledataarray[$record->VARIABLEID]['changedir']=$record->CHANGEDIR;
-    $tabledataarray[$record->VARIABLEID]['shortname']=$record->VARIABLESHORTNAME;
-    // Pretty function to replace this code soon.
-    if($record->VARIABLESHORTNAME == "#Tmax>90degF(32.2deg"){$tabledataarray[$record->VARIABLEID]['shortname'] = "#Tmax>90°F(32.2°C)";}
+    if($record->MODELAGREEMENT == '25' || $record->MODELAGREEMENT == '75'){
+      $tabledataarray[$record->VARIABLEID]['changedir']=$record->CHANGEDIR;
+      $tabledataarray[$record->VARIABLEID]['shortname']=$record->VARIABLESHORTNAME;
+      // Pretty function to replace this code soon.
+      if($record->VARIABLESHORTNAME == "#Tmax>90degF(32.2deg"){$tabledataarray[$record->VARIABLEID]['shortname'] = "#Tmax>90°F(32.2°C)";}
+    }
+    foreach ($csvvariables as $key=>$value) {
+      if($value == 'TOE' && ($record->TOE > 2100)){
+        $csv .= "'Beyond 2100',";
+      } else {
+        $csv  .= $record->$value . ",";
+      }
+    }
+    $csv = rtrim($csv, ",") . "\n";
   }
   
   db_set_active();
@@ -496,7 +501,9 @@ function toewhiskers_json_query_function($mode){
     "tabledata" => $tabledataarray,
   );  
   
+  
   if($mode == 'text'){
+    // Create text for data export.
     $prettynames['emission'] = array(
       'rcp45'	=>	'RCP4.5',
       'rcp85'	=>	'RCP8.5',
@@ -516,23 +523,20 @@ function toewhiskers_json_query_function($mode){
       'BCSD5'	=>	'Statistically-downscaled (CMIP5 BCSD)',
     );
     
-    $o = "
-Region: King County
+    $o = "Region: King County
 Emission Scenario: " . $prettynames['emission'][$emission] . "
 Confidence: " . $prettynames['confidence'][$confidence] . "
 Tolerance: " . $prettynames['tolerance'][$tolerance] . "
-Dataset: " . $prettynames['dataset'][$dataset] . "
-";
-    $o .= "Multi-Model Median Timeline data points:
-" . print_r($toedata['toedata'], TRUE);
-    $o .= "Projected Range data points:
-" . print_r($toedata['tabledata'], TRUE);
+Dataset: " . $prettynames['dataset'][$dataset] . "\n\n";
+    $o .= $csv;
     
-    drupal_json_output(print($o));
-    
-    //drupal_json_output(print_r($toedata));
+    //drupal_json_output(print($o));
+    drupal_add_http_header('Content-Type', 'text/csv; utf-8');
+    drupal_add_http_header('Content-Disposition', 'attachment; filename = dataexport.csv');
+    print($o);
     
   } else {
+    // Output JSON data for /timeline AJAX query.
     drupal_json_output($toedata);  
   }
   
