@@ -44,7 +44,7 @@ jQuery( document ).ready(function( $ ) {
     jsondataarray = [['Variable','Year of Emergence', {role: 'style'}, ]];
     timelinedataarray = []; // [ [toe(integer),height(zero)], ];
   
-    toedata = jsonobj.toedata;
+    toedata = jsonobj.timelinedata;
   
     for (var key in toedata) {
        var onerow = toedata[key];
@@ -52,7 +52,7 @@ jQuery( document ).ready(function( $ ) {
        //jsondataarray.push([onerow[2],onerow[1],onerow[2]]);
        jsondataarray.push([ onerow[2],onerow[4], colorarray.shift() ]);
        timelinedataarray.push([ onerow[4] , 0, onerow[2], onerow[5], onerow[6], 0]);
-            /* val 0 at [5] represents default vertical height between the axis and variable label */ 
+       /* val 0 at [5] represents default vertical height between the axis and variable label */ 
     }
 
     
@@ -62,11 +62,7 @@ jQuery( document ).ready(function( $ ) {
       return;
     } 
     
-    // Old GoogleCharts based bar chart
-    //var hbardata = google.visualization.arrayToDataTable(jsondataarray, false);
-    //drawHorizontalBarChart(jsondataarray, jsonobj.maxtoeyear);
-    
-    
+   
     // D3.js based timeline chart
     drawD3Timeline(timelinedataarray, jsonobj.maxtoeyear);
     
@@ -80,7 +76,7 @@ jQuery( document ).ready(function( $ ) {
     tabledata = jsonobj.tabledata;
     for (var key in tabledata) {
       var onerow = tabledata[key];
-      $('#tabledata tr:last').after("<tr><td><a href='/boxplots_test/" + key + "'>" + onerow.shortname + "</a></td><td>" + onerow.toe25 + " - " + onerow.toe75 + "</td><td>" + (onerow.changedir == '1'?'Positive':'Negative')  + "</td></tr>");  
+      $('#tabledata tr:last').after("<tr><td><a href='/boxplots_test/" + key + "'>" + onerow.VARIABLESHORTNAME + "</a></td><td>" + onerow.YEARA + " - " + onerow.YEARB + "</td><td>" + (onerow.CHANGEDIR == '1'?'Positive':'Negative')  + "</td></tr>");  
     }
     
     

@@ -5,7 +5,6 @@ error_reporting(E_ALL);
 ini_set('display_errors', TRUE);
 ini_set('display_startup_errors', TRUE);
 
-
 function toewhiskers_menu() {
   $items['explore'] = array(
     'page callback' => 'toewhiskers_explore_page_function',
@@ -373,10 +372,10 @@ function toewhiskers_clean_array($array, $filter = 'check_plain') {
 function toewhiskers_json_query_function($mode){
 
   //drupal_set_message('formstate:<pre>'. print_r($_SESSION['compare'], TRUE) .'</pre>');
-  
+  $maindatatable = "SCEN1_DATA_V2";
   $max_TOE_year = 2100;
 
-  $verbose_test_mode = FALSE;
+  $verbose_test_mode = TRUE;
   
   $compare = $_SESSION['compare'];
   
@@ -397,31 +396,23 @@ function toewhiskers_json_query_function($mode){
   $tolerance = trim($compare['tolerance']);
   $confidence = trim($compare['confidence']);
  
-  // radios:        AND SCEN1_DATA_V1.EMISSCENARIO = '" . $emission .   "' 
-  // checkboxes:    AND SCEN1_DATA_V1.EMISSCENARIO in ('" . $emissions . "') 
+  $timelinedata = array();
   
   //Query for the timeline chart portion of /timeline page.
   $query = "SELECT 
-  {SCEN1_DATA_V1}.TOE,{SCEN1_DATA_V1}.VARIABLEID,{SCEN1_DATA_V1}.CHANGEDIR,{TOE_DATA_V1}.VARIABLENAME,{TOE_DATA_V1}.VARIABLESHORTNAME,{SCEN1_DATA_V1}.EMISSCENARIO 
-  FROM {SCEN1_DATA_V1} LEFT JOIN {TOE_DATA_V1} on (TOE_DATA_V1.VARIABLEID = SCEN1_DATA_V1.VARIABLEID) WHERE 
-  SCEN1_DATA_V1.VARIABLEID in ('" . $variables . "') 
-  AND SCEN1_DATA_V1.REGION = '" . $region .   "' 
-  AND SCEN1_DATA_V1.EMISSCENARIO = '" . $emission .   "' 
-  AND SCEN1_DATA_V1.DATASET = '" . $dataset . "' 
-  AND SCEN1_DATA_V1.EMERGTHRES = " . $tolerance . "
-  AND SCEN1_DATA_V1.SIGNALCONFIDENCE = " . $confidence . "
-  AND SCEN1_DATA_V1.TOE <= " . $max_TOE_year . "
-  AND SCEN1_DATA_V1.MODELAGREEMENT = 'XX' 
-  AND SCEN1_DATA_V1.GCM = 'GCM_ensemble' 
+  {". $maindatatable."}.TOE,{". $maindatatable."}.VARIABLEID,{". $maindatatable."}.CHANGEDIR,{TOE_DATA_V1}.VARIABLENAME,{TOE_DATA_V1}.VARIABLESHORTNAME,{". $maindatatable."}.EMISSCENARIO 
+  FROM {". $maindatatable."} LEFT JOIN {TOE_DATA_V1} on (TOE_DATA_V1.VARIABLEID = ". $maindatatable.".VARIABLEID) WHERE 
+  ". $maindatatable.".VARIABLEID in ('" . $variables . "') 
+  AND ". $maindatatable.".REGION = '" . $region .   "' 
+  AND ". $maindatatable.".EMISSCENARIO = '" . $emission .   "' 
+  AND ". $maindatatable.".DATASET = '" . $dataset . "' 
+  AND ". $maindatatable.".EMERGTHRES = " . $tolerance . "
+  AND ". $maindatatable.".SIGNALCONFIDENCE = " . $confidence . "
+  AND ". $maindatatable.".TOE <= " . $max_TOE_year . "
+  AND ". $maindatatable.".MODELAGREEMENT = 'XX' 
+  AND ". $maindatatable.".GCM = 'GCM_ensemble' 
   LIMIT 20";
-  
-  if($verbose_test_mode){print($query . "<br/><br/>");}
-  
-  $csvvariables = array('VARIABLEID','VARIABLESHORTNAME','TOE','CHANGEDIR','MODELAGREEMENT');
-  $csv = implode(",", $csvvariables) . "\n";
-  $toe = array();
-  
-  
+    
   // Setup to query non Drupal database.
   db_set_active('cig_toe');
   
@@ -432,7 +423,7 @@ function toewhiskers_json_query_function($mode){
     // Function to translate ugly short name value in DB to pretty names:
     if($record->VARIABLESHORTNAME == "#Tmax>90degF(32.2deg"){$record->VARIABLESHORTNAME = "#Tmax>90°F(32.2°C)";}
     
-    $toe[] = array(
+    $timelinedata[] = array(
       $record->CHANGEDIR,
       intval($record->TOE),
       $record->VARIABLENAME,
@@ -442,63 +433,71 @@ function toewhiskers_json_query_function($mode){
       $record->EMISSCENARIO,
     );
     
-  }
-
-  // Query for 'table' portion of /timeline page.
-  $query = "SELECT SCEN1_DATA_V1.*,TOE_DATA_V1.VARIABLESHORTNAME FROM {SCEN1_DATA_V1}  LEFT JOIN {TOE_DATA_V1} on (TOE_DATA_V1.VARIABLEID = SCEN1_DATA_V1.VARIABLEID) WHERE
-  SCEN1_DATA_V1.VARIABLEID in ('" . $variables . "') 
-  AND SCEN1_DATA_V1.REGION = '" . $region .   "' 
-  AND SCEN1_DATA_V1.EMISSCENARIO = '" . $emission .   "' 
-  AND SCEN1_DATA_V1.DATASET = '" . $dataset . "' 
-  AND SCEN1_DATA_V1.EMERGTHRES = " . $tolerance . "
-  AND SCEN1_DATA_V1.SIGNALCONFIDENCE = " . $confidence . "
-  AND (SCEN1_DATA_V1.MODELAGREEMENT = '25' OR SCEN1_DATA_V1.MODELAGREEMENT = '75' OR SCEN1_DATA_V1.MODELAGREEMENT = 'XX') 
-  AND SCEN1_DATA_V1.GCM = 'GCM_ensemble' ORDER BY SCEN1_DATA_V1.VARIABLEID ";
-  $result = db_query($query);
+  }  // End timeline data query.
   
-  $tabledataarray = array();
+  $csvvariables = array(
+    'VARIABLESHORTNAME'=> 'Variable',
+    'TOE'=> 'ToE_CentralTendency',
+    'TOE_RANGE' => 'ToE_Range',
+    'CHANGEDIR'=> 'Direction_of_Change',
+  );
+  $csv = implode(",", array_values($csvvariables)) . "\n";
+  
+  $toe_array =  array();
+  $variable_object = new stdClass();
+  
+  
+  // Query for 'table' portion of /timeline page.
+  $query = "SELECT ". $maindatatable.".*,TOE_DATA_V1.VARIABLESHORTNAME FROM {". $maindatatable."}  LEFT JOIN {TOE_DATA_V1} on (TOE_DATA_V1.VARIABLEID = ". $maindatatable.".VARIABLEID) WHERE
+  ". $maindatatable.".VARIABLEID in ('" . $variables . "') 
+  AND ". $maindatatable.".REGION = '" . $region .   "' 
+  AND ". $maindatatable.".EMISSCENARIO = '" . $emission .   "' 
+  AND ". $maindatatable.".DATASET = '" . $dataset . "' 
+  AND ". $maindatatable.".EMERGTHRES = " . $tolerance . "
+  AND ". $maindatatable.".SIGNALCONFIDENCE = " . $confidence . "
+  AND ". $maindatatable.".MODELAGREEMENT = 'XX'
+  AND (". $maindatatable.".GCM = 'GCM_ensemble_25' OR ". $maindatatable.".GCM = 'GCM_ensemble' OR ". $maindatatable.".GCM = 'GCM_ensemble_75' )
+  ORDER BY ". $maindatatable.".VARIABLEID ";
+  $result = db_query($query);
   
   // Result is returned as a iterable object that returns a stdClass object on each iteration
   foreach ($result as $record) {
-    //print_r($record);
-    if($record->MODELAGREEMENT == '25'){
-      $roundedtoe = ceil($record->TOE/5)*5;
-      $roundedtoe = ($roundedtoe > $max_TOE_year)?'beyond 2100':$roundedtoe;
-      $tabledataarray[$record->VARIABLEID]['toe25']=$roundedtoe;
+    
+    if(!isset($toe_array[$record->VARIABLEID])){
+      $toe_array[$record->VARIABLEID] = new stdClass();
     }
-    if($record->MODELAGREEMENT == '75'){
-      $roundedtoe = ceil($record->TOE/5)*5;
-      $roundedtoe = ($roundedtoe > $max_TOE_year)?'beyond 2100':$roundedtoe;
-      $tabledataarray[$record->VARIABLEID]['toe75']=$roundedtoe;
+    
+    $toe_array[$record->VARIABLEID]->VARIABLESHORTNAME = $record->VARIABLESHORTNAME;
+    
+    $toe = "Beyond " . $max_TOE_year;
+    if ($record->TOE <= $max_TOE_year){
+      $toe = ceil($record->TOE/5)*5;
     }
-    if($record->MODELAGREEMENT == '25' || $record->MODELAGREEMENT == '75'){
-      $tabledataarray[$record->VARIABLEID]['changedir']=$record->CHANGEDIR;
-      $tabledataarray[$record->VARIABLEID]['shortname']=$record->VARIABLESHORTNAME;
-      // Pretty function to replace this code soon.
-      if($record->VARIABLESHORTNAME == "#Tmax>90degF(32.2deg"){$tabledataarray[$record->VARIABLEID]['shortname'] = "#Tmax>90°F(32.2°C)";}
+    if($record->GCM == 'GCM_ensemble'){
+      $toe_array[$record->VARIABLEID]->TOE = $toe;
     }
-    foreach ($csvvariables as $key=>$value) {
-      if($value == 'TOE' && ($record->TOE > 2100)){
-        $csv .= "'Beyond 2100',";
-      } else {
-        $csv  .= $record->$value . ",";
-      }
+    if($record->GCM == 'GCM_ensemble_25'){
+      $toe_array[$record->VARIABLEID]->YEARA = $toe;
     }
-    $csv = rtrim($csv, ",") . "\n";
-  }
+    if($record->GCM == 'GCM_ensemble_75'){
+      $toe_array[$record->VARIABLEID]->YEARB = $toe;
+    }
+    
+    $toe_array[$record->VARIABLEID]->CHANGEDIR = $record->CHANGEDIR;
+
+  }  // End tabledata query.
   
   db_set_active();
   
   
   $toedata = array(
-    //"query" => $query,
     "maxtoeyear" => $max_TOE_year,
     "emission" => $emission,
     "confidence" => $confidence,
     "tolerance" => $tolerance,
     "dataset" => $dataset,
-    "toedata" => $toe,
-    "tabledata" => $tabledataarray,
+    "timelinedata" => $timelinedata,
+    "tabledata" => $toe_array,
   );  
   
   
@@ -528,15 +527,22 @@ Emission Scenario: " . $prettynames['emission'][$emission] . "
 ToE Range: " . $prettynames['confidence'][$confidence] . "
 Historical 'Noise' Range: " . $prettynames['tolerance'][$tolerance] . "
 Climate Data: " . $prettynames['dataset'][$dataset] . "\n\n";
-    $o .= $csv;
     
-    //drupal_json_output(print($o));
+    foreach($toe_array as $toe_object){
+      $csv .= '"' . $toe_object->VARIABLESHORTNAME . '",' . $toe_object->TOE . ',"' . $toe_object->YEARA . ' - ' . $toe_object->YEARB . '",';
+      $csv .= ($toe_object->CHANGEDIR == 1)?'"Positive"':'"Negative"';
+      $csv .= "\n";
+    }
+    $o .= $csv;
+        
     drupal_add_http_header('Content-Type', 'text/csv; utf-8');
     drupal_add_http_header('Content-Disposition', 'attachment; filename = dataexport.csv');
     print($o);
     
   } else {
     // Output JSON data for /timeline AJAX query.
+    // Cleaner output for testing only:
+    // drupal_json_output(print_r($toedata));
     drupal_json_output($toedata);  
   }
   
@@ -645,13 +651,15 @@ Within each subplot:
  */
 function toewhiskers_cigtoeconfig_function(){
   
+  $maindatatable = "SCEN1_DATA_V2";
   $o = "";
   db_set_active('cig_toe');
   
   $columns = array('REGION','EMISSCENARIO','DATASET','EMERGTHRES','SIGNALCONFIDENCE','MODELAGREEMENT','GCM');
   foreach ($columns as $column) {
     $o .= "<br/>" . $column . "<br/>";
-    $query = "SELECT DISTINCT " . $column . " FROM {SCEN1_DATA_V1}";
+    $query = "SELECT DISTINCT " . $column . " FROM {" .$maindatatable. "}";
+    print $query;
     
     $result = db_query($query);
     // Result is returned as a iterable object that returns a stdClass object on each iteration
