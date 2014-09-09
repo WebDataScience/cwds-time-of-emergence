@@ -1,6 +1,6 @@
 
 
-google.load("visualization", "1", {packages:["corechart"]});
+//google.load("visualization", "1", {packages:["corechart"]});
 
 
 
@@ -25,9 +25,6 @@ jQuery( document ).ready(function( $ ) {
   websitetextarray['emission'] = emission;
 
 
-
-  var sid = getParameterByName('sid');
-
   dataarray = []; 
   jsondataarray = [];
   // Some of Google charts default colors.
@@ -35,9 +32,8 @@ jQuery( document ).ready(function( $ ) {
   // Gradient colors from http://www.perbang.dk/rgbgradient/
   colorarray = ["#E59C00","#E39400","#E18C00","#DF8400","#DD7C00","#DB7400","#D96C00","#D76400","#D55C00","#D35400","#D14C01","#CF4401","#CD3C01","#CB3401","#C92C01","#C72401","#C51C01","#C31401","#C10C01","#C00402"];
 
-  $.post( "timelinedata/" + sid, function( jsonobj ) { 
-  
-    //alert(jsonobj.query);
+  // Ajax endpoint will retrieve vars and parameters from session.
+  $.post( "timelinedata" , function( jsonobj ) { 
   
     dataarray = [  ['Genre', '',{ role: 'style' },'Blue',{ role: 'style' }] ];
     //jsondataarray = [['Variable','Year of Emergence',{ role: 'annotation' }]];
@@ -64,13 +60,20 @@ jQuery( document ).ready(function( $ ) {
     
    
     // D3.js based timeline chart
-    drawD3Timeline(timelinedataarray, jsonobj.maxtoeyear);
+    drawD3Timeline(
+      timelinedataarray, 
+      jsonobj.maxtoeyear,
+      'ToE Range: ' + websitetextarray['confidence'][jsonobj.confidence],
+      'Historical "Noise" Range: ' +websitetextarray['tolerance'][jsonobj.tolerance],
+      'Climate Data: ' + websitetextarray['dataset'][jsonobj.dataset],
+      'Region: King County'
+    );
+    
     
     $(".emission" ).html( websitetextarray['emission'][jsonobj.emission] );
     $(".confidence" ).html( websitetextarray['confidence'][jsonobj.confidence] );
     $(".tolerance" ).html( websitetextarray['tolerance'][jsonobj.tolerance] );
     $(".dataset" ).html( websitetextarray['dataset'][jsonobj.dataset] );
-    
     
     // Table modification via jQuery.
     tabledata = jsonobj.tabledata;
@@ -85,10 +88,10 @@ jQuery( document ).ready(function( $ ) {
 }); 
   
   
-function drawD3Timeline(timelinedataarray, maxtoeyear){
+function drawD3Timeline(timelinedataarray, maxtoeyear,confidence,tolerance,dataset,region){
  var data = [[2000,0,"tooltip1","label1","rcp45",50], [2020,0,"tooltip2","label2","rcp85",50], [2085,0,"tooltip3","label3","rcp45",50], [2040,0,"tooltip4","label4","rcp45",50]];
  
- var chartheight = 200;
+ var chartheight = 280;
  data = timelinedataarray;
 
 /* Code to prevent label text overlapping */
@@ -111,7 +114,7 @@ for (var i = 0; i < data.length; i++) {
 	}
 } 
 		   
-		var margin = {top: 20, right: 40, bottom: 60, left: 30}
+		var margin = {top: 120, right: 40, bottom: 40, left: 30}
 		  , width = 940 - margin.left - margin.right
 		  , height = chartheight - margin.top - margin.bottom;
 
@@ -136,6 +139,44 @@ for (var i = 0; i < data.length; i++) {
     .attr("height", "100%")
     .attr('border', 0)
     .attr("fill", "black");
+    
+    
+    chart.append("text")
+        .attr("x", 15)             
+        .attr("y", 20)
+        .style("stroke", "white")
+        .style('font-size', '14px')
+        .style('font-family', 'sans-serif')
+        .text(confidence);
+    chart.append("text")
+        .attr("x", 15)             
+        .attr("y", 40)
+        .style("stroke", "white")
+        .style('font-size', '14px')
+        .style('font-family', 'sans-serif')
+        .text(tolerance); 
+    chart.append("text")
+        .attr("x", 15)             
+        .attr("y", 60)
+        .style("stroke", "white")
+        .style('font-size', '14px')
+        .style('font-family', 'sans-serif')
+        .text(dataset);  
+    chart.append("text")
+        .attr("x", 15)             
+        .attr("y", 80)
+        .style("stroke", "white")
+        .style('font-size', '14px')
+        .style('font-family', 'sans-serif')
+        .text(region);  
+    /*
+    chart.append("svg:image")
+        .attr("xlink:href", "http://toe/sites/all/modules/toewhiskers/images/kingcounty200x200.png")
+        .attr("x", width-105+margin.right+margin.left)
+        .attr("y", 0)
+        .attr("width", "105")
+        .attr("height", "105");
+    */
     
 		var main = chart.append('g')
 		.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')

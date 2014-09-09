@@ -86,13 +86,13 @@ ini_set('display_startup_errors', TRUE);
 			margin: 0;
 		} 
 </style>
-<div class="timeline-thumbnail"><img src="/sites/all/modules/toewhiskers/images/kingcounty200x200.png"></img></div>
-<h2>Multi-Model Median Time of Emergence for <span class="region">King County</span> under <span class="emission"></span></h2>
-  <p>    
+<h2 style="float:left">Multi-Model Median Time of Emergence for <span class="region">King County</span> under <span class="emission"></span></h2>
+ <div class="timeline-thumbnail"><img src="/sites/all/modules/toewhiskers/images/kingcounty200x200.png"></img></div><div style="clear:both"></div>
+  <!--<p>   
   ToE Range: <span class="confidence"></span><br/>
   Historical "Noise" Range: <span class="tolerance"></span><br/>
   Climate Data: <span class="dataset"></span>
-  </p>
+  </p>-->
 <div id="chartmessage"></div>
 <div id="horizontal-bar-chart"></div>
 <div id="timeline-chart"></div> 
