@@ -19,7 +19,7 @@
 <input id="module_path" type="hidden" value="<?php echo base_path() . $path ?>" />
 <div id="main-chart-area">
 
-<h1 id="top-y-title">Baseline "Noise" Range</h1>
+<h1 id="top-y-title"></h1>
   <h1 id="top-x-title"></h1>
 
 <div id="boxplot-key">
@@ -51,7 +51,6 @@
 <script>
 jQuery( document ).ready(function( $ ) {
     
- 
   var url =  location.protocol + "//" + location.host + "/boxplotdata/"  + location.pathname.match(/.*\/(V.*)/)[1];
   $.post( url, function( jsonobj ) {  
     
@@ -60,17 +59,16 @@ jQuery( document ).ready(function( $ ) {
     charttitle = charttitle + "<br/>Region: " + jsonobj.regionname ;
     charttitle += "<br/>Climate Data: " + jsonobj.dataname;
     
-    
     $("#top-x-title").html(charttitle);
     
-    drawBoxplot("chart-area-1", "High Emissions (RCP 8.5)", parse4data(jsonobj.emergencethreshold95.emissionscenariorcp85));
-    drawBoxplot("chart-area-2", "Low Emissions (RCP 4.5)", parse4data(jsonobj.emergencethreshold95.emissionscenariorcp45));
-    drawBoxplot("chart-area-3", "High Emissions (RCP 8.5)",parse4data(jsonobj.emergencethreshold80.emissionscenariorcp85));
-    drawBoxplot("chart-area-4", "Low Emissions (RCP 4.5)", parse4data(jsonobj.emergencethreshold80.emissionscenariorcp45));
+    drawBoxplot("chart-area-1", "High Emissions (RCP 8.5)", parse4data(jsonobj.emergencethreshold95.emissionscenariorcp85),"Low Historical Noise Range");
+    drawBoxplot("chart-area-2", "Low Emissions (RCP 4.5)", parse4data(jsonobj.emergencethreshold95.emissionscenariorcp45),"");
+    drawBoxplot("chart-area-3", "High Emissions (RCP 8.5)",parse4data(jsonobj.emergencethreshold80.emissionscenariorcp85),"High Historical Noise Range");
+    drawBoxplot("chart-area-4", "Low Emissions (RCP 4.5)", parse4data(jsonobj.emergencethreshold80.emissionscenariorcp45),"");
   });
   
 
-  function drawBoxplot(containingElementID, ytitle, data) {
+  function drawBoxplot(containingElementID, ytitle, data, xtitle) {
         var labels = false; 
         var module_path = document.getElementById('module_path').value;
 
@@ -138,12 +136,11 @@ jQuery( document ).ready(function( $ ) {
           svg.append("text")
             //.attr("y", (width / 2))             
             //.attr("x", 0 + (margin.top / 2))
-            .attr("y", 0)             
-            .attr("x", (width / -1.4))
+            .attr("y", -20)             
+            .attr("x", (0 - width))
             .attr("text-anchor", "start")  
             .attr("transform", "rotate(-90)")
-            .style("font-size", "18px") 
-            //.style("text-decoration", "underline")  
+            .style("font-size", "18px")  
             .text(ytitle); 
          
            //draw y axis
@@ -158,23 +155,39 @@ jQuery( document ).ready(function( $ ) {
               .attr("dy", ".71em")
               .style("text-anchor", "middle")
               .style("font-size", "16px");
-              //.text("Year");
+
           
+          
+          
+          //text label for x axis
+          svg.append("text")      
+            .attr("x", -150 )
+            .attr("y", -380 )
+            .style("text-anchor", "middle")
+            .style("font-size", "18px")
+            .text(xtitle)
+            .attr("transform", function(d) {
+              return "rotate(180)" 
+            });
+            ;
+            
+            
           //draw x axis  
           svg.append("g")
               .attr("class", "x axis")
               //.attr("transform", "translate(0," + (height  + margin.top + 10) + ") scale(1, -1)")
+              .append("text") 
               .attr("transform", "translate(0," + (height  + margin.top) + ")")
               .call(xAxis); 
               
-         /* vg.append("g")
+          /*svg.append("g")
             .append("text") // text label for the x axis
             .attr("x", (width / 2))
             .attr("y",  10 )
             .attr("dy", ".71em")
             .style("text-anchor", "start")
             .style("font-size", "16px")
-            .call(xAxis);  */  
+            .call(xAxis);  */ 
             
       
     }  // end drawboxplot
@@ -268,7 +281,7 @@ jQuery( document ).ready(function( $ ) {
 float: left;
 width: 100%;
 clear: both;
-margin-left: auto;
+margin-left: 50px;
 margin-right: auto;
 margin-top: 30px;
 margin-bottom: 30px;
