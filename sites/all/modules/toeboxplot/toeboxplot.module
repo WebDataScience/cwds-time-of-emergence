@@ -9,7 +9,7 @@ function toeboxplot_menu() {
     'page callback' => 'toeboxplot_page_function',
     'access callback' => TRUE,
   );
-  $items['boxplots_test'] = array(
+  $items['boxplots'] = array(
     'page callback' => 'toeboxplots_page_function',
     'access callback' => TRUE,
   );

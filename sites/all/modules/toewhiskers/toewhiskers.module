@@ -29,7 +29,7 @@ function toewhiskers_menu() {
   );
   $items['boxplotdata'] = array(
     'page callback' => 'toewhiskers_json_query_boxplot_function',
-    'page arguments' => array(1, 'variable'),
+    'page arguments' => array(1,2),
     'access callback' => TRUE,
   );
   $items['cigtoeconfig'] = array(
@@ -130,7 +130,6 @@ function toewhiskers_explore_form($form, &$form_submit) {
     '#title' => t('Next Step'),
     '#value' => 'Next Step',
     '#type' => 'submit',
-    //'#disabled' => TRUE,
   );
     
   $form_submit['redirect'] = 'compare';
@@ -171,18 +170,12 @@ function template_preprocess_timeline_template(&$variables) {
   $variables['parameterform'] = toewhiskers_renderwebformelement_function();
 }
 
-
-
-  
-  
-  
 function toewhiskers_renderwebformelement_function(){  
   //This works to build initial forms that have no selections made yet.
   $form = drupal_get_form('toewhiskers_compare_form');
   $o = drupal_render($form);
   return $o;
 }
-
 
 function toewhiskers_compare_form($form,&$form_submit) {
 
@@ -549,12 +542,12 @@ Climate Data: " . $prettynames['dataset'][$dataset] . "\n\n";
 }
 
 
-
 /*
  * Ajax/JSON data retriever.
  * This function returns data for the boxplot page.
  */
-function toewhiskers_json_query_boxplot_function($variable){
+function toewhiskers_json_query_boxplot_function($variable,$mode){
+
   $verbose_test_mode = FALSE;
   //Todo: validate $variable value.
   
@@ -577,15 +570,14 @@ function toewhiskers_json_query_boxplot_function($variable){
   $query = "SELECT variablename FROM TOE_DATA_V1 where variableid='" . $variable . "' LIMIT 1";
   $row = (object)db_query($query)->fetchAssoc();
   $jasondata['variablename'] = $row->variablename;
+  $boxplotdata = array();
   
   // Query for TOE values.
   foreach ($emergencethreshold_array as $key=>$emergencethreshold){
     foreach ($emissionscenario_array as $key=>$emissionscenario){
       foreach ($signalconfidence_array as $key=>$signalconfidence){
-  
         $dots = array();
         $box = array();
-        
         $query="select * from " . $maindatatable . " WHERE variableid='" . $variable . "' and  emisscenario='" . $emissionscenario . "' and modelagreement='XX' and emergthres=" . $emergencethreshold . " and signalconfidence=" . $signalconfidence;
         // ?? Which dataset??  'BCSD5' => 'BCSD5', 
         
@@ -601,27 +593,54 @@ function toewhiskers_json_query_boxplot_function($variable){
             $box[$record->GCM] = $record->TOE;
           }
         }
-
         $oneboxplot = array(
           "box" => array($box['GCM_ensemble_25'],$box['GCM_ensemble'],$box['GCM_ensemble_75']),
           "dots" => $dots,
           "query" => $query,
         );  
-        
-        $jasondata['emergencethreshold' . $emergencethreshold]['emissionscenario' . $emissionscenario]['signalconfidence' . $signalconfidence] = $oneboxplot;
-        
+        $boxplotdata['emergencethreshold' . $emergencethreshold]['emissionscenario' . $emissionscenario]['signalconfidence' . $signalconfidence] = $oneboxplot;
       }
     }
   }
-  
+  $jasondata = array_merge( $jasondata,$boxplotdata);
   
   db_set_active();
 
   if($verbose_test_mode){ 
     drupal_json_output(print_r($jasondata));
   }
-  else{drupal_json_output($jasondata);}
-  
+  else{
+    if($mode != 'text'){
+      drupal_json_output($jasondata);
+    } else {
+      $o = "Variable: " . $jasondata['variable'] . "\n";
+      $o .="Region: " . $jasondata['regionname'] . "\n";
+      $o .="Dataset: " . $jasondata['dataname'] . "\n\n";
+    
+      $csv = "Tolerance,Emission Scenario,Confidence,GCM_Ensemble TOE(box),Model TOE(dots)\n";
+      foreach($boxplotdata as $emergencekey=>$emergence){
+        foreach($emergence as $emissionkey=>$emission){
+          foreach($emission as $signalconfidencekey=>$signalconfidence){
+            $boxdata = "";
+            $dotsdata = "";
+            foreach($signalconfidence as $boxordotskey=>$boxordots){
+              if($boxordotskey == 'box'){
+                $boxdata = implode(',',$boxordots);
+              }
+              if($boxordotskey == 'dots'){
+                $dotsdata = implode(',',$boxordots);
+              }
+            }
+            $csv .= $emergencekey . "," . $emissionkey . "," . $signalconfidencekey. ",\"" . $boxdata ."\",\"" . $dotsdata . "\"\n";
+      } } } 
+      $o .= $csv;
+    
+      drupal_add_http_header('Content-Type', 'text/csv; utf-8');
+      drupal_add_http_header('Content-Disposition', 'attachment; filename = dataexport.csv');
+      print($o);
+    }
+    
+  }
 }
 
 
@@ -631,14 +650,11 @@ General:
    - The exact TOE [B] should be used - no need to round up to 5 year
    - X-axis: 10-year increments, only up to 2100
    - All boxplots use ModelAgreement [Column K] = XX
-   - Left panels: EmisScenario [F] = rcp85.  Right panels: EmisScenario [F]
-   = rcp45.
+   - Left panels: EmisScenario [F] = rcp85.  Right panels: EmisScenario [F]   = rcp45.
    - Top panels: EmergThres [I] = 95.  Bottom panels: EmergThres [I] = 80.
    *Note: this is reversed on the static boxplot image*
    - The dots: GCM [D] = Model_1, Model_2, ..., Model_21
-   - The box indicates 25th, 50th, 75th percentile: GCM [D] =
-   GCM_ensemble_25, GCM_ensemble, GCM_ensemble_75, respectively
-
+   - The box indicates 25th, 50th, 75th percentile: GCM [D] =   GCM_ensemble_25, GCM_ensemble, GCM_ensemble_75, respectively
 Within each subplot:
    - Top: SignalConfidence [J] = 95
    - Middle: SignalConfidence [J] = 50

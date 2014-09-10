@@ -19,52 +19,66 @@
 <input id="module_path" type="hidden" value="<?php echo base_path() . $path ?>" />
 <div id="main-chart-area">
 
-<h1 id="top-y-title"></h1>
+  <h1 id="top-y-title"></h1>
+  
   <h1 id="top-x-title"></h1>
 
-<div id="boxplot-key">
-        <div id="lowerbound-key">
-                <div id="lowerbound-key-swatch"></div>
-                <div id="lowerbound-key-text">Lower bound (earlier ToE)</div>
-        </div>
-        <div id="central-key">
-                <div id="central-key-swatch"></div>
-                <div id="central-key-text">Central tendency</div>
-        </div>
-        <div id="upperbound-key">
-                <div id="upperbound-key-swatch"></div>
-                <div id="upperbound-key-text">Upper bound (later ToE)</div>
-        </div>
+  <div id="boxplot-key">
+    <div id="lowerbound-key">
+            <div id="lowerbound-key-swatch"></div>
+            <div id="lowerbound-key-text">Lower bound (earlier ToE)</div>
+    </div>
+    <div id="central-key">
+            <div id="central-key-swatch"></div>
+            <div id="central-key-text">Central tendency</div>
+    </div>
+    <div id="upperbound-key">
+            <div id="upperbound-key-swatch"></div>
+            <div id="upperbound-key-text">Upper bound (later ToE)</div>
+    </div>
+    </div>
+    <div id="chart-area-1">
+    </div>
+    
+    <div id="chart-area-2">
+    </div>
+    
+    <div id="chart-area-3">
+    </div>
+    
+    <div id="chart-area-4">
+  </div>
+  
 </div>
-  <div id="chart-area-1">
-  </div>
 
-  <div id="chart-area-2">
-  </div>
-
-  <div id="chart-area-3">
-  </div>
-
-  <div id="chart-area-4">
-  </div>
+<div>
+  <canvas id="svg-canvas" style="display:none"></canvas>
+  <!--<a id="svg-img-wrapper" href="" download="timeline.png">
+    <input id="print-button" name="op" value="Export Timeline Image" class="form-submit" type="submit">
+    <img style="display:none" id="svg-img"></img>
+  </a>  -->
+  <a id="downloadtextanchor" href="/boxplotdata/text" download="boxplotdata.csv">
+    <input id="print-text-button" name="op" value="Export Boxplot Data" class="form-submit" type="submit">
+  </a>  
 </div>
 <script>
 jQuery( document ).ready(function( $ ) {
     
-  var url =  location.protocol + "//" + location.host + "/boxplotdata/"  + location.pathname.match(/.*\/(V.*)/)[1];
+  var variableid = location.pathname.match(/.*\/(V.*)/)[1];
+  $("#downloadtextanchor").prop("href","/boxplotdata/" + variableid + "/text");
+  var url =  location.protocol + "//" + location.host + "/boxplotdata/"  + variableid;
   $.post( url, function( jsonobj ) {  
     
     var charttitle = "Time of Emergence for " + jsonobj.variablename ;
     charttitle += "<br/>Multi-Model Projections (21 global climate models)";
     charttitle = charttitle + "<br/>Region: " + jsonobj.regionname ;
-    charttitle += "<br/>Climate Data: " + jsonobj.dataname;
-    
+    charttitle += "<br/>Climate Data: " + jsonobj.dataname;    
     $("#top-x-title").html(charttitle);
     
     drawBoxplot("chart-area-1", "High Emissions (RCP 8.5)", parse4data(jsonobj.emergencethreshold95.emissionscenariorcp85),"Low Historical Noise Range");
     drawBoxplot("chart-area-2", "Low Emissions (RCP 4.5)", parse4data(jsonobj.emergencethreshold95.emissionscenariorcp45),"");
     drawBoxplot("chart-area-3", "High Emissions (RCP 8.5)",parse4data(jsonobj.emergencethreshold80.emissionscenariorcp85),"High Historical Noise Range");
-    drawBoxplot("chart-area-4", "Low Emissions (RCP 4.5)", parse4data(jsonobj.emergencethreshold80.emissionscenariorcp45),"");
+    drawBoxplot("chart-area-4", "Low Emissions (RCP 4.5)", parse4data(jsonobj.emergencethreshold80.emissionscenariorcp45),"");    
   });
   
 
@@ -81,30 +95,21 @@ jQuery( document ).ready(function( $ ) {
           var min = 2000;
           var rowMin = 2000;
           var max = 2100;
-                  
-
-          
+                       
           var chart = d3.box()
             .height(height) 
             .domain([min, max])
             .showLabels(labels);
             
-
           //var svg = d3.select("body").append("svg")
           var svg = d3.select("#" + containingElementID).append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
             .attr("class", "box")  
             .attr("width", "700")
-            .attr("height", "600")
-            //.attr("transform", "translate(475, 700) rotate(-90, -90, -90) scale(1, -1)")
-            //.attr("transform", "translate(" + chartx + ", " + charty + ") rotate(-90, -90, -90) scale(1, -1)")
-          //  .attr("transform", "translate(" + chartx + ", " + charty + ")")
-            //.attr("transform-origin", "-10px -5px -5px")
-          //  .append("g")
-              .attr("transform", "translate(" + (margin.left - 30) + "," + margin.top + ")");
-              //.attr("transform-origin", "-10px -5px -5px");
-          
+            .attr("height", "200")
+            .attr("transform", "translate(" + (margin.left - 30) + "," + margin.top + ")");
+
           //x-axis
           var x = d3.scale.ordinal()     
             .domain( data.map(function(d) { console.log(d); return d[0] } ) )     
@@ -123,7 +128,6 @@ jQuery( document ).ready(function( $ ) {
             .scale(y)
             .orient("right")
             .ticks(4);
-
 
           //draw boxplots  
           svg.selectAll(".box")    
@@ -146,19 +150,14 @@ jQuery( document ).ready(function( $ ) {
            //draw y axis
           svg.append("g")
                 .attr("class", "y axis")
-                //.attr("transform", "scale(1, -1) translate(0, -365.5)")
                 .attr("transform", "translate(" + width + ", 0)")
                 .call(yAxis)
             .append("text") 
-              //.attr("transform", "rotate(-90)") ////////////////////
               .attr("y", 6)
               .attr("dy", ".71em")
               .style("text-anchor", "middle")
               .style("font-size", "16px");
 
-          
-          
-          
           //text label for x axis
           svg.append("text")      
             .attr("x", -150 )
@@ -168,8 +167,7 @@ jQuery( document ).ready(function( $ ) {
             .text(xtitle)
             .attr("transform", function(d) {
               return "rotate(180)" 
-            });
-            ;
+            });;
             
             
           //draw x axis  
@@ -179,16 +177,7 @@ jQuery( document ).ready(function( $ ) {
               .append("text") 
               .attr("transform", "translate(0," + (height  + margin.top) + ")")
               .call(xAxis); 
-              
-          /*svg.append("g")
-            .append("text") // text label for the x axis
-            .attr("x", (width / 2))
-            .attr("y",  10 )
-            .attr("dy", ".71em")
-            .style("text-anchor", "start")
-            .style("font-size", "16px")
-            .call(xAxis);  */ 
-            
+                     
       
     }  // end drawboxplot
     
@@ -229,14 +218,11 @@ jQuery( document ).ready(function( $ ) {
     return data;
   }  // end parse4data()
     
-    
-    
-  }); //end jquery
+}); //end jquery
 </script>
 
 
-  <style>
-
+<style>
       *, body, svg, h2 {
         font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
         color: black;
@@ -247,13 +233,10 @@ jQuery( document ).ready(function( $ ) {
        padding: 100px;
       
       }
-
       #top-x-title, #top-y-title {
 	font-size: 22px;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-	
 	}
-
       h2 {
         padding: 0;
         margin: 0;
@@ -276,7 +259,6 @@ jQuery( document ).ready(function( $ ) {
         -ms-transform: rotate(-90deg);
         transform: rotate(-90deg);
       }
-
 	#boxplot-key {
 float: left;
 width: 100%;
@@ -324,7 +306,6 @@ margin: 10px;
 #chart-area-1, #chart-area-3 {
 	margin-left: 50px;
 }
-
       #chart-area-1, #chart-area-2, #chart-area-3, #chart-area-4 {
         background-color: white;
         float: left;
@@ -395,23 +376,17 @@ fill: #4212af;
 .box g:nth-child(2) circle {
 fill: #5ccccc;
 }
-
-
-
       .box .center {
         stroke-dasharray: 3,3;
       }
-
       .box .outlier {
         fill: #4682B4;
         stroke: #000;
         r: 2;
       }
-
       .axis {
         font: 12px sans-serif;
-      }
-       
+      }      
       .axis path,
       .axis line {
         fill: none;

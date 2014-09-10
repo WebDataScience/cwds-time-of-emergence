@@ -51,14 +51,12 @@ jQuery( document ).ready(function( $ ) {
        /* val 0 at [5] represents default vertical height between the axis and variable label */ 
     }
 
-    
     var nochartmessage = "<p>No results are available for that configuration of parameters.</p>";
     if(timelinedataarray.length ==  0){
       $("#chartmessage" ).html( nochartmessage );
       return;
     } 
     
-   
     // D3.js based timeline chart
     drawD3Timeline(
       timelinedataarray, 
@@ -69,7 +67,6 @@ jQuery( document ).ready(function( $ ) {
       'Region: King County'
     );
     
-    
     $(".emission" ).html( websitetextarray['emission'][jsonobj.emission] );
     $(".confidence" ).html( websitetextarray['confidence'][jsonobj.confidence] );
     $(".tolerance" ).html( websitetextarray['tolerance'][jsonobj.tolerance] );
@@ -79,7 +76,7 @@ jQuery( document ).ready(function( $ ) {
     tabledata = jsonobj.tabledata;
     for (var key in tabledata) {
       var onerow = tabledata[key];
-      $('#tabledata tr:last').after("<tr><td><a href='/boxplots_test/" + key + "'>" + onerow.VARIABLESHORTNAME + "</a></td><td>" + onerow.YEARA + " - " + onerow.YEARB + "</td><td>" + (onerow.CHANGEDIR == '1'?'Positive':'Negative')  + "</td></tr>");  
+      $('#tabledata tr:last').after("<tr><td><a href='/boxplots/" + key + "'>" + onerow.VARIABLESHORTNAME + "</a></td><td>" + onerow.YEARA + " - " + onerow.YEARB + "</td><td>" + (onerow.CHANGEDIR == '1'?'Positive':'Negative')  + "</td></tr>");  
     }
     
     
@@ -139,7 +136,6 @@ for (var i = 0; i < data.length; i++) {
     .attr("height", "100%")
     .attr('border', 0)
     .attr("fill", "black");
-    
     
     chart.append("text")
         .attr("x", 15)             
@@ -230,11 +226,11 @@ for (var i = 0; i < data.length; i++) {
 
     // Hide some of the vertical line as necessary with a black rectangle.
 		node.append("line:rect") 
-                  .attr("x", function (d,i) { return x(d[0]) - 5; } )
-                  .attr("y", function (d) { return d[5] - 10; } )
-                  .attr("height", "15")
-                  .attr("width", "10")
-                  .attr("fill", "#070707");
+      .attr("x", function (d,i) { return x(d[0]) - 5; } )
+      .attr("y", function (d) { return d[5] - 10; } )
+      .attr("height", "15")
+      .attr("width", "10")
+      .attr("fill", "#070707");
 
     // Add variable short names.
 		node.append("line:text")
@@ -242,10 +238,9 @@ for (var i = 0; i < data.length; i++) {
 		  .attr("y", function (d) { return d[5]; } )
 		  .style("stroke", "white")
       .style('font-size', '11px')
-            .style('font-family', 'sans-serif')
+      .style('font-family', 'sans-serif')
       .attr("stroke-width", .3)
 		  .style("text-anchor", "middle")
-      //.style("shape-rendering", "geometricPrecision")
 		  .text(function(d) { return d[3]; })
 		  .attr('title', function(d) {  return d[2]; })
 		  .attr('alt', function(d) { return d[2]; })
@@ -258,8 +253,7 @@ for (var i = 0; i < data.length; i++) {
       .style('font-size', '11px')
       .attr("stroke-width", .3)
       .style('font-family', 'sans-serif')
-			.style('text-shadow', 'none')
-    ;
+			.style('text-shadow', 'none');
 
 }
 
