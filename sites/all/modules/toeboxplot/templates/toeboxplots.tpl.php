@@ -1,21 +1,17 @@
 <?php
-  # Template for basic page displaying boxplots
-  $path = drupal_get_path('module', 'toeboxplot');
-  drupal_set_title("Boxplot");
-?>
-
-<!DOCTYPE html>
-<meta charset="utf-8">
-
-<head>
-  <?php
-    //drupal_add_js($path . '/d3/d3.js');
+    # Template for basic page displaying boxplots
+    $path = drupal_get_path('module', 'toeboxplot');
+    
+    drupal_add_js($path . '/js/canvg.js');
+    drupal_add_js($path . '/js/rgbcolor.js');
+    drupal_add_js($path . '/js/StackBlur.js');
     drupal_add_js($path . '/js/boxplots.js');
     drupal_add_css($path . '/cs/boxplot.css');
+    
+    drupal_set_title("Boxplot");
+    
   ?>
-</head>
 
-<body>
 <input id="module_path" type="hidden" value="<?php echo base_path() . $path ?>" />
 <div id="main-chart-area">
 
@@ -36,7 +32,8 @@
             <div id="upperbound-key-swatch"></div>
             <div id="upperbound-key-text">Upper bound (later ToE)</div>
     </div>
-    </div>
+  </div>
+  
     <div id="chart-area-1">
     </div>
     
@@ -52,17 +49,36 @@
 </div>
 
 <div>
-  <canvas id="svg-canvas" style="display:none"></canvas>
-  <!--<a id="svg-img-wrapper" href="" download="timeline.png">
-    <input id="print-button" name="op" value="Export Timeline Image" class="form-submit" type="submit">
-    <img style="display:none" id="svg-img"></img>
-  </a>  -->
+  <!--<canvas id="svg-canvas" width="800" height="800"></canvas>
+  <a id="svg-img-wrapper" href="" download="boxplot.png">
+    <input id="print-button" name="op" value="Export Boxplot Image" class="form-submit" type="submit">
+    <img id="svg-img"></img>
+  </a> -->
   <a id="downloadtextanchor" href="/boxplotdata/text" download="boxplotdata.csv">
     <input id="print-text-button" name="op" value="Export Boxplot Data" class="form-submit" type="submit">
   </a>  
 </div>
 <script>
 jQuery( document ).ready(function( $ ) {
+    
+
+  $('#print-button').click(function(){
+    // Find existing svg content.
+    var $container = $('#chart-area-1');
+    var content = $container.html().trim();
+    // Prep and draw to canvas with canfg() function.
+    var canvas = document.getElementById('svg-canvas');
+    var context = canvas.getContext("2d"); // returns the 2d context object
+    context.fillStyle= "#ffffff";
+    context.fillRect(0,0,800,800); // sets top left location points x,y and then width and height
+    canvg(canvas, content, { ignoreDimensions: true  });
+    // Pull canvas content as .png data.
+    var theImage = canvas.toDataURL('image/png');
+    // Populate some html elements with the image content.
+    $('#svg-img').attr('src', theImage);
+    $('#svg-img-wrapper').attr('href', theImage);
+  });
+    
     
   var variableid = location.pathname.match(/.*\/(V.*)/)[1];
   $("#downloadtextanchor").prop("href","/boxplotdata/" + variableid + "/text");
@@ -90,7 +106,6 @@ jQuery( document ).ready(function( $ ) {
         var width = 400 - margin.left - margin.right;
         var height = 400 - margin.top - margin.bottom;
 
-          
           var rowMax = 2100;
           var min = 2000;
           var rowMin = 2000;
@@ -109,7 +124,7 @@ jQuery( document ).ready(function( $ ) {
             .attr("width", "700")
             .attr("height", "200")
             .attr("transform", "translate(" + (margin.left - 30) + "," + margin.top + ")");
-
+    
           //x-axis
           var x = d3.scale.ordinal()     
             .domain( data.map(function(d) { console.log(d); return d[0] } ) )     
@@ -136,6 +151,9 @@ jQuery( document ).ready(function( $ ) {
             .attr("transform", function(d) { return "translate(" +  x(d[0])  + "," + margin.top + ")"; } )
             .call(chart.width(x.rangeBand()));
 
+            
+
+            
           // add a title
           svg.append("text")
             //.attr("y", (width / 2))             
@@ -216,7 +234,7 @@ jQuery( document ).ready(function( $ ) {
           });
   
     return data;
-  }  // end parse4data()
+  }  // end parse4data()    
     
 }); //end jquery
 </script>
@@ -357,24 +375,24 @@ stroke-width: 2px;
 }
 
 .box g:nth-child(3) rect {
-        fill:#ff6400;
+        //fill:#ff6400;
         }
 .box g:nth-child(3) circle {
-fill:#ffb100;
+//fill:#ffb100;
 }
 
 	.box g:nth-child(1) rect {
-	fill:#a92a55; 
+	//fill:#a92a55; 
 	}
 .box g:nth-child(1) circle {
-fill: #4212af;
+//fill: #4212af;
 }
 
 .box g:nth-child(2) rect {
-        fill:#01939a;
+        //fill:#01939a;
         }
 .box g:nth-child(2) circle {
-fill: #5ccccc;
+//fill: #5ccccc;
 }
       .box .center {
         stroke-dasharray: 3,3;
@@ -429,5 +447,4 @@ fill: #5ccccc;
       
   </style>
 
-  </body>
-</html>
+

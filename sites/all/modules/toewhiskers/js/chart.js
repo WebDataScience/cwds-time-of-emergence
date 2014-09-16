@@ -1,9 +1,5 @@
 
 
-//google.load("visualization", "1", {packages:["corechart"]});
-
-
-
 jQuery( document ).ready(function( $ ) {
 
   var websitetextarray = new Object();
@@ -76,7 +72,7 @@ jQuery( document ).ready(function( $ ) {
     tabledata = jsonobj.tabledata;
     for (var key in tabledata) {
       var onerow = tabledata[key];
-      $('#tabledata tr:last').after("<tr><td><a href='/boxplots/" + key + "'>" + onerow.VARIABLESHORTNAME + "</a></td><td>" + onerow.YEARA + " - " + onerow.YEARB + "</td><td>" + (onerow.CHANGEDIR == '1'?'Positive':'Negative')  + "</td></tr>");  
+      $('#tabledata tr:last').after("<tr><td><a href='/boxplots/" + key + "'>" + onerow.VARIABLESHORTNAME + "</a></td><td>" + onerow.YEARA + " - " + onerow.YEARB + "</td><td>" + (onerow.CHANGEDIR == '1'?'Increasing':'Decreasing')  + "</td></tr>");  
     }
     
     

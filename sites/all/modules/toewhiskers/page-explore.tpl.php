@@ -71,10 +71,9 @@
 ?>
 <!-- toewhiskers/page-explore.tpl.php-->
 
- 
-  
-
-    <div id="chart"></div>
+    <div id="chart">
+      <img src="/sites/all/modules/toewhiskers/images/PugetSound.jpg" style="width:100%">
+    </div>
     <?php print $explore_form; ?><br/>
     
     

@@ -1,7 +1,11 @@
 
 jQuery( document ).ready(function( $ ) {
 
-var data; // loaded asynchronously
+  var loadthed3map = false;
+  
+  if(loadthed3map){
+
+    var data; // loaded asynchronously
         var counties_features;
         var counties_data;
         var width = 515,
@@ -57,6 +61,7 @@ var data; // loaded asynchronously
               .attr("transform", function(d, i) { var pos_x = centroids[i][0] - 10; var pos_y = centroids[i][1]; return "translate(" + pos_x + "," + pos_y + ")rotate(14)"; });
         });
         
+ 
         setTimeout(function (){ /* Helps ensure that JSON data loads; otherwise frequently fails */
 
           d3.json(module_path + "/json/counties-autism-outreach-sample.json", function(json) {
@@ -120,11 +125,10 @@ var data; // loaded asynchronously
         }
 
         function quantize(d) {
-         if(data[d.id] == null) 
-           return "q0";
-         else
-           // return "q" + data[d.id];
-
+          if(data[d.id] == null) 
+            return "q0";
+          else
+            // return "q" + data[d.id];
            return "q3";
         }
 
@@ -146,7 +150,8 @@ var data; // loaded asynchronously
           return true;
         }
       
-
+      
+  } // end if loadthed3map   
       
   // Show and hide form elements depending on user selections.
   if(!$('input[name=compare]:radio').is(':checked')) {
@@ -166,10 +171,7 @@ var data; // loaded asynchronously
     $('div.form-item-region').show(); 
     $('div.form-item-geodomain').show();   
     $('#edit-submit').removeAttr('disabled');  
-    
   });
-        
-        
         
         
 }); 

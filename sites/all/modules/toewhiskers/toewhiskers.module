@@ -523,7 +523,7 @@ Climate Data: " . $prettynames['dataset'][$dataset] . "\n\n";
     
     foreach($toe_array as $toe_object){
       $csv .= '"' . $toe_object->VARIABLESHORTNAME . '",' . $toe_object->TOE . ',"' . $toe_object->YEARA . ' - ' . $toe_object->YEARB . '",';
-      $csv .= ($toe_object->CHANGEDIR == 1)?'"Positive"':'"Negative"';
+      $csv .= ($toe_object->CHANGEDIR == 1)?'"Increasing"':'"Decreasing"';
       $csv .= "\n";
     }
     $o .= $csv;
