@@ -17,6 +17,11 @@ function toewhiskers_menu() {
     'page arguments' => array(),
     'access callback' => TRUE,
   );
+  $items['map'] = array(
+    'page callback' => 'toewhiskers_map_page_function',
+    'page arguments' => array(),
+    'access callback' => TRUE,
+  );
   $items['timeline'] = array(
     'page callback' => 'toewhiskers_page_function',
     'page arguments' => array(),
@@ -30,6 +35,11 @@ function toewhiskers_menu() {
   $items['boxplotdata'] = array(
     'page callback' => 'toewhiskers_json_query_boxplot_function',
     'page arguments' => array(1,2),
+    'access callback' => TRUE,
+  );
+  $items['map/variablelist'] = array(
+    'page callback' => 'toewhiskers_variablelist_function',
+    'page arguments' => array(),
     'access callback' => TRUE,
   );
   $items['cigtoeconfig'] = array(
@@ -51,6 +61,9 @@ function toewhiskers_theme(){
       'compare_template' => array(
         'template' => 'page-toewhiskers',
       ),
+      'map_template' => array(
+        'template' => 'page-toewhiskers',
+      ),
       'timeline_template' => array(
             // file name will be page-timeline.tpl.php
             'template' => 'page-timeline',
@@ -67,6 +80,7 @@ function toewhiskers_theme(){
 
 
 function toewhiskers_explore_page_function(){  
+  unset($_SESSION['compare']);
   drupal_add_js(drupal_get_path('module', 'toewhiskers') . '/js/map.js');
   drupal_set_title('Explore');  
   return theme('explore_template');  
@@ -75,6 +89,12 @@ function toewhiskers_explore_page_function(){
 function toewhiskers_compare_page_function(){ 
   drupal_set_title('Compare'); 
   return theme('compare_template');  
+}
+
+function toewhiskers_map_page_function(){ 
+  drupal_add_js(drupal_get_path('module', 'toewhiskers') . '/js/mapform.js');
+  drupal_set_title('Map'); 
+  return theme('map_template');  
 }
 
 function template_preprocess_explore_template(&$variables) {
@@ -87,6 +107,13 @@ function template_preprocess_explore_template(&$variables) {
 function template_preprocess_compare_template(&$variables) {
   //drupal_build_form($form_id, &$form_state)
   $form = drupal_get_form('toewhiskers_compare_form');
+  $o = drupal_render($form);
+  $variables['explore_form'] = $o;
+}
+
+function template_preprocess_map_template(&$variables) {
+  //drupal_build_form($form_id, &$form_state)
+  $form = drupal_get_form('toewhiskers_map_form');
   $o = drupal_render($form);
   $variables['explore_form'] = $o;
 }
@@ -142,7 +169,6 @@ function toewhiskers_explore_form($form, &$form_submit) {
  * Submit handler for the '/explore' form.
  */
 function toewhiskers_explore_form_submit($form, &$form_state) {
-  $form_state['redirect'] = 'compare';
 
   // Grab session values if present.
   $comparearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
@@ -150,8 +176,10 @@ function toewhiskers_explore_form_submit($form, &$form_state) {
   $comparearray['geodomain'] = check_plain($form_state['values']['geodomain']); 
   $comparearray['region'] = check_plain($form_state['values']['region']);
   $comparearray['compare'] = check_plain($form_state['values']['compare']);
-
   $_SESSION['compare'] = $comparearray;
+  
+  $form_state['redirect'] = 'compare';
+  if($comparearray['compare'] == 1) { $form_state['redirect'] = 'map';  }
 }
 
 
@@ -218,6 +246,7 @@ function toewhiskers_compare_form($form,&$form_submit) {
     '#type' => 'select',
     '#title' => t('Hydroclimatic Variables'),
     '#options' => array(
+    /*
       'V1.01' => t('Average temperature in January'),
       'V1.02' => t('Average temperature in February'),
       'V1.03' => t('Average temperature in March'),
@@ -231,6 +260,50 @@ function toewhiskers_compare_form($form,&$form_submit) {
       'V1.11' => t('Average temperature in November'),
       'V1.12' => t('Average temperature in December'),
       'V8' => t('Number of days per year with daily maximum temperature exceeding 90 degF (32.2 degC)'),
+      */
+      'V1.01' => t('Average temperature in January'),
+'V1.02' => t('Average temperature in February'),
+'V1.03' => t('Average temperature in March'),
+'V1.04' => t('Average temperature in April '),
+'V1.05' => t('Average temperature in May'),
+'V1.06' => t('Average temperature in June'),
+'V1.07' => t('Average temperature in July'),
+'V1.08' => t('Average temperature in August'),
+'V1.09' => t('Average temperature in September'),
+'V1.10' => t('Average temperature in October'),
+'V1.11' => t('Average temperature in November'),
+'V1.12' => t('Average temperature in December'),
+'V8' => t('Number of days per year with daily maximum temperature exceeding 90 degF (32.2 degC)'),
+'V2.03' => t('Number of days in March with daily maximum temperature exceeding 65 degF (18.3 degC) '),
+'V2.04' => t('Number of days in April with daily maximum temperature exceeding 65 degF (18.3 degC) '),
+'V2.05' => t('Number of days in May with daily maximum temperature exceeding 65 degF (18.3 degC) '),
+'V2.06' => t('Number of days in June with daily maximum temperature exceeding 65 degF (18.3 degC) '),
+'V2.07' => t('Number of days in July with daily maximum temperature exceeding 65 degF (18.3 degC) '),
+'V2.08' => t('Number of days in August with daily maximum temperature exceeding 65 degF (18.3 degC) '),
+'V2.09' => t('Number of days in September with daily maximum temperature exceeding 65 degF (18.3 degC) '),
+'V2.10' => t('Number of days in October with daily maximum temperature exceeding 65 degF (18.3 degC) '),
+'V2.11' => t('Number of days in November with daily maximum temperature exceeding 65 degF (18.3 degC) '),
+'V4' => t('Number of days in winter (Dec-Feb) with daily average temperature below 25 degF (-3.9 degC)Â '),
+'V9' => t('Number of days between 21 April and 21 August with daily maximum temperature of 80 degF (26.7 degC) or more'),
+'V10' => t('Frequency per year with 3 consecutive days when daily maximum temperature exceeds the 99th percentile of the observations (1950-1999)'),
+'V11' => t('Frequency per year with 3 consecutive days when daily minimum temperature exceeds the 99th percentile of the observations (1950-1999)'),
+'V12.01' => t('Average precipitation in January'),
+'V12.02' => t('Average precipitation in February'),
+'V12.03' => t('Average precipitation in March'),
+'V12.04' => t('Average precipitation in April '),
+'V12.05' => t('Average precipitation in May'),
+'V12.06' => t('Average precipitation in June'),
+'V12.07' => t('Average precipitation in July'),
+'V12.08' => t('Average precipitation in August'),
+'V12.09' => t('Average precipitation in September'),
+'V12.10' => t('Average precipitation in October'),
+'V12.11' => t('Average precipitation in November'),
+'V12.12' => t('Average precipitation in December'),
+'V14' => t('Number of occurrences between October and March with 24-hour precipitation exceeding the 90th percentile of the observations (1950-1999)'),
+'V15' => t('Number of occurrences between October and March with 24-hour precipitation exceeding the 95th percentile of the observations (1950-1999)'),
+'V16' => t('Number of occurrences between October and March with 24-hour precipitation exceeding the 99th percentile of the observations (1950-1999)'),
+'V17' => t('Number of occurrences per year with 24-hour precipitation exceeding 2 inches'),
+'V20' => t('Number of occurrences per year with 24-hour precipitation equals to 3 inches or more'),
     ),
     //'#default_value' => $category['selected'],
     '#description' => t('Select one or many hydroclimatic variable(s). Holding down &#39;ctrl&#39; key enables multiple select option.'),
@@ -313,7 +386,6 @@ function toewhiskers_compare_form($form,&$form_submit) {
   return $form;
 }
 
-
 /**
  * Submit handler for the 'compare' form.
  */
@@ -340,6 +412,155 @@ if ($compare['compare'] == 2) {
 } else {
   $form_state['redirect'] = 'timeline';
 }
+
+}
+
+
+function toewhiskers_map_form($form,&$form_submit) {
+
+  // Session variable used to prepopulate if available.
+  $comparearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
+  $form['narrow'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Choose one variable. You may narrow list of available Hydroclimatic Variables by following:'),
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+  );
+  $options = array(4 => 'All',0 => 'Temperature', 1 => 'Precipitation', 2 => 'Hydrological', 3 => 'Stream', );
+  // Not all themes are represented in list of variables at this time.
+  $options = array(4 => 'All',0 => 'Temperature', 1 => 'Precipitation',  );
+  $form['narrow']['theme'] = array(
+    '#type' => 'radios',
+    '#title' => t('Theme'),
+    '#options' => $options,
+    '#default_value' => '4',
+  );
+  $options = array(9 => 'All',0 => 'Drought', 1 => 'Energy', 2 => 'Fish', 3 => 'Flood',4 => 'General', 5 => 'Human health', 6 => 'Infrastructure', 7 => 'Streamflow',8 => 'Water quality',);
+  $form['narrow']['impact'] = array(
+    '#type' => 'radios',
+    '#title' => t('Impact'),
+    '#options' => $options,
+    '#default_value' => '9',
+  ); 
+  $options = array(2 => 'All',0 => 'Average', 1 => 'Extreme',);
+  $form['narrow']['descriptor'] = array(
+    '#type' => 'radios',
+    '#title' => t('Type'),
+    '#options' => $options,
+    '#default_value' => '2',
+    '#suffix' => '<div class="clearfix"></div>',
+  );  
+  $form['variable'] = array(
+    '#type' => 'select',
+    '#title' => t('Hydroclimatic Variables'),
+    '#options' => variablesarray($comparearray['theme']),
+    //'#default_value' => $category['selected'],
+    '#description' => t('Select one hydroclimatic variable.'),
+    '#required' => TRUE,
+    '#default_value' => isset($comparearray['variable'])?$comparearray['variable']:'',
+    '#cols' => 120,
+    '#size' => 10,
+  );
+  $form['parameter'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Apply the following parameters to the query:'),
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+  );
+  $options = array(
+    //'rcp45' => 'RCP Low (RCP4.5)',
+    //'rcp85' => 'RCP High (RCP8.5)',
+    'rcp45' => 'RCP4.5',
+    'rcp85' => 'RCP8.5',
+  );
+  $form['parameter']['emission'] = array(
+    '#type' => 'radios',
+    '#title' => t('Emission Scenario'),
+    '#options' => $options,
+    '#required' => TRUE,
+    '#default_value' => isset($comparearray['emission'])?$comparearray['emission']:key($options),
+  );
+  /*
+  $options = array(
+    'rcp45' => 'RCP4.5',
+    'rcp85' => 'RCP8.5',
+  );
+  $form['parameter']['emission'] = array(
+    '#type' => 'checkboxes',
+    '#title' => t('Emission scenario'),
+    '#options' => $options,
+    '#required' => TRUE,
+    '#default_value' => isset($comparearray['emission'])?$comparearray['emission']:'',
+  );
+  */
+  $options = array(
+    'BCSD5' => 'Statistically-downscaled (CMIP5 BCSD)',
+  );
+  $form['parameter']['dataset'] = array(
+    '#type' => 'radios',
+    '#title' => t('Climate Data'),
+    '#options' => $options,
+    '#required' => TRUE,
+    '#default_value' => isset($comparearray['dataset'])?$comparearray['dataset']:key($options),
+  );
+  $options = array(
+    '95' => 'Low (middle 90% of historical fluctuations)',
+    '80' => 'High (middle 60% of historical fluctuations)',
+  );
+  $form['parameter']['tolerance'] = array(
+    '#type' => 'radios',
+    '#title' => t('Historical "Noise" Range'),
+    '#options' => $options,
+    '#required' => TRUE,
+    '#default_value' => isset($comparearray['tolerance'])?$comparearray['tolerance']:key($options),
+  );
+  $options = array(
+    '95' => 'Lower bound (earlier ToE)',
+    '50' => 'Central tendency',
+    '5' => 'Upper bound (later ToE)',
+  );
+  $form['parameter']['confidence'] = array(
+    '#type' => 'radios',
+    '#title' => t('ToE Range'),
+    '#options' => $options,
+    '#required' => TRUE,
+    '#default_value' => isset($comparearray['confidence'])?$comparearray['confidence']:key($options),
+  );
+  $form['submit'] = array(
+    '#title' => t('Calculate'),
+    '#value' => 'Query for Time of Emergence',
+    '#type' => 'submit',
+    );
+  return $form;
+}
+
+
+/**
+ * Submit handler for the 'map' form.
+ */
+function toewhiskers_map_form_submit($form, &$form_state) {
+  //drupal_set_message('formstate:<pre>'. print_r($form_state, TRUE) .'</pre>');
+  // Grab session values if present.
+  $comparearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
+  $comparearray['theme'] = check_plain($form_state['values']['theme']);
+  $comparearray['impact'] = check_plain($form_state['values']['impact']);
+  $comparearray['descriptor'] = check_plain($form_state['values']['descriptor']);
+  $comparearray['variable'] = toewhiskers_clean_array($form_state['values']['variable']);
+  $comparearray['emission'] = check_plain($form_state['values']['emission']);
+  //$comparearray['emission'] = toewhiskers_clean_array($form_state['values']['emission']);
+  $comparearray['dataset'] = check_plain($form_state['values']['dataset']);
+  $comparearray['tolerance'] = check_plain($form_state['values']['tolerance']);
+  $comparearray['confidence'] = check_plain($form_state['values']['confidence']);
+  // Set session variable.
+  $_SESSION['compare'] = $comparearray;
+  $compare = $_SESSION['compare'];
+
+  // If initial compare option was 'View the priority areas for climate change response action' send user to /density-maps instead of /timeline
+  if ($compare['compare'] == 2) {
+    //$form_state['redirect'] = 'density-maps';
+  } else {
+    //$form_state['redirect'] = 'timeline';
+  }
 
 }
 
@@ -644,22 +865,45 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
 }
 
 
+
 /*
-General:
-   - Y-axis title should read: Baseline "Noise" Range
-   - The exact TOE [B] should be used - no need to round up to 5 year
-   - X-axis: 10-year increments, only up to 2100
-   - All boxplots use ModelAgreement [Column K] = XX
-   - Left panels: EmisScenario [F] = rcp85.  Right panels: EmisScenario [F]   = rcp45.
-   - Top panels: EmergThres [I] = 95.  Bottom panels: EmergThres [I] = 80.
-   *Note: this is reversed on the static boxplot image*
-   - The dots: GCM [D] = Model_1, Model_2, ..., Model_21
-   - The box indicates 25th, 50th, 75th percentile: GCM [D] =   GCM_ensemble_25, GCM_ensemble, GCM_ensemble_75, respectively
-Within each subplot:
-   - Top: SignalConfidence [J] = 95
-   - Middle: SignalConfidence [J] = 50
-   - Bottom: SignalConfidence [J] = 5
+ *
  */
+function variablesarray($themeindex){
+  $theme = NULL;
+  $options = array(4 => 'All',0 => 'Temperature', 1 => 'Precipitation', 2 => 'Hydrological', 3 => 'Stream', );
+  if($themeindex && $themeindex != 4){$theme = $options[$themeindex];}
+  $variablesarray = array();
+  
+  $maindatatable = "SCEN1_DATA_V2";
+  $o = "";
+  db_set_active('cig_toe');
+  $query = "SELECT DISTINCT " .$maindatatable. ".VARIABLEID AS k, TOE_DATA_V1.VARIABLENAME AS v FROM " .$maindatatable. " LEFT JOIN TOE_DATA_V1 ON (TOE_DATA_V1.VARIABLEID = " .$maindatatable. ".VARIABLEID) ";
+  if($theme){ $query .= " WHERE TOE_DATA_V1.THEME = '" . $theme . "'";}
+  $queries = array($query);
+  //drupal_set_message('formstate:<pre>'. print_r($queries, TRUE) .'</pre>');
+  foreach ($queries as $query) {
+    $o .= "<br/>" . $query . "<br/>";   
+    $result = db_query($query);
+    // Result is returned as a iterable object that returns a stdClass object on each iteration
+    foreach ($result as $record) {
+      if(isset($record->v)){
+        $variablesarray[$record->k] = t($record->v);
+      }
+    }
+  }
+  db_set_active();
+  
+  return $variablesarray;
+}
+
+
+/*
+ * Ajax/JSON data retriever.
+ */
+function toewhiskers_variablelist_function($mode){
+  drupal_json_output(variablesarray());
+}
 
 
 /*
@@ -686,13 +930,17 @@ function toewhiskers_cigtoeconfig_function(){
   
   $queries = array('SELECT DISTINCT SCEN1_DATA_V1.VARIABLEID AS k, TOE_DATA_V1.VARIABLENAME AS v FROM SCEN1_DATA_V1 LEFT JOIN TOE_DATA_V1 ON (TOE_DATA_V1.VARIABLEID = SCEN1_DATA_V1.VARIABLEID)');
   
+  $queries = array("SELECT DISTINCT " .$maindatatable. ".VARIABLEID AS k, TOE_DATA_V1.VARIABLENAME AS v, TOE_DATA_V1.THEME as t FROM " .$maindatatable. " LEFT JOIN TOE_DATA_V1 ON (TOE_DATA_V1.VARIABLEID = " .$maindatatable. ".VARIABLEID)");
+  
   foreach ($queries as $query) {
     print($query);
     $o .= "<br/>" . $query . "<br/>";   
     $result = db_query($query);
     // Result is returned as a iterable object that returns a stdClass object on each iteration
     foreach ($result as $record) {
-      $o .= $record->k . "|" . $record->v . "<br/>";
+      //      'V1.01' => t('Average temperature in January'),
+      //$o .= $record->k . "|" . $record->v . "<br/>";
+      $o .= "'" . $record->k . "' => t('" . $record->v . "'), theme = " .$record->t . "<br/>";
     }
   }
   db_set_active();
@@ -707,7 +955,6 @@ EmergThres				Tolerance:          Text to appear on website (e.g. in timeline ti
 95				  Low (middle 90% of historical fluctuations)
 80				 High (middle 60% of historical fluctuations)
 				
-				
 SignalConfidence				
 Confidence:
 5				Low (5% confidence interval)
@@ -717,13 +964,11 @@ v
 Lower bound (earlier ToE)
 Central tendency
 Upper bound (later ToE)
-			
-      
+			 
 ModelAgreement				Model agreement:
 25				Low (25%)
 50				Medium (50%)
 75				High (75%)
-				
 				
 EmisScenario				Emission Scenario:
 rcp45				RCP4.5
@@ -731,7 +976,6 @@ rcp85				RCP8.5
 A1B				SRES A1B
 B1				SRES B1</pre>
 ";
-  
   print($o);
   
 }

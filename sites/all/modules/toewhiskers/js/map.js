@@ -159,8 +159,16 @@ jQuery( document ).ready(function( $ ) {
     $('div.form-item-geodomain').hide(); 
     $('#edit-submit').attr('disabled', 'disabled');
   }      
+  // Hide/show additional form components as necessary.
   $('input[name=compare]:radio').click(function(){
-    // If user chooses 'explore' then submit with region already default selected.
+    if($('input:radio[name=compare]:checked').val() == '0'){ 
+      $('div.form-item-geodomain').show(); 
+      $('div.form-item-region').show(); 
+    }
+    if($('input:radio[name=compare]:checked').val() == '1'){ 
+      $('div.form-item-geodomain').hide(); 
+      $('div.form-item-region').hide(); 
+    }
     if($('input:radio[name=compare]:checked').val() == '2'){ 
       $( "#toewhiskers-explore-form" ).submit();
       return;
@@ -168,8 +176,8 @@ jQuery( document ).ready(function( $ ) {
     //enable 'region' dropdown.
     // this solution requires newer version of jQuery: $("#edit-region").prop("disabled", false);
     //$('#edit-region').removeAttr('disabled');
-    $('div.form-item-region').show(); 
-    $('div.form-item-geodomain').show();   
+    //$('div.form-item-region').show(); 
+    //$('div.form-item-geodomain').show();   
     $('#edit-submit').removeAttr('disabled');  
   });
         
