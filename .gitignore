@@ -6,3 +6,5 @@ sites/*/files
 sites/*/private
 
 .htaccess
+
+sites/all/modules/toewhiskers/images/Samples

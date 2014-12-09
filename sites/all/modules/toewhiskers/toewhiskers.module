@@ -5,8 +5,12 @@ error_reporting(E_ALL);
 ini_set('display_errors', TRUE);
 ini_set('display_startup_errors', TRUE);
 
+global $maindatatable;
+$maindatatable = "SCEN1_DATA_V2";
+global $secondarydatatable;
+$secondarydatatable = "TOE_DATA_V1";
 global $averageextremeoptions;
-$averageextremeoptions = array(0 => 'All', 1 => 'Average', 2 => 'Extreme',);
+$averageextremeoptions = array(2 => 'All', 0 => 'Average', 1 => 'Extreme',);
 global $toleranceoptions;
 $toleranceoptions = array(
   1 => 'Low (middle 90% of historical fluctuations)',
@@ -27,6 +31,21 @@ function toewhiskers_menu() {
   );
   $items['map'] = array(
     'page callback' => 'toewhiskers_map_page_function',
+    'page arguments' => array(),
+    'access callback' => TRUE,
+  );
+  $items['mapbytype'] = array(
+    'page callback' => 'toewhiskers_mapbytype_page_function',
+    'page arguments' => array(),
+    'access callback' => TRUE,
+  );
+  $items['mapdetails'] = array(
+    'page callback' => 'toewhiskers_mapdetails_page_function',
+    'page arguments' => array(),
+    'access callback' => TRUE,
+  );
+  $items['displaymap'] = array(
+    'page callback' => 'toewhiskers_displaymap_page_function',
     'page arguments' => array(),
     'access callback' => TRUE,
   );
@@ -72,19 +91,21 @@ function toewhiskers_theme(){
       'map_template' => array(
         'template' => 'page-toewhiskers',
       ),
+      'mapbytype_template' => array(
+        'template' => 'page-toewhiskers',
+      ),
+      'mapdetails_template' => array(
+        'template' => 'page-toewhiskers',
+      ),
+      'displaymap_template' => array(
+        'template' => 'page-toewhiskers',
+      ),
       'timeline_template' => array(
-            // file name will be page-timeline.tpl.php
-            'template' => 'page-timeline',
-            /*'variables' => array(
-               'title' => null,
-               'body' => null,
-               'link' => null,
-               //'parameterform' => null,
-            ),*/
-        ),
+        // file name will be page-timeline.tpl.php
+        'template' => 'page-timeline',
+      ),
     );
 }
-
 
 
 function toewhiskers_explore_page_function(){  
@@ -93,17 +114,31 @@ function toewhiskers_explore_page_function(){
   drupal_set_title('Explore');  
   return theme('explore_template');  
 }
-
 function toewhiskers_compare_page_function(){ 
   drupal_set_title('Compare'); 
   return theme('compare_template');  
 }
-
 function toewhiskers_map_page_function(){ 
   drupal_add_js(drupal_get_path('module', 'toewhiskers') . '/js/mapform.js');
   drupal_set_title('Map'); 
   return theme('map_template');  
 }
+function toewhiskers_mapbytype_page_function(){ 
+  drupal_add_js(drupal_get_path('module', 'toewhiskers') . '/js/mapform.js');
+  drupal_set_title('Refine by Dataset'); 
+  return theme('mapbytype_template');  
+}
+function toewhiskers_mapdetails_page_function(){ 
+  drupal_add_js(drupal_get_path('module', 'toewhiskers') . '/js/mapform.js');
+  drupal_set_title('Refine Map Query'); 
+  return theme('mapdetails_template');  
+}
+function toewhiskers_displaymap_page_function(){ 
+  drupal_add_js(drupal_get_path('module', 'toewhiskers') . '/js/mapform.js');
+  drupal_set_title('Display Map'); 
+  return theme('displaymap_template');  
+}
+
 
 function template_preprocess_explore_template(&$variables) {
   //drupal_build_form($form_id, &$form_state)
@@ -111,23 +146,36 @@ function template_preprocess_explore_template(&$variables) {
   $o = drupal_render($form);
   $variables['explore_form'] = $o;
 }
-
 function template_preprocess_compare_template(&$variables) {
-  //drupal_build_form($form_id, &$form_state)
   $form = drupal_get_form('toewhiskers_compare_form');
   $o = drupal_render($form);
   $variables['explore_form'] = $o;
 }
-
 function template_preprocess_map_template(&$variables) {
   //drupal_build_form($form_id, &$form_state)
   $form = drupal_get_form('toewhiskers_map_form');
   $o = drupal_render($form);
   $variables['explore_form'] = $o;
 }
-
+function template_preprocess_mapbytype_template(&$variables) {
+  $form = drupal_get_form('toewhiskers_mapbytype_form');
+  $o = drupal_render($form);
+  $variables['explore_form'] = $o;
+}
+function template_preprocess_mapdetails_template(&$variables) {
+  $form = drupal_get_form('toewhiskers_mapdetails_form');
+  $o = drupal_render($form);
+  $variables['explore_form'] = $o;
+}
+function template_preprocess_displaymap_template(&$variables) {
+  $maparray = isset($_SESSION['map'])?$_SESSION['map']:array();
+  $o = "Long filename is: " . $maparray['longfilename'] . "<br>";
+  $o = "Short filename is: " . $maparray['shortfilename'] . "<br>";
+  $pathtomap = drupal_get_path('module', 'toewhiskers');
+  $o .= "<img src='" . $pathtomap . "/images/Samples/" . $maparray['shortfilename'] . "'>";
+  $variables['explore_form'] = $o;
+}
 function toewhiskers_explore_form($form, &$form_submit) {
-
   // Session variable used to prepopulate if available.
   $previousvaluesearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
   
@@ -425,11 +473,8 @@ function toewhiskers_compare_form_submit($form, &$form_state) {
 
 
 function toewhiskers_map_form($form,&$form_submit) {
-
-  
-
-  // Session variable used to prepopulate if available.
-  $comparearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
+  // Session variable unset at beginning of map form.
+  unset($_SESSION['map']);
   $form['narrow'] = array(
     '#type' => 'fieldset',
     '#title' => t('Choose one variable. You may narrow list of available Hydroclimatic Variables by following:'),
@@ -453,9 +498,7 @@ function toewhiskers_map_form($form,&$form_submit) {
     '#default_value' => '9',
   ); 
   
-
   global $averageextremeoptions;
-  //$averageextremeoptions = explode(',',$averageextremelist);
   $form['narrow']['descriptor'] = array(
     '#type' => 'radios',
     '#title' => t('Type'),
@@ -463,21 +506,17 @@ function toewhiskers_map_form($form,&$form_submit) {
     '#default_value' => 'All',
     '#suffix' => '<div class="clearfix"></div>',
   );  
-  
-  
   $form['narrow']['filter'] = array(
     '#type' => 'button',
     '#value' => t('Filter variable list'),
   );
-  
   $form['variable'] = array(
     '#type' => 'select',
     '#title' => t('Hydroclimatic Variables'),
-    '#options' => variablesarray(isset($comparearray['theme'])?$comparearray['theme']:''),
-    //'#default_value' => $category['selected'],
+    '#options' => variablesarray(),
     '#description' => t('Select one hydroclimatic variable.'),
     '#required' => TRUE,
-    '#default_value' => isset($comparearray['variable'])?$comparearray['variable']:'',
+    '#default_value' => '1',
     '#cols' => 120,
     '#size' => 10,
   );
@@ -487,82 +526,45 @@ function toewhiskers_map_form($form,&$form_submit) {
     '#collapsible' => FALSE,
     '#collapsed' => FALSE,
   );
-  
-  /*
-  $options = array(
-    //'rcp45' => 'RCP Low (RCP4.5)',
-    //'rcp85' => 'RCP High (RCP8.5)',
-    'rcp45' => 'RCP4.5',
-    'rcp85' => 'RCP8.5',
+  $maptypeoptions = array(
+    '1' => 'Emergence Year',
+    '2' => 'Emergence Location',
   );
-  $form['parameter']['emission'] = array(
+  $form['parameter']['maptype'] = array(
     '#type' => 'radios',
-    '#title' => t('Emission Scenario'),
-    '#options' => $options,
+    '#title' => t('Map Type'),
+    '#options' => $maptypeoptions,
     '#required' => TRUE,
-    '#default_value' => isset($comparearray['emission'])?$comparearray['emission']:key($options),
+    '#default_value' => key($maptypeoptions),
   );
-  $options = array(
-    'rcp45' => 'RCP4.5',
-    'rcp85' => 'RCP8.5',
-  );
-  $form['parameter']['emission'] = array(
-    '#type' => 'checkboxes',
-    '#title' => t('Emission scenario'),
-    '#options' => $options,
-    '#required' => TRUE,
-    '#default_value' => isset($comparearray['emission'])?$comparearray['emission']:'',
-  );
-
-  $options = array(
-    'BCSD5' => 'Statistically-downscaled (CMIP5 BCSD)',
-  );
-  $form['parameter']['dataset'] = array(
+  $options = array(1 => '80', 2 => '95', );
+  $form['parameter']['emergencethreshold'] = array(
     '#type' => 'radios',
-    '#title' => t('Climate Data'),
+    '#title' => t('Emergence Threshold'),
     '#options' => $options,
-    '#required' => TRUE,
-    '#default_value' => isset($comparearray['dataset'])?$comparearray['dataset']:key($options),
-  );
-  */
-    
-  
-  $options = array(
-    '95' => 'Low (middle 90% of historical fluctuations)',
-    '80' => 'High (middle 60% of historical fluctuations)',
-  );
-  global $toleranceoptions;
-  $form['parameter']['tolerance'] = array(
-    '#type' => 'radios',
-    '#title' => t('Historical "Noise" Range'),
-    '#options' => $toleranceoptions,
-    '#required' => TRUE,
-    '#default_value' => isset($comparearray['tolerance'])?$comparearray['tolerance']:key($options),
-  );
-  
-  /*
-  $options = array(
-    '95' => 'Lower bound (earlier ToE)',
-    '50' => 'Central tendency',
-    '5' => 'Upper bound (later ToE)',
-  );
-  $form['parameter']['confidence'] = array(
-    '#type' => 'radios',
-    '#title' => t('ToE Range'),
-    '#options' => $options,
-    '#required' => TRUE,
-    '#default_value' => isset($comparearray['confidence'])?$comparearray['confidence']:key($options),
-  );
-  */
-  
+    '#default_value' => '1',
+  );  
   $form['submit'] = array(
     '#title' => t('Calculate'),
-    '#value' => 'Query for Time of Emergence',
+    '#value' => 'Next',
     '#type' => 'submit',
     );
   return $form;
 }
 
+/**
+ * Validate handler for the 'map' form
+ */
+function toewhiskers_map_form_validate($form, &$form_state) {
+  $variableid = check_plain($form_state['values']['variable']);
+  //drupal_set_message('variableid:<pre>'. print_r($variableid, TRUE) .'</pre>');
+  $allvariablearray = array();
+  $allvariablearray = variablesarray();
+  //drupal_set_message('maparray:<pre>'. print_r($allvariablearray, TRUE) .'</pre>');
+  if( ! (array_key_exists( $variableid, $allvariablearray )) ){
+    form_set_error('variable', 'Invalid variable choice.');
+  }
+}
 
 /**
  * Submit handler for the 'map' form.
@@ -570,40 +572,200 @@ function toewhiskers_map_form($form,&$form_submit) {
 function toewhiskers_map_form_submit($form, &$form_state) {
   // drupal_set_message('formstate:<pre>'. print_r($form_state, TRUE) .'</pre>');
   // Grab session values if present.
-  $maparray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
+  $maparray = isset($_SESSION['map'])?$_SESSION['map']:array();
   $maparray['theme'] = check_plain($form_state['values']['theme']);
   $maparray['impact'] = check_plain($form_state['values']['impact']);
-  $maparray['descriptor'] = check_plain($form_state['values']['descriptor']);
   //$comparearray['variable'] = toewhiskers_clean_array($form_state['values']['variable']);
   $maparray['variable'] = check_plain($form_state['values']['variable']);
-  //$maparray['emission'] = check_plain($form_state['values']['emission']);
-  //$comparearray['emission'] = toewhiskers_clean_array($form_state['values']['emission']);
-  //$maparray['dataset'] = check_plain($form_state['values']['dataset']);
-  $maparray['tolerance'] = check_plain($form_state['values']['tolerance']);
-  //$maparray['confidence'] = check_plain($form_state['values']['confidence']);
+  $maparray['maptype'] = check_plain($form_state['values']['maptype']);
+  $maparray['emergencethreshold'] = check_plain($form_state['values']['emergencethreshold']);
+  
   // Set session variable.
   $_SESSION['map'] = $maparray;
-  //$compare = $_SESSION['compare'];
-
-  // If initial compare option was 'View the priority areas for climate change response action' send user to /density-maps instead of /timeline
-  //if ($compare['compare'] == 2) {
-    //$form_state['redirect'] = 'density-maps';
-  //} else {
-    //$form_state['redirect'] = 'timeline';
-  //}
   
-  drupal_set_message('maparray:<pre>'. print_r($maparray, TRUE) .'</pre>');
+  //drupal_set_message('maparray:<pre>'. print_r($maparray, TRUE) .'</pre>');
   
-  // s = scenario
-  // d = dataset
+  // m = map type
+  // b = boundary types (1 = state, 2 = state and county, 3 = state, 4 = state and reservation)
   // xx.xx = variable
   // t = tolerance
+  // s = scenario set (rcp45,a1b:1, rcp85,b1: 2)
+  // c = confidence, always 2 for maps
+  // d = dataset
+  // p = ??
+  // rcp85 = high
+  // rcp45 = low
+  // aib = high
+  // b1 = low
+  // s1 = 45, a1b
+  // s2 = 85, b1
+  // p only applies to 'm2' maps. Values are 1,2,3.
   
+  /*
+The following data to map linkages provided in a Trello based document by Rita.
+From CIG:  
   
-  $imageid = "mx_bx_xx.xx_tx_sx_cx_dx_px.png";
-  $imageid = "mx_bx_".$maparray['variable']."_t".$maparray['tolerance']."_sx_cx_dx_px.png";
-  drupal_set_message("Image lookup: " . $imageid);
+Dimensions	Options	1	2	3	4
+Map	M[1,2]	Emergence Year	Emergence Location		
+Extent	E[1,2]	WA/OR/ID/BC	Puget Sound		
+Boundaries overlaid	B[1,2,3,4]	State	County	Watershed	Tribal Land
+Variable	V				
+EmergThres	T[1,2]	80	95		
+EmisScenario	S[1,2]	rcp45 or B1	rcp85 or A1B		
+SignalConfidence	C[1,2,3]	5	50	95	
+Period	P[1,2,3]	2025	2050	2075	2100
+Dataset	D[1,2,3]	BCSD5	BCSD3	WRF3	
+					
+Naming convention:	M_E_B_V_T_S_C_P_D.png				
+For example: 	2_2_3_8_1_1_2_3_1.png => 				
+	Emergence location (by watershed) for Puget Sound area for variable 8 with the lower (middle 60%) threshold, the RCP4.5 scenario, 50% confidence level for the period 2075, based on BCSD5 dataset.				
+  */ 
+  
+  $form_state['redirect'] = 'mapbytype';
+  
+}
 
+
+function toewhiskers_mapbytype_form($form,&$form_submit) {
+  $maptype = "";
+  $theme = "";
+ 
+  $maparray = isset($_SESSION['map'])?$_SESSION['map']:array();
+  $maptype = $maparray['maptype'];
+  //drupal_set_message('maparray:<pre>'. print_r($maparray, TRUE) .'</pre>');
+  
+  $variableid = $maparray['variable'];
+  
+  global $secondarydatatable;
+  $query = "SELECT * FROM " . $secondarydatatable . " WHERE variableid = '" . $variableid . "'";
+  //drupal_set_message($query);
+  
+  // Setup to query non Drupal database. Then query for 'theme' value for this one variableid.
+  db_set_active('cig_toe');
+  $row = (object)db_query($query)->fetchAssoc();
+  $theme = $row->THEME;
+  //drupal_set_message('row:<pre>'. print_r($row, TRUE) .'</pre>');
+  db_set_active();
+  
+  $form['parameter'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Apply the following parameters to the query:'),
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+  );
+  if ($maptype == '2'){
+    $options = array(1 => 'Low (RCP45 or B1)', 2 => 'High (RCP85 or A1B)', );
+    $form['parameter']['emissionscenario'] = array(
+      '#type' => 'radios',
+      '#title' => t('Emission Scenario'),
+      '#options' => $options,
+      '#default_value' => '1',
+    );
+  }
+  $datasetoptions = array(2 => 'BCSD3',);
+  if ($theme == "Temperature" || $theme == "Precipitation"){
+    $datasetoptions = array(1 => 'BCSD5', 3 => 'WRF3',  );
+  }
+  if ($theme == "Streamflow"){
+    $datasetoptions = array(1 => 'BCSD5', 2 => 'BCSD3',  );
+  }
+  $form['parameter']['dataset'] = array(
+    '#type' => 'radios',
+    '#title' => t('Dataset'),
+    '#options' => $datasetoptions,
+    '#default_value' => '1',
+  );
+	$form['submit'] = array(
+    '#title' => t('Calculate'),
+    '#value' => 'Next',
+    '#type' => 'submit',
+  );
+  return $form;
+}
+
+/**
+ * Submit handler for the 'mapbytype' form.
+ */
+function toewhiskers_mapbytype_form_submit($form, &$form_state) {
+  $maparray = isset($_SESSION['map'])?$_SESSION['map']:array();
+  //drupal_set_message('formstate:<pre>'. print_r($form_state, TRUE) .'</pre>');
+  $maparray['dataset'] = check_plain($form_state['values']['dataset']);
+  if($maparray['dataset'] == '1'){$maparray['scenario'] = 2;}
+  if($maparray['dataset'] == '2' || $maparray['dataset'] == '3'){$maparray['scenario'] = 1;}
+  //drupal_set_message('maparray:<pre>'. print_r($maparray, TRUE) .'</pre>');
+  
+  $_SESSION['map'] = $maparray;
+  $form_state['redirect'] = 'mapdetails';
+}
+
+
+function toewhiskers_mapdetails_form($form,&$form_submit) {
+  $form['parameter'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Apply the following parameters to the query:'),
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+  );
+  $extentoptions = array(1 => 'WA/OR/ID/BC', 2 => 'Puget Sound', );
+  $form['parameter']['extent'] = array(
+    '#type' => 'radios',
+    '#title' => t('Extent'),
+    '#options' => $extentoptions,
+    '#default_value' => '1',
+  );
+  $options = array(1 => 'State', 2 => 'County', 3 => 'Watershed', 4 => 'Tribal Land', );
+  $form['parameter']['boundary'] = array(
+    '#type' => 'radios',
+    '#title' => t('Boundary'),
+    '#options' => $options,
+    '#default_value' => '1',
+  );
+  $options = array(1 => '5', 2 => '50', 3 => '90', );
+  $form['parameter']['signalconfidence'] = array(
+    '#type' => 'radios',
+    '#title' => t('Signal Confidence'),
+    '#options' => $options,
+    '#default_value' => '1',
+  ); 
+  $options = array(1 => '2025', 2 => '2050', 3 => '2075', 4 => '2100', );
+  $form['parameter']['period'] = array(
+    '#type' => 'radios',
+    '#title' => t('Period'),
+    '#options' => $options,
+    '#default_value' => '1',
+  );
+	$form['submit'] = array(
+    '#title' => t('Calculate'),
+    '#value' => 'Query for map',
+    '#type' => 'submit',
+  );
+  return $form;
+}
+
+/**
+ * Submit handler for the 'mapdetails' form.
+ */
+function toewhiskers_mapdetails_form_submit($form, &$form_state) {
+  $maparray = isset($_SESSION['map'])?$_SESSION['map']:array();
+  
+  if($maparray['dataset'] == '1'){$maparray['scenario'] = 2;}
+  if($maparray['dataset'] == '2' || $maparray['dataset'] == '3'){$maparray['scenario'] = 1;}
+  $maparray['boundary'] = check_plain($form_state['values']['boundary']);
+  $maparray['extent'] = check_plain($form_state['values']['extent']);
+  $maparray['signalconfidence'] = check_plain($form_state['values']['signalconfidence']);
+  $maparray['period'] = check_plain($form_state['values']['period']);
+  
+  // This is filename format in document. 
+  $filenametemplate = "M_E_B_V_T_S_C_P_D.png";
+  $maparray['longfilename'] = $maparray['maptype'] . "_"   . $maparray['extent'] . "_" . $maparray['boundary'] . "_"   . $maparray['variable'] . "_"   . $maparray['emergencethreshold'] . "_"   . $maparray['scenario'] . "_"   . $maparray['signalconfidence'] . "_"   . $maparray['period'] . "_"   . $maparray['dataset'] . ".png";
+  
+  // This is filename format represented by actual files.
+  $filenametemplate = "mx_bx_v_tx_sx_cx_dx_px.png";
+  $maparray['shortfilename'] = "m" . $maparray['maptype'] . "_b" . $maparray['boundary'] . "_" . ltrim($maparray['variable'], 'V') . "_t"   . $maparray['emergencethreshold'] . "_s"   . $maparray['scenario'] . "_c"   . $maparray['signalconfidence'] . "_d"   . $maparray['dataset'] . "_p"   . $maparray['period'] . ".png";
+  
+  //drupal_set_message('maparray:<pre>'. print_r($maparray, TRUE) .'</pre>');
+  $_SESSION['map'] = $maparray;
+  $form_state['redirect'] = 'displaymap';
 }
 
 
@@ -619,7 +781,6 @@ function toewhiskers_clean_array($array, $filter = 'check_plain') {
   }
   return $clean;
 }
-
 
 
 /*
@@ -801,7 +962,6 @@ Climate Data: " . $prettynames['dataset'][$dataset] . "\n\n";
     // drupal_json_output(print_r($toedata));
     drupal_json_output($toedata);  
   }
-  
 }
 
 
@@ -812,7 +972,6 @@ Climate Data: " . $prettynames['dataset'][$dataset] . "\n\n";
 function toewhiskers_json_query_boxplot_function($variable,$mode){
 
   $verbose_test_mode = FALSE;
-  //Todo: validate $variable value.
   
   $maindatatable = "SCEN1_DATA_V2";
   
@@ -916,6 +1075,7 @@ function variablesarray($themeindex = 4, $impactindex = 9, $typeindex = 2){
   if($themeindex == 2) {$theme = 'Hydrological';}
   if($themeindex == 3) {$theme = 'Stream';}
   //$options = array(9 => 'All',0 => 'Drought', 1 => 'Energy', 2 => 'Fish', 3 => 'Flood',4 => 'General', 5 => 'Human health', 6 => 'Infrastructure', 7 => 'Streamflow',8 => 'Water quality',);
+  
   $impact = NULL;
   if($impactindex == 0) {$impact = 'Drought';}
   if($impactindex == 1) {$impact = 'Energy';}
@@ -927,11 +1087,9 @@ function variablesarray($themeindex = 4, $impactindex = 9, $typeindex = 2){
   if($impactindex == 7) {$impact = 'Streamflow';}   
   if($impactindex == 8) {$impact = 'Water quality';}
   
-  global $averageextremeoptions;
-  //print('averageextremeoptions:<pre>'. print_r($averageextremeoptions, TRUE) .'</pre>typeindex:' . $typeindex);
   $averageextreme = NULL;
-  if($typeindex > 0 && array_key_exists($typeindex, $averageextremeoptions)){$averageextreme = $averageextremeoptions[$typeindex];}
-
+  if($typeindex == 0) {$averageextreme = 'Average';}
+  if($typeindex == 1) {$averageextreme = 'Extreme';}
   
   $variablesarray = array();
   
@@ -943,9 +1101,8 @@ function variablesarray($themeindex = 4, $impactindex = 9, $typeindex = 2){
   if($impact){ $query .= " AND TOE_DATA_V1.IMPACT LIKE '%" . $impact . "%'";} 
   if($averageextreme){ $query .= " AND TOE_DATA_V1.AVERAGEEXTREME = '" . $averageextreme . "'";}
   $queries = array($query);
-  //drupal_set_message('formstate:<pre>'. print_r($queries, TRUE) .'</pre>');
+  //drupal_set_message('function variablesarray() query:<pre>'. print_r($queries, TRUE) .'</pre>');
   foreach ($queries as $query) {
-    //  print($query);
     $o .= "<br/>" . $query . "<br/>";   
     $result = db_query($query);
     // Result is returned as a iterable object that returns a stdClass object on each iteration
@@ -965,7 +1122,6 @@ function variablesarray($themeindex = 4, $impactindex = 9, $typeindex = 2){
  * Ajax/JSON data retriever.
  */
 function toewhiskers_variablelist_function($themeindex,$impactindex,$typeindex){
-  // print("themeindex " . $themeindex . "    ");
   drupal_json_output(variablesarray($themeindex,$impactindex,$typeindex));
 }
 
@@ -1005,7 +1161,7 @@ function toewhiskers_cigtoeconfig_function(){
       //      'V1.01' => t('Average temperature in January'),
       //$o .= $record->k . "|" . $record->v . "<br/>";
       $o .= "'" . $record->k . "' => t('" . $record->v . "'), 
-      theme = " .$record->t . " " .
+      theme = " .$record->t . ", " .
       "impact = " .$record->i . 
       "<br/>";
     }
