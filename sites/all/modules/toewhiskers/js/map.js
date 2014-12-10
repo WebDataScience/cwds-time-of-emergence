@@ -170,14 +170,9 @@ jQuery( document ).ready(function( $ ) {
       $('div.form-item-region').hide(); 
     }
     if($('input:radio[name=compare]:checked').val() == '2'){ 
-      $( "#toewhiskers-explore-form" ).submit();
-      return;
-    }
-    //enable 'region' dropdown.
-    // this solution requires newer version of jQuery: $("#edit-region").prop("disabled", false);
-    //$('#edit-region').removeAttr('disabled');
-    //$('div.form-item-region').show(); 
-    //$('div.form-item-geodomain').show();   
+      $('div.form-item-geodomain').show(); 
+      $('div.form-item-region').show(); 
+    }  
     $('#edit-submit').removeAttr('disabled');  
   });
         
