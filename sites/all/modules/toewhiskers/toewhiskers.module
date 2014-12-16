@@ -115,12 +115,12 @@ function toewhiskers_compare_page_function(){
 }
 function toewhiskers_map_page_function(){ 
   drupal_add_js(drupal_get_path('module', 'toewhiskers') . '/js/mapform.js');
-  drupal_set_title('Map'); 
+  drupal_set_title('Choose variable to map'); 
   return theme('map_template');  
 }
 function toewhiskers_mapbytype_page_function(){ 
   drupal_add_js(drupal_get_path('module', 'toewhiskers') . '/js/mapform.js');
-  drupal_set_title('Refine by Dataset'); 
+  drupal_set_title('Select Dataset'); 
   return theme('mapbytype_template');  
 }
 function toewhiskers_mapdetails_page_function(){ 
@@ -130,13 +130,12 @@ function toewhiskers_mapdetails_page_function(){
 }
 function toewhiskers_displaymap_page_function(){ 
   drupal_add_js(drupal_get_path('module', 'toewhiskers') . '/js/mapform.js');
-  drupal_set_title('Display Map'); 
+  drupal_set_title('One Hydro-climatic Variable by Region'); 
   return theme('displaymap_template');  
 }
 
 
 function template_preprocess_explore_template(&$variables) {
-  //drupal_build_form($form_id, &$form_state)
   $form = drupal_get_form('toewhiskers_explore_form');
   $o = drupal_render($form);
   $variables['explore_form'] = $o;
@@ -147,7 +146,6 @@ function template_preprocess_compare_template(&$variables) {
   $variables['explore_form'] = $o;
 }
 function template_preprocess_map_template(&$variables) {
-  //drupal_build_form($form_id, &$form_state)
   $form = drupal_get_form('toewhiskers_map_form');
   $o = drupal_render($form);
   $variables['explore_form'] = $o;
@@ -164,16 +162,14 @@ function template_preprocess_mapdetails_template(&$variables) {
 }
 function template_preprocess_displaymap_template(&$variables) {
   $maparray = isset($_SESSION['map'])?$_SESSION['map']:array();
-  $o = "Long filename is: " . $maparray['longfilename'] . "<br>";
-  $o = "Short filename is: " . $maparray['shortfilename'] . "<br>";
   $pathtomap = drupal_get_path('module', 'toewhiskers');
-  $o .= "<img src='" . $pathtomap . "/images/Samples/" . $maparray['shortfilename'] . "'>";
+  $o = "<img src='" . $pathtomap . "/images/Samples/" . $maparray['stage1filename'] . "'>";
+  $o .= "<p>Stage 2 filename is: " . $maparray['stage2filename'] . "</p>";
   $variables['explore_form'] = $o;
 }
 function toewhiskers_explore_form($form, &$form_submit) {
   // Session variable used to prepopulate if available.
   $previousvaluesearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
-  
   $options = array(
     0 => 'Compare multiple hydroclimatic variables in a single geographic domain',
     1 => 'Explore the spatial variability of one hydro-climatic variable across a specific geographic domain',
@@ -220,7 +216,6 @@ function toewhiskers_explore_form($form, &$form_submit) {
  * Submit handler for the '/explore' form.
  */
 function toewhiskers_explore_form_submit($form, &$form_state) {
-
   // Grab session values if present.
   $comparearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
  
@@ -477,7 +472,7 @@ function toewhiskers_map_form_submit($form, &$form_state) {
   // Set session variable.
   $_SESSION['map'] = $maparray;
   
-  //drupal_set_message('maparray:<pre>'. print_r($maparray, TRUE) .'</pre>');
+  /* Stage one map file observations. Supported by actual image filenames. */
   
   // m = map type
   // b = boundary types (1 = state, 2 = state and county, 3 = state, 4 = state and reservation)
@@ -594,6 +589,8 @@ function toewhiskers_mapbytype_form_submit($form, &$form_state) {
 
 
 function toewhiskers_mapdetails_form($form,&$form_submit) {
+  $maparray = isset($_SESSION['map'])?$_SESSION['map']:array();
+  //drupal_set_message('maparray:<pre>'. print_r($maparray, TRUE) .'</pre>');
   $form['parameter'] = array(
     '#type' => 'fieldset',
     '#title' => t('Apply the following parameters to the query:'),
@@ -620,14 +617,18 @@ function toewhiskers_mapdetails_form($form,&$form_submit) {
     '#title' => t('Signal Confidence'),
     '#options' => $options,
     '#default_value' => '1',
+    '#description' => 'This datapoint not applicable to stage 1 mapset.',
   ); 
-  $options = array(1 => '2025', 2 => '2050', 3 => '2075', 4 => '2100', );
-  $form['parameter']['period'] = array(
-    '#type' => 'radios',
-    '#title' => t('Period'),
-    '#options' => $options,
-    '#default_value' => '1',
-  );
+  if(array_key_exists('maptype', $maparray) && $maparray['maptype'] == 2 ){
+    $stage1options = array(1 => '2025', 2 => '2050', 3 => '2075');
+    $stage2options = array(1 => '2025', 2 => '2050', 3 => '2075', 4 => '2100', );
+    $form['parameter']['period'] = array(
+      '#type' => 'radios',
+      '#title' => t('Period'),
+      '#options' => $stage1options,
+      '#default_value' => '1',
+    );
+  }
 	$form['submit'] = array(
     '#title' => t('Calculate'),
     '#value' => 'Query for map',
@@ -647,15 +648,17 @@ function toewhiskers_mapdetails_form_submit($form, &$form_state) {
   $maparray['boundary'] = check_plain($form_state['values']['boundary']);
   $maparray['extent'] = check_plain($form_state['values']['extent']);
   $maparray['signalconfidence'] = check_plain($form_state['values']['signalconfidence']);
-  $maparray['period'] = check_plain($form_state['values']['period']);
+  $maparray['period'] = (array_key_exists('period', $form_state['values']))?check_plain($form_state['values']['period']):'';
   
   // This is filename format in document. 
   $filenametemplate = "M_E_B_V_T_S_C_P_D.png";
-  $maparray['longfilename'] = $maparray['maptype'] . "_"   . $maparray['extent'] . "_" . $maparray['boundary'] . "_"   . $maparray['variable'] . "_"   . $maparray['emergencethreshold'] . "_"   . $maparray['scenario'] . "_"   . $maparray['signalconfidence'] . "_"   . $maparray['period'] . "_"   . $maparray['dataset'] . ".png";
+  $maparray['stage2filename'] = $maparray['maptype'] . "_"   . $maparray['extent'] . "_" . $maparray['boundary'] . "_"   . $maparray['variable'] . "_"   . $maparray['emergencethreshold'] . "_"   . $maparray['scenario'] . "_"   . $maparray['signalconfidence'] . "_"   . $maparray['period'] . "_"   . $maparray['dataset'] . ".png";
   
   // This is filename format represented by actual files.
-  $filenametemplate = "mx_bx_v_tx_sx_cx_dx_px.png";
-  $maparray['shortfilename'] = "m" . $maparray['maptype'] . "_b" . $maparray['boundary'] . "_" . ltrim($maparray['variable'], 'V') . "_t"   . $maparray['emergencethreshold'] . "_s"   . $maparray['scenario'] . "_c"   . $maparray['signalconfidence'] . "_d"   . $maparray['dataset'] . "_p"   . $maparray['period'] . ".png";
+  $filenametemplate = "mx_bx_v_tx_sx_c2_dx[_px].png";
+  $maparray['stage1filename'] = "m" . $maparray['maptype'] . "_b" . $maparray['boundary'] . "_" . ltrim($maparray['variable'], 'V') . "_t"   . $maparray['emergencethreshold'] . "_s"   . $maparray['scenario'] . "_c2_d"   . $maparray['dataset'];
+  if(array_key_exists('maptype', $maparray) && $maparray['maptype'] == 2 ){$maparray['stage1filename']  .= "_p"   . $maparray['period'];}
+  $maparray['stage1filename'] .= ".png";
   
   //drupal_set_message('maparray:<pre>'. print_r($maparray, TRUE) .'</pre>');
   $_SESSION['map'] = $maparray;
@@ -723,6 +726,7 @@ function toewhiskers_json_query_function($mode){
   AND ". $maindatatable.".MODELAGREEMENT = 'XX' 
   AND ". $maindatatable.".GCM = 'GCM_ensemble' 
   LIMIT 20";
+  //drupal_set_message("Timeline query: " . $query);
     
   // Setup to query non Drupal database.
   db_set_active('cig_toe');
@@ -756,7 +760,6 @@ function toewhiskers_json_query_function($mode){
   
   $toe_array =  array();
   $variable_object = new stdClass();
-  
   
   // Query for 'table' portion of /timeline page.
   $query = "SELECT ". $maindatatable.".*,TOE_DATA_V1.VARIABLESHORTNAME FROM {". $maindatatable."}  LEFT JOIN {TOE_DATA_V1} on (TOE_DATA_V1.VARIABLEID = ". $maindatatable.".VARIABLEID) WHERE
