@@ -6,7 +6,7 @@ ini_set('display_errors', TRUE);
 ini_set('display_startup_errors', TRUE);
 
 global $maindatatable;
-$maindatatable = "SCEN1_DATA_V2";
+$maindatatable = "SCEN1_DATA_V3";
 global $secondarydatatable;
 $secondarydatatable = "TOE_DATA_V1";
 global $toleranceoptions;
@@ -103,7 +103,7 @@ function toewhiskers_theme(){
 
 
 function toewhiskers_explore_page_function(){  
-  unset($_SESSION['compare']);
+  $_SESSION['compare'] = NULL;
   drupal_add_js(drupal_get_path('module', 'toewhiskers') . '/js/map.js');
   drupal_set_title('Explore');  
   return theme('explore_template');  
@@ -683,7 +683,7 @@ function toewhiskers_clean_array($array, $filter = 'check_plain') {
 function toewhiskers_json_query_function($mode){
 
   //drupal_set_message('formstate:<pre>'. print_r($_SESSION['compare'], TRUE) .'</pre>');
-  $maindatatable = "SCEN1_DATA_V2";
+  global $maindatatable;
   $max_TOE_year = 2100;
 
   $verbose_test_mode = TRUE;
@@ -867,7 +867,8 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
 
   $verbose_test_mode = FALSE;
   
-  $maindatatable = "SCEN1_DATA_V2";
+  //$maindatatable = "SCEN1_DATA_V2";
+  global $maindatatable;
   
   $jasondata = array();
   $jasondata['variable'] = $variable;
@@ -987,7 +988,8 @@ function variablesarray($themeindex = 4, $impactindex = 9, $typeindex = 2){
   
   $variablesarray = array();
   
-  $maindatatable = "SCEN1_DATA_V2";
+  //$maindatatable = "SCEN1_DATA_V2";
+  global $maindatatable;
   $o = "";
   db_set_active('cig_toe');
   $query = "SELECT DISTINCT " .$maindatatable. ".VARIABLEID AS k, TOE_DATA_V1.VARIABLENAME AS v FROM " .$maindatatable. " LEFT JOIN TOE_DATA_V1 ON (TOE_DATA_V1.VARIABLEID = " .$maindatatable. ".VARIABLEID) WHERE 1=1 ";
@@ -1028,12 +1030,15 @@ function toewhiskers_variablelist_function($themeindex,$impactindex,$typeindex){
  * Utility to grab distinct values from ToE database which will be used as options offered to user. This is accessed at /
  */
 function toewhiskers_cigtoeconfig_function(){
-  
-  $maindatatable = "SCEN1_DATA_V2";
+  global $maindatatable;
   $o = "";
   db_set_active('cig_toe');
   
+
+  
   $columns = array('REGION','EMISSCENARIO','DATASET','EMERGTHRES','SIGNALCONFIDENCE','MODELAGREEMENT','GCM');
+  
+  
   foreach ($columns as $column) {
     $o .= "<br/>" . $column . "<br/>";
     $query = "SELECT DISTINCT " . $column . " FROM {" .$maindatatable. "}";
@@ -1046,10 +1051,7 @@ function toewhiskers_cigtoeconfig_function(){
     }
   }
   
-  $queries = array('SELECT DISTINCT SCEN1_DATA_V1.VARIABLEID AS k, TOE_DATA_V1.VARIABLENAME AS v FROM SCEN1_DATA_V1 LEFT JOIN TOE_DATA_V1 ON (TOE_DATA_V1.VARIABLEID = SCEN1_DATA_V1.VARIABLEID)');
-  
   $queries = array("SELECT DISTINCT " .$maindatatable. ".VARIABLEID AS k, TOE_DATA_V1.VARIABLENAME AS v, TOE_DATA_V1.THEME as t, TOE_DATA_V1.IMPACT as i FROM " .$maindatatable. " LEFT JOIN TOE_DATA_V1 ON (TOE_DATA_V1.VARIABLEID = " .$maindatatable. ".VARIABLEID)");
-  
   foreach ($queries as $query) {
     print($query);
     $o .= "<br/>" . $query . "<br/>";   
