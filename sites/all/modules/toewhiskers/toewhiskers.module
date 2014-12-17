@@ -6,7 +6,7 @@ ini_set('display_errors', TRUE);
 ini_set('display_startup_errors', TRUE);
 
 global $maindatatable;
-$maindatatable = "SCEN1_DATA_V3";
+$maindatatable = "SCEN1_DATA_V4";
 global $secondarydatatable;
 $secondarydatatable = "TOE_DATA_V1";
 global $toleranceoptions;
@@ -171,7 +171,7 @@ function toewhiskers_explore_form($form, &$form_submit) {
   // Session variable used to prepopulate if available.
   $previousvaluesearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
   $options = array(
-    0 => 'Compare multiple hydroclimatic variables in a single geographic domain',
+    0 => 'Timeline comparison of multiple hydroclimatic variables in a single geographic domain',
     1 => 'Explore the spatial variability of one hydro-climatic variable across a specific geographic domain',
     2 => 'View the priority areas for climate change response action', 
   );
@@ -180,17 +180,17 @@ function toewhiskers_explore_form($form, &$form_submit) {
     '#title' => t('I want to...'),
     '#options' => $options,
     '#required' => TRUE,
-    //'#default_value' => isset($previousvaluesearray['compare'])?$previousvaluesearray['compare']:key($options),
   );
-  $options = array(0 => 'Pacific NW',1 => 'State',2 => 'County',3 => 'Tribal land',4 => 'Watershed',5 => 'Puget Sound',6 => 'Stream');
+  $options = array(1 => 'County',2 => 'Watershed',3 => 'Streamflow');
   $form['geodomain'] = array(
     '#type' => 'radios',
-    '#title' => t('Geographic Domain'),
+    '#title' => t('Location'),
     '#options' => $options,
-    '#default_value' => '2',
-    '#disabled' => TRUE,
+    '#default_value' => '1',
+    /*'#disabled' => TRUE,*/
   );
-  $options = array('2.1.17' => 'King County',);
+  /*
+  $options = array('1' => 'King County',);
   $form['region'] = array(
     '#type' => 'select',
     '#title' => t('Region'),
@@ -200,6 +200,7 @@ function toewhiskers_explore_form($form, &$form_submit) {
     //'#default_value' => isset($previousvaluesearray['region'])?$previousvaluesearray['region']:key($options),
     '#default_value' => '2.1.17',
   );
+  */
   $form['submit'] = array(
     '#title' => t('Next Step'),
     '#value' => 'Next Step',
@@ -220,7 +221,7 @@ function toewhiskers_explore_form_submit($form, &$form_state) {
   $comparearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
  
   $comparearray['geodomain'] = check_plain($form_state['values']['geodomain']); 
-  $comparearray['region'] = check_plain($form_state['values']['region']);
+  //$comparearray['region'] = check_plain($form_state['values']['region']);
   $comparearray['compare'] = check_plain($form_state['values']['compare']);
   $_SESSION['compare'] = $comparearray;
   
@@ -255,12 +256,18 @@ function toewhiskers_renderwebformelement_function(){
 function toewhiskers_compare_form($form,&$form_submit) {
   // Session variable used to prepopulate if available.
   $comparearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
+  //drupal_set_message('comparearray:<pre>'. print_r($comparearray, TRUE) .'</pre>');
   $form['narrow'] = array(
     '#type' => 'fieldset',
     '#title' => t('Narrow list of available Hydroclimatic Variables by following:'),
     '#collapsible' => FALSE,
     '#collapsed' => FALSE,
   );
+  if($comparearray['geodomain'] == 1 || $comparearray['geodomain'] == 2 ){
+    toewhiskers_narrow_subform_theme($form);
+  } else {
+    $form['narrow']['theme'] = array('#type' => 'hidden', '#value' => 4);
+  }
   toewhiskers_narrow_subform($form);
   $form['variable'] = array(
     '#type' => 'select',
@@ -279,7 +286,7 @@ function toewhiskers_compare_form($form,&$form_submit) {
     '#collapsible' => FALSE,
     '#collapsed' => FALSE,
   );
-  $options = array(    'rcp45' => 'RCP4.5',    'rcp85' => 'RCP8.5',  );
+  $options = array( 'high' => 'High (RCP8.5/A1B)', 'low' => 'Low (RCP4.5/B1)',  );
   $form['parameter']['emission'] = array(
     '#type' => 'radios',
     '#title' => t('Emission Scenario'),
@@ -287,7 +294,8 @@ function toewhiskers_compare_form($form,&$form_submit) {
     '#required' => TRUE,
     '#default_value' => isset($comparearray['emission'])?$comparearray['emission']:key($options),
   );
-  $options = array(    'BCSD5' => 'Statistically-downscaled (CMIP5 BCSD)',  );
+  /*
+  $options = array( 'BCSD5' => 'Statistically-downscaled (CMIP5 BCSD)',  );
   $form['parameter']['dataset'] = array(
     '#type' => 'radios',
     '#title' => t('Climate Data'),
@@ -295,21 +303,27 @@ function toewhiskers_compare_form($form,&$form_submit) {
     '#required' => TRUE,
     '#default_value' => isset($comparearray['dataset'])?$comparearray['dataset']:key($options),
   );
+  */
+  if($comparearray['geodomain'] == 3 ){
+    $form['parameter']['dataset'] = array('#type' => 'hidden', '#value' => 'BCSD5');
+  }
+  
+  
   $options = array(
     '95' => 'Low (middle 90% of historical fluctuations)',
     '80' => 'High (middle 60% of historical fluctuations)',
   );
   $form['parameter']['tolerance'] = array(
     '#type' => 'radios',
-    '#title' => t('Historical "Noise" Range'),
+    '#title' => t('Tolerance (Historical "Noise" Range)'),
     '#options' => $options,
     '#required' => TRUE,
     '#default_value' => isset($comparearray['tolerance'])?$comparearray['tolerance']:key($options),
   );
-  $options = array(    '95' => 'Lower bound (earlier ToE)',    '50' => 'Central tendency',    '5' => 'Upper bound (later ToE)',  );
+  $options = array('95' => 'Lower bound (earlier ToE)', '50' => 'Central tendency', '5' => 'Upper bound (later ToE)',);
   $form['parameter']['confidence'] = array(
     '#type' => 'radios',
-    '#title' => t('ToE Range'),
+    '#title' => t('CC Rate'),
     '#options' => $options,
     '#required' => TRUE,
     '#default_value' => isset($comparearray['confidence'])?$comparearray['confidence']:key($options),
@@ -326,15 +340,6 @@ function toewhiskers_compare_form($form,&$form_submit) {
  * Helper function for forms that reuse the 'narrow variables' filters.
  */
 function toewhiskers_narrow_subform(&$form){
-    $options = array(4 => 'All',0 => 'Temperature', 1 => 'Precipitation', 2 => 'Hydrological', 3 => 'Stream', );
-  // Not all themes are represented in list of variables at this time.
-  $options = array(4 => 'All',0 => 'Temperature', 1 => 'Precipitation',  );
-  $form['narrow']['theme'] = array(
-    '#type' => 'radios',
-    '#title' => t('Theme'),
-    '#options' => $options,
-    '#default_value' => '4',
-  );
   $options = array(9 => 'All',0 => 'Drought', 1 => 'Energy', 2 => 'Fish', 3 => 'Flood',4 => 'General', 5 => 'Human health', 6 => 'Infrastructure', 7 => 'Streamflow',8 => 'Water quality',);
   $form['narrow']['impact'] = array(
     '#type' => 'radios',
@@ -355,6 +360,20 @@ function toewhiskers_narrow_subform(&$form){
     '#value' => t('Filter variable list'),
   );
 }
+/*
+ * Helper function for forms that reuse the 'narrow variables' filters. Provides only the 'theme' options.
+ */
+function toewhiskers_narrow_subform_theme(&$form){
+  $options = array(4 => 'All',0 => 'Temperature', 1 => 'Precipitation', 2 => 'Hydrological', 3 => 'Stream', );
+  // Not all themes are represented in list of variables at this time.
+  $options = array(4 => 'All',0 => 'Temperature', 1 => 'Precipitation',  );
+  $form['narrow']['theme'] = array(
+    '#type' => 'radios',
+    '#title' => t('Theme'),
+    '#options' => $options,
+    '#default_value' => '4',
+  );
+}
   
   
 /**
@@ -370,7 +389,7 @@ function toewhiskers_compare_form_submit($form, &$form_state) {
   $comparearray['variable'] = toewhiskers_clean_array($form_state['values']['variable']);
   $comparearray['emission'] = check_plain($form_state['values']['emission']);
   //$comparearray['emission'] = toewhiskers_clean_array($form_state['values']['emission']);
-  $comparearray['dataset'] = check_plain($form_state['values']['dataset']);
+  //$comparearray['dataset'] = check_plain($form_state['values']['dataset']);
   $comparearray['tolerance'] = check_plain($form_state['values']['tolerance']);
   $comparearray['confidence'] = check_plain($form_state['values']['confidence']);
   // Set session variable.
@@ -396,9 +415,8 @@ function toewhiskers_map_form($form,&$form_submit) {
     '#collapsible' => FALSE,
     '#collapsed' => FALSE,
   );
-  
+  toewhiskers_narrow_subform_theme($form);
   toewhiskers_narrow_subform($form);
-  
   $form['variable'] = array(
     '#type' => 'select',
     '#title' => t('Hydroclimatic Variables'),
@@ -693,7 +711,7 @@ function toewhiskers_json_query_function($mode){
   
   $compare = $_SESSION['compare'];
   
-  $region = trim($compare['region']);
+  //$region = trim($compare['region']);
   
   // Multiple variables allowed.
   $variables = implode("','",$compare['variable']);
@@ -717,16 +735,27 @@ function toewhiskers_json_query_function($mode){
   {". $maindatatable."}.TOE,{". $maindatatable."}.VARIABLEID,{". $maindatatable."}.CHANGEDIR,{TOE_DATA_V1}.VARIABLENAME,{TOE_DATA_V1}.VARIABLESHORTNAME,{". $maindatatable."}.EMISSCENARIO 
   FROM {". $maindatatable."} LEFT JOIN {TOE_DATA_V1} on (TOE_DATA_V1.VARIABLEID = ". $maindatatable.".VARIABLEID) WHERE 
   ". $maindatatable.".VARIABLEID in ('" . $variables . "') 
-  AND ". $maindatatable.".REGION = '" . $region .   "' 
-  AND ". $maindatatable.".EMISSCENARIO = '" . $emission .   "' 
-  AND ". $maindatatable.".DATASET = '" . $dataset . "' 
   AND ". $maindatatable.".EMERGTHRES = " . $tolerance . "
   AND ". $maindatatable.".SIGNALCONFIDENCE = " . $confidence . "
   AND ". $maindatatable.".TOE <= " . $max_TOE_year . "
   AND ". $maindatatable.".MODELAGREEMENT = 'XX' 
-  AND ". $maindatatable.".GCM = 'GCM_ensemble' 
-  LIMIT 20";
+  AND ". $maindatatable.".GCM = 'GCM_ensemble' ";
+  if($compare['emission'] == "high"){
+    $query .= "AND (". $maindatatable.".EMISSCENARIO = 'rcp85' OR " . $maindatatable.".EMISSCENARIO = 'a1b') ";
+  }
+  if($compare['emission'] == "low"){
+    $query .= "AND (". $maindatatable.".EMISSCENARIO = 'rcp45' OR " . $maindatatable.".EMISSCENARIO = 'b1') ";
+  }
+  $query .= " LIMIT 20";
+  
+
+  //AND ". $maindatatable.".REGION = '" . $region .   "' 
+  //AND ". $maindatatable.".DATASET = '" . $dataset . "'  
+  
   //drupal_set_message("Timeline query: " . $query);
+  //$showquery = str_replace("{", "", $query);
+  //$showquery = str_replace("}", "", $showquery);
+  //print($showquery . ";  ");
     
   // Setup to query non Drupal database.
   db_set_active('cig_toe');
@@ -764,15 +793,26 @@ function toewhiskers_json_query_function($mode){
   // Query for 'table' portion of /timeline page.
   $query = "SELECT ". $maindatatable.".*,TOE_DATA_V1.VARIABLESHORTNAME FROM {". $maindatatable."}  LEFT JOIN {TOE_DATA_V1} on (TOE_DATA_V1.VARIABLEID = ". $maindatatable.".VARIABLEID) WHERE
   ". $maindatatable.".VARIABLEID in ('" . $variables . "') 
-  AND ". $maindatatable.".REGION = '" . $region .   "' 
-  AND ". $maindatatable.".EMISSCENARIO = '" . $emission .   "' 
-  AND ". $maindatatable.".DATASET = '" . $dataset . "' 
   AND ". $maindatatable.".EMERGTHRES = " . $tolerance . "
   AND ". $maindatatable.".SIGNALCONFIDENCE = " . $confidence . "
   AND ". $maindatatable.".MODELAGREEMENT = 'XX'
-  AND (". $maindatatable.".GCM = 'GCM_ensemble_25' OR ". $maindatatable.".GCM = 'GCM_ensemble' OR ". $maindatatable.".GCM = 'GCM_ensemble_75' )
-  ORDER BY ". $maindatatable.".VARIABLEID ";
+  AND (". $maindatatable.".GCM = 'GCM_ensemble_25' OR ". $maindatatable.".GCM = 'GCM_ensemble' OR ". $maindatatable.".GCM = 'GCM_ensemble_75' ) ";
+    if($compare['emission'] == "high"){
+    $query .= "AND (". $maindatatable.".EMISSCENARIO = 'rcp85' OR " . $maindatatable.".EMISSCENARIO = 'a1b') ";
+  }
+  if($compare['emission'] == "low"){
+    $query .= "AND (". $maindatatable.".EMISSCENARIO = 'rcp45' OR " . $maindatatable.".EMISSCENARIO = 'b1') ";
+  }
+  $query .= " ORDER BY ". $maindatatable.".VARIABLEID ";
   $result = db_query($query);
+  
+  //  AND ". $maindatatable.".REGION = '" . $region .   "' 
+  //  AND ". $maindatatable.".DATASET = '" . $dataset . "' 
+  
+  //$showquery = str_replace("{", "", $query);
+  //$showquery = str_replace("}", "", $showquery);
+  //print($showquery . ";  ");
+  
   
   // Result is returned as a iterable object that returns a stdClass object on each iteration
   foreach ($result as $record) {
@@ -1037,11 +1077,7 @@ function toewhiskers_cigtoeconfig_function(){
   $o = "";
   db_set_active('cig_toe');
   
-
-  
   $columns = array('REGION','EMISSCENARIO','DATASET','EMERGTHRES','SIGNALCONFIDENCE','MODELAGREEMENT','GCM');
-  
-  
   foreach ($columns as $column) {
     $o .= "<br/>" . $column . "<br/>";
     $query = "SELECT DISTINCT " . $column . " FROM {" .$maindatatable. "}";
@@ -1055,6 +1091,7 @@ function toewhiskers_cigtoeconfig_function(){
   }
   
   $queries = array("SELECT DISTINCT " .$maindatatable. ".VARIABLEID AS k, TOE_DATA_V1.VARIABLENAME AS v, TOE_DATA_V1.THEME as t, TOE_DATA_V1.IMPACT as i FROM " .$maindatatable. " LEFT JOIN TOE_DATA_V1 ON (TOE_DATA_V1.VARIABLEID = " .$maindatatable. ".VARIABLEID)");
+
   foreach ($queries as $query) {
     print($query);
     $o .= "<br/>" . $query . "<br/>";   
