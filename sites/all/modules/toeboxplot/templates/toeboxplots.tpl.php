@@ -20,17 +20,21 @@
   <h1 id="top-x-title"></h1>
 
   <div id="boxplot-key">
+  <div id="key-table">
+  	  <div>&nbsp;</div>
+	  <div id="key-table-text">Rate of Climate Change</div>
+  </div>
     <div id="lowerbound-key">
             <div id="lowerbound-key-swatch"></div>
-            <div id="lowerbound-key-text">Lower bound (earlier ToE)</div>
+            <div id="lowerbound-key-text">Faster</div>
     </div>
     <div id="central-key">
             <div id="central-key-swatch"></div>
-            <div id="central-key-text">Central tendency</div>
+            <div id="central-key-text">Central</div>
     </div>
     <div id="upperbound-key">
             <div id="upperbound-key-swatch"></div>
-            <div id="upperbound-key-text">Upper bound (later ToE)</div>
+            <div id="upperbound-key-text">Slower</div>
     </div>
   </div>
   
@@ -91,9 +95,9 @@ jQuery( document ).ready(function( $ ) {
     charttitle += "<br/>Climate Data: " + jsonobj.dataname;    
     $("#top-x-title").html(charttitle);
     
-    drawBoxplot("chart-area-1", "High Emissions (RCP 8.5)", parse4data(jsonobj.emergencethreshold95.emissionscenariorcp85),"Low Historical Noise Range");
+    drawBoxplot("chart-area-1", "High Emissions (RCP 8.5)", parse4data(jsonobj.emergencethreshold95.emissionscenariorcp85),"Low (to extreme 10% of 1950-1999 conditions)");
     drawBoxplot("chart-area-2", "Low Emissions (RCP 4.5)", parse4data(jsonobj.emergencethreshold95.emissionscenariorcp45),"");
-    drawBoxplot("chart-area-3", "High Emissions (RCP 8.5)",parse4data(jsonobj.emergencethreshold80.emissionscenariorcp85),"High Historical Noise Range");
+    drawBoxplot("chart-area-3", "High Emissions (RCP 8.5)",parse4data(jsonobj.emergencethreshold80.emissionscenariorcp85),"High (to extreme 40% of 1950-1999 conditions)");
     drawBoxplot("chart-area-4", "Low Emissions (RCP 4.5)", parse4data(jsonobj.emergencethreshold80.emissionscenariorcp45),"");    
   });
   
@@ -203,7 +207,7 @@ jQuery( document ).ready(function( $ ) {
     function parse4data(obj){
       var data = [];
           data[0] = [];
-          data[0][0] = "Lower bound (earlier ToE)";
+          data[0][0] = "Faster";
           data[0][1] = [];
           data[0][2] = [];
           $.each(obj.signalconfidence95.dots, function(i, obj) {
@@ -213,7 +217,7 @@ jQuery( document ).ready(function( $ ) {
             data[0][2].push(Math.min(obj,2100));
           });
           data[1] = [];
-          data[1][0] = "Central tendency";
+          data[1][0] = "Central";
           data[1][1] = [];
           data[1][2] = [];
           $.each(obj.signalconfidence50.dots, function(i, obj) {
@@ -223,7 +227,7 @@ jQuery( document ).ready(function( $ ) {
             data[1][2].push(Math.min(obj,2100));
           });
           data[2] = [];
-          data[2][0] = "Upper bound (later ToE)";
+          data[2][0] = "Slower";
           data[2][1] = [];
           data[2][2] = [];
           $.each(obj.signalconfidence5.dots, function(i, obj) {
