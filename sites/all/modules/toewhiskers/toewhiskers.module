@@ -171,20 +171,20 @@ function toewhiskers_explore_form($form, &$form_submit) {
   // Session variable used to prepopulate if available.
   $previousvaluesearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
   $options = array(
-    0 => 'Timeline comparison of multiple hydroclimatic variables in a single geographic domain',
-    1 => 'Explore the spatial variability of one hydro-climatic variable across a specific geographic domain',
-    2 => 'View the priority areas for climate change response action', 
+    0 => 'A specific locale',
+    1 => 'A specific environmental variable',
+    2 => 'Examine hotspots',
   );
   $form['compare'] = array(
     '#type' => 'radios',
-    '#title' => t('I want to...'),
+    '#title' => t('I want to focus on...'),
     '#options' => $options,
     '#required' => TRUE,
   );
-  $options = array(1 => 'County',2 => 'Watershed',3 => 'Streamflow');
+  $options = array(1 => 'County',2 => 'Watershed (8-digit HUC)',3 => 'Streamflow locations');
   $form['geodomain'] = array(
     '#type' => 'radios',
-    '#title' => t('Location'),
+    '#title' => t('Choose location of interest'),
     '#options' => $options,
     '#default_value' => '1',
     /*'#disabled' => TRUE,*/
@@ -202,8 +202,8 @@ function toewhiskers_explore_form($form, &$form_submit) {
   );
   */
   $form['submit'] = array(
-    '#title' => t('Next Step'),
-    '#value' => 'Next Step',
+    '#title' => t('Next'),
+    '#value' => 'Next',
     '#type' => 'submit',
   );
     

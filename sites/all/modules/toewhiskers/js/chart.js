@@ -4,9 +4,9 @@ jQuery( document ).ready(function( $ ) {
 
   var websitetextarray = new Object();
   var confidence = new Object();
-  confidence['95'] = 'Lower bound (earlier ToE)';
-  confidence['50'] = 'Central tendency';
-  confidence['5'] = 'Upper bound (later ToE)';
+  confidence['95'] = 'Faster';
+  confidence['50'] = 'Central';
+  confidence['5'] = 'Slower';
   websitetextarray['confidence'] = confidence;
   var tolerance = new Object;
   tolerance['95'] = 'Low (middle 90% of historical fluctuations)';
