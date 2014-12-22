@@ -9,8 +9,8 @@ jQuery( document ).ready(function( $ ) {
   confidence['5'] = 'Slower';
   websitetextarray['confidence'] = confidence;
   var tolerance = new Object;
-  tolerance['95'] = 'Low (middle 90% of historical fluctuations)';
-  tolerance['80'] = 'High (middle 60% of historical fluctuations)';
+  tolerance['95'] = 'Low (to extreme 10% of 1950-1999 conditions))';
+  tolerance['80'] = 'High (to extreme 40% of 1950-1999 conditions)';
   websitetextarray['tolerance'] = tolerance;
   var dataset = new Object;
   dataset['BCSD5'] = 'Statistically-downscaled (CMIP5 BCSD)';
@@ -19,6 +19,7 @@ jQuery( document ).ready(function( $ ) {
   emission['rcp45'] = 'RCP4.5';
   emission['rcp85'] = 'RCP8.5';
   websitetextarray['emission'] = emission;
+  websitetextarray['region'] = jQuery( "#region" ).html();
 
 
   dataarray = []; 
@@ -57,8 +58,9 @@ jQuery( document ).ready(function( $ ) {
     drawD3Timeline(
       timelinedataarray, 
       jsonobj.maxtoeyear,
-      'ToE Range: ' + websitetextarray['confidence'][jsonobj.confidence],
-      'Historical "Noise" Range: ' +websitetextarray['tolerance'][jsonobj.tolerance],
+      'Time of Emergence in:' + 'Region Placeholder',
+      'Estimated Rate of Climate Change: ' + websitetextarray['confidence'][jsonobj.confidence],
+      'Past Sensitivity*: ' +websitetextarray['tolerance'][jsonobj.tolerance],
       'Climate Data: ' + websitetextarray['dataset'][jsonobj.dataset],
       'Region: King County'
     );

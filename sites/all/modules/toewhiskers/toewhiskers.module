@@ -10,7 +10,7 @@ $maindatatable = "variablev5";
 global $lookupdatatable;
 $lookupdatatable = "lookupv2";
 global $toleranceoptions;
-$toleranceoptions = array(  1 => 'Low (middle 90% of historical fluctuations)',  2 => 'High (middle 60% of historical fluctuations)',);
+$toleranceoptions = array(  1 => 'Low (to extreme 10% of 1950-1999 conditions))',  2 => 'High (to extreme 40% of 1950-1999 conditions)',);
 
 function toewhiskers_menu() {
   $items['explore'] = array(
@@ -110,7 +110,7 @@ function toewhiskers_explore_page_function(){
 }
 function toewhiskers_compare_page_function(){ 
   drupal_add_js(drupal_get_path('module', 'toewhiskers') . '/js/compareform.js');
-  drupal_set_title('Compare'); 
+  drupal_set_title('Select Input Parameters'); 
   return theme('compare_template');  
 }
 function toewhiskers_map_page_function(){ 
@@ -273,7 +273,7 @@ function toewhiskers_compare_form($form,&$form_submit) {
     '#type' => 'select',
     '#title' => t('Hydroclimatic Variables'),
     '#options' => variablesarray(),    
-    '#description' => t('Select one or many hydroclimatic variable(s). Holding down &#39;ctrl&#39; key enables multiple select option.'),
+    '#description' => t('To select multiple options, hold down “ctrl” or “command” key'),
     '#multiple' => TRUE,
     '#required' => TRUE,
     '#default_value' => isset($comparearray['variable'])?$comparearray['variable']:'',
@@ -310,27 +310,27 @@ function toewhiskers_compare_form($form,&$form_submit) {
   
   
   $options = array(
-    '95' => 'Low (middle 90% of historical fluctuations)',
-    '80' => 'High (middle 60% of historical fluctuations)',
+    '95' => 'Low (to extreme 10% of 1950-1999 conditions))',
+    '80' => 'High (to extreme 40% of 1950-1999 conditions)',
   );
   $form['parameter']['tolerance'] = array(
     '#type' => 'radios',
-    '#title' => t('Tolerance (Historical "Noise" Range)'),
+    '#title' => t('Past Sensitivity*'),
     '#options' => $options,
     '#required' => TRUE,
     '#default_value' => isset($comparearray['tolerance'])?$comparearray['tolerance']:key($options),
   );
-  $options = array('95' => 'Lower bound (earlier ToE)', '50' => 'Central tendency', '5' => 'Upper bound (later ToE)',);
+  $options = array('95' => 'Fast', '50' => 'Central', '5' => 'Slow',);
   $form['parameter']['confidence'] = array(
     '#type' => 'radios',
-    '#title' => t('CC Rate'),
+    '#title' => t('Estimated Rate of Climate Change*'),
     '#options' => $options,
     '#required' => TRUE,
-    '#default_value' => isset($comparearray['confidence'])?$comparearray['confidence']:key($options),
+    '#default_value' => 50,//isset($comparearray['confidence'])?$comparearray['confidence']:key($options),
   );
   $form['submit'] = array(
     '#title' => t('Calculate'),
-    '#value' => 'Query for Time of Emergence',
+    '#value' => 'Submit',
     '#type' => 'submit',
     );
   return $form;
@@ -340,10 +340,20 @@ function toewhiskers_compare_form($form,&$form_submit) {
  * Helper function for forms that reuse the 'narrow variables' filters.
  */
 function toewhiskers_narrow_subform(&$form){
-  $options = array(9 => 'All',0 => 'Drought', 1 => 'Energy', 2 => 'Fish', 3 => 'Flood',4 => 'General', 5 => 'Human health', 6 => 'Infrastructure', 7 => 'Streamflow',8 => 'Water quality',);
+  $options = array(10 => 'All',
+                   0 => 'Drought',
+                   1 => 'Energy',
+                   2 => 'Fish',
+                   3 => 'Flood',
+                   4 => 'General',
+                   5 => 'Human health',
+                   6 => 'Infrastructure',
+                   7 => 'Streamflow',
+                   8 => 'Water availability',
+                   9 => 'Water quality',);
   $form['narrow']['impact'] = array(
     '#type' => 'radios',
-    '#title' => t('Impact'),
+    '#title' => t('Related Impact'),
     '#options' => $options,
     '#default_value' => '9',
   ); 
@@ -357,16 +367,16 @@ function toewhiskers_narrow_subform(&$form){
   );  
   $form['narrow']['filter'] = array(
     '#type' => 'button',
-    '#value' => t('Filter variable list'),
+    '#value' => t('Filter'),
   );
 }
 /*
  * Helper function for forms that reuse the 'narrow variables' filters. Provides only the 'theme' options.
  */
 function toewhiskers_narrow_subform_theme(&$form){
-  $options = array(4 => 'All',0 => 'Temperature', 1 => 'Precipitation', 2 => 'Hydrological', 3 => 'Stream', );
+  $options = array(4 => 'All',0 => 'Air Temperature', 1 => 'Precipitation', 2 => 'Hydrological', 3 => 'Stream', );
   // Not all themes are represented in list of variables at this time.
-  $options = array(4 => 'All',0 => 'Temperature', 1 => 'Precipitation',  );
+  //$options = array(4 => 'All',0 => 'Air Temperature', 1 => 'Precipitation',  );
   $form['narrow']['theme'] = array(
     '#type' => 'radios',
     '#title' => t('Theme'),
@@ -570,7 +580,7 @@ function toewhiskers_mapbytype_form($form,&$form_submit) {
     );
   }
   $datasetoptions = array(2 => 'BCSD3',);
-  if ($theme == "Temperature" || $theme == "Precipitation"){
+  if ($theme == "Air Temperature" || $theme == "Precipitation"){
     $datasetoptions = array(1 => 'BCSD5', 3 => 'WRF3',  );
   }
   if ($theme == "Streamflow"){
@@ -867,13 +877,13 @@ function toewhiskers_json_query_function($mode){
       'B1'	=>	'SRES B1',
     );
     $prettynames['confidence'] = array(
-      '5'	=>	'Upper bound (later ToE)',
-      '50'	=>	'Central tendency',
-      '95'	=>	'Lower bound (earlier ToE)',
+      '5'	=>	'Slow',
+      '50'	=>	'Central',
+      '95'	=>	'Fast',
     );
     $prettynames['tolerance'] = array(
-      '95'	=>	'Low (middle 90% of historical fluctuations)',
-      '80'	=>	'High (middle 60% of historical fluctuations)',
+      '95'	=>	'Low (to extreme 10% of 1950-1999 conditions))',
+      '80'	=>	'High (to extreme 40% of 1950-1999 conditions)',
     );
     $prettynames['dataset'] = array(
       'BCSD5'	=>	'Statistically-downscaled (CMIP5 BCSD)',
@@ -881,7 +891,7 @@ function toewhiskers_json_query_function($mode){
     
     $o = "Region: King County
 Emission Scenario: " . $prettynames['emission'][$emission] . "
-ToE Range: " . $prettynames['confidence'][$confidence] . "
+Estimated Rate of Climate Change: " . $prettynames['confidence'][$confidence] . "
 Historical 'Noise' Range: " . $prettynames['tolerance'][$tolerance] . "
 Climate Data: " . $prettynames['dataset'][$dataset] . "\n\n";
     
@@ -1013,7 +1023,7 @@ function variablesarray($themeindex = 4, $impactindex = 9, $typeindex = 2){
   global $maindatatable;
   global $lookupdatatable;
   $theme = NULL;
-  if($themeindex == 0) {$theme = 'Temperature';}
+  if($themeindex == 0) {$theme = 'Air Temperature';}
   if($themeindex == 1) {$theme = 'Precipitation';}
   if($themeindex == 2) {$theme = 'Hydrological';}
   if($themeindex == 3) {$theme = 'Stream';}
@@ -1113,8 +1123,8 @@ BCSD5				Statistically-downscaled (CMIP5 BCSD)
 WRF - Phase 2				Dynamically-downscaled
 				
 EmergThres				Tolerance:          Text to appear on website (e.g. in timeline title)
-95				  Low (middle 90% of historical fluctuations)
-80				 High (middle 60% of historical fluctuations)
+95				  Low (to extreme 10% of 1950-1999 conditions))
+80				 High (to extreme 40% of 1950-1999 conditions)
 				
 SignalConfidence				
 Confidence:
