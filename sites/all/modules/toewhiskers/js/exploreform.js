@@ -31,7 +31,7 @@ jQuery( document ).ready(function( $ ) {
       $('div.form-item-regioncounty').hide(); 
       $('div.form-item-regionwatershed').hide(); 
       if($('input:radio[name=compare]:checked').val() == '0'){
-         if($('input:radio[name=geodomain]:checked').val() == '1'){ 
+         if($('input:radio[name=geodomain]:checked').val() == '1' ||$('input:radio[name=geodomain]:checked').val() == '2'){ 
            $('div.form-item-regioncounty').show();
            $('#edit-submit').removeAttr('disabled');         
          }
