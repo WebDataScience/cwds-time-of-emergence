@@ -77,6 +77,8 @@ jQuery( document ).ready(function( $ ) {
       $('#tabledata tr:last').after("<tr><td><a href='/boxplots/" + key + "'>" + onerow.VARIABLESHORTNAME + "</a></td><td>" + onerow.YEARA + " - " + onerow.YEARB + "</td><td>" + (onerow.CHANGEDIR == '1'?'Increasing':'Decreasing')  + "</td></tr>");  
     }
     
+    // Display debug info into hidden div
+    $("#hiddenconsole" ).html( "timelinequery: " + jsonobj.timelinequery + "<br>tablequery: " + jsonobj.tablequery );
     
   });
   

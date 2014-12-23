@@ -132,7 +132,8 @@ ini_set('display_startup_errors', TRUE);
     </div>
   </div>  
 </div>
-    
+  
+<div id="hiddenconsole"></div>  
         
     
 <script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/rgbcolor.js"></script> 
