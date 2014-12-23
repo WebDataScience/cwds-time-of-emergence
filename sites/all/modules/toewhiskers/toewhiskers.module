@@ -364,8 +364,15 @@ function toewhiskers_narrow_subform(&$form){
     '#title' => t('Descriptor'),
     '#options' => $averageextremeoptions,
     '#default_value' => '2',
+  );
+  $typeoptions = array(3 => 'All', 0 => 'Monthly', 1 => 'Seasonal', 2 => 'Annual');
+  $form['narrow']['type'] = array(
+    '#type' => 'radios',
+    '#title' => t('Type'),
+    '#options' => $typeoptions,
+    '#default_value' => '3',
     '#suffix' => '<div class="clearfix"></div>',
-  );  
+  ); 
   $form['narrow']['filter'] = array(
     '#type' => 'button',
     '#value' => t('Filter'),
@@ -397,6 +404,7 @@ function toewhiskers_compare_form_submit($form, &$form_state) {
   $comparearray['theme'] = check_plain($form_state['values']['theme']);
   $comparearray['impact'] = check_plain($form_state['values']['impact']);
   $comparearray['descriptor'] = check_plain($form_state['values']['descriptor']);
+  $comparearray['type'] = check_plain($form_state['values']['type']);
   $comparearray['variable'] = toewhiskers_clean_array($form_state['values']['variable']);
   $comparearray['emission'] = check_plain($form_state['values']['emission']);
   //$comparearray['emission'] = toewhiskers_clean_array($form_state['values']['emission']);
