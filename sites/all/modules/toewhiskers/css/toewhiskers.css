@@ -46,3 +46,8 @@ body.page-timeline div.form-item-variable{
   width: 100px;
   height: 100px;
 }
+
+/* /timeline page */
+#hiddenconsole{
+  display:none;
+}

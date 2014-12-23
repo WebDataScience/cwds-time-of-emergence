@@ -189,15 +189,133 @@ function toewhiskers_explore_form($form, &$form_submit) {
     '#default_value' => '1',
     /*'#disabled' => TRUE,*/
   );
-  
-  $options = array('1' => 'King County',);
+  $options = array(
+  '2.1.01' => 'WA - Adams',
+'2.1.02' => 'WA - Asotin',
+'2.1.03' => 'WA - Benton',
+'2.1.04' => 'WA - Chelan',
+'2.1.05' => 'WA - Clallam',
+'2.1.06' => 'WA - Clark',
+'2.1.07' => 'WA - Columbia',
+'2.1.08' => 'WA - Cowlitz',
+'2.1.09' => 'WA - Douglas',
+'2.1.10' => 'WA - Ferry',
+'2.1.11' => 'WA - Franklin',
+'2.1.12' => 'WA - Garfield',
+'2.1.13' => 'WA - Grant',
+'2.1.14' => 'WA - Grays Harbor',
+'2.1.15' => 'WA - Island',
+'2.1.16' => 'WA - Jefferson',
+'2.1.17' => 'WA - King',
+'2.1.18' => 'WA - Kitsap',
+'2.1.19' => 'WA - Kittitas',
+'2.1.20' => 'WA - Klickitat',
+'2.1.21' => 'WA - Lewis',
+'2.1.22' => 'WA - Lincoln',
+'2.1.23' => 'WA - Mason',
+'2.1.24' => 'WA - Okanogan',
+'2.1.25' => 'WA - Pacific',
+'2.1.26' => 'WA - Pend Oreille',
+'2.1.27' => 'WA - Pierce',
+'2.1.28' => 'WA - San Juan',
+'2.1.29' => 'WA - Skagit',
+'2.1.30' => 'WA - Skamania',
+'2.1.31' => 'WA - Snohomish',
+'2.1.32' => 'WA - Spokane',
+'2.1.33' => 'WA - Stevens',
+'2.1.34' => 'WA - Thurston',
+'2.1.35' => 'WA - Wahkiakum',
+'2.1.36' => 'WA - Walla Walla',
+'2.1.37' => 'WA - Whatcom',
+'2.1.38' => 'WA - Whitman',
+'2.1.39' => 'WA - Yakima',
+'2.2.01' => 'ID - Ada',
+'2.2.02' => 'ID - Adams',
+'2.2.03' => 'ID - Bannock',
+'2.2.04' => 'ID - Bear Lake',
+'2.2.05' => 'ID - Benewah',
+'2.2.06' => 'ID - Bingham',
+'2.2.07' => 'ID - Blaine',
+'2.2.08' => 'ID - Boise',
+'2.2.09' => 'ID - Bonner',
+'2.2.10' => 'ID - Bonneville',
+'2.2.11' => 'ID - Boundary',
+'2.2.12' => 'ID - Butte',
+'2.2.13' => 'ID - Camas',
+'2.2.14' => 'ID - Canyon',
+'2.2.15' => 'ID - Caribou',
+'2.2.16' => 'ID - Cassia',
+'2.2.17' => 'ID - Clark',
+'2.2.18' => 'ID - Clearwater',
+'2.2.19' => 'ID - Custer',
+'2.2.20' => 'ID - Elmore',
+'2.2.21' => 'ID - Franklin',
+'2.2.22' => 'ID - Fremont',
+'2.2.23' => 'ID - Gem',
+'2.2.24' => 'ID - Gooding',
+'2.2.25' => 'ID - Idaho',
+'2.2.26' => 'ID - Jefferson',
+'2.2.27' => 'ID - Jerome',
+'2.2.28' => 'ID - Kootenai',
+'2.2.29' => 'ID - Latah',
+'2.2.30' => 'ID - Lemhi',
+'2.2.31' => 'ID - Lewis',
+'2.2.32' => 'ID - Lincoln',
+'2.2.33' => 'ID - Madison',
+'2.2.34' => 'ID - Minidoka',
+'2.2.35' => 'ID - Nez Perce',
+'2.2.36' => 'ID - Oneida',
+'2.2.37' => 'ID - Owyhee',
+'2.2.38' => 'ID - Payette',
+'2.2.39' => 'ID - Power',
+'2.2.40' => 'ID - Shoshone',
+'2.2.41' => 'ID - Teton',
+'2.2.42' => 'ID - Twin Falls',
+'2.2.43' => 'ID - Valley',
+'2.2.44' => 'ID - Washington',
+'2.3.01' => 'OR - Baker',
+'2.3.02' => 'OR - Benton',
+'2.3.03' => 'OR - Clackamas',
+'2.3.04' => 'OR - Clatsop',
+'2.3.05' => 'OR - Columbia',
+'2.3.06' => 'OR - Coos',
+'2.3.07' => 'OR - Crook',
+'2.3.08' => 'OR - Curry',
+'2.3.09' => 'OR - Deschutes',
+'2.3.10' => 'OR - Douglas',
+'2.3.11' => 'OR - Gilliam',
+'2.3.12' => 'OR - Grant',
+'2.3.13' => 'OR - Harney',
+'2.3.14' => 'OR - Hood River',
+'2.3.15' => 'OR - Jackson',
+'2.3.16' => 'OR - Jefferson',
+'2.3.17' => 'OR - Josephine',
+'2.3.18' => 'OR - Klamath',
+'2.3.19' => 'OR - Lake',
+'2.3.20' => 'OR - Lane',
+'2.3.21' => 'OR - Lincoln',
+'2.3.22' => 'OR - Linn',
+'2.3.23' => 'OR - Malheur',
+'2.3.24' => 'OR - Marion',
+'2.3.25' => 'OR - Morrow',
+'2.3.26' => 'OR - Multnomah',
+'2.3.27' => 'OR - Polk',
+'2.3.28' => 'OR - Sherman',
+'2.3.29' => 'OR - Tillamook',
+'2.3.30' => 'OR - Umatilla',
+'2.3.31' => 'OR - Union',
+'2.3.32' => 'OR - Wallowa',
+'2.3.33' => 'OR - Wasco',
+'2.3.34' => 'OR - Washington',
+'2.3.35' => 'OR - Wheeler',
+'2.3.36' => 'OR - Yamhill',
+);
   $form['region'] = array(
     '#type' => 'select',
     '#title' => t('Region'),
     '#options' => $options,
     '#multiple' => FALSE,
     '#required' => TRUE,
-    //'#default_value' => isset($previousvaluesearray['region'])?$previousvaluesearray['region']:key($options),
     '#default_value' => '2.1.17',
   );
   
@@ -221,9 +339,8 @@ function toewhiskers_explore_form_submit($form, &$form_state) {
   $comparearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
  
   $comparearray['geodomain'] = check_plain($form_state['values']['geodomain']); 
-  //$comparearray['region'] = check_plain($form_state['values']['region']);
   $comparearray['compare'] = check_plain($form_state['values']['compare']);
-   $comparearray['region'] = check_plain($form_state['values']['region']);
+  $comparearray['region'] = check_plain($form_state['values']['region']);
   $_SESSION['compare'] = $comparearray;
   
   $form_state['redirect'] = 'compare';
@@ -748,6 +865,7 @@ function toewhiskers_json_query_function($mode){
   $dataset = trim($compare['dataset']);
   $tolerance = trim($compare['tolerance']);
   $confidence = trim($compare['confidence']);
+  $region = trim($compare['region']);
  
   $timelinedata = array();
   
@@ -756,6 +874,7 @@ function toewhiskers_json_query_function($mode){
   {". $maindatatable."}.TOE,{". $maindatatable."}.VARIABLEID,{". $maindatatable."}.CHANGEDIR,{" . $lookupdatatable . "}.VARIABLENAME,{" . $lookupdatatable . "}.VARIABLESHORTNAME,{". $maindatatable."}.EMISSCENARIO,{" . $maindatatable . "}.DATASET 
   FROM {". $maindatatable."} LEFT JOIN {" . $lookupdatatable . "} on (" . $lookupdatatable . ".VARIABLEID = ". $maindatatable.".VARIABLEID) WHERE 
   ". $maindatatable.".VARIABLEID in ('" . $variables . "') 
+  AND ". $maindatatable.".REGION = '" . $region .   "' 
   AND ". $maindatatable.".EMERGTHRES = " . $tolerance . "
   AND ". $maindatatable.".SIGNALCONFIDENCE = " . $confidence . "
   AND ". $maindatatable.".TOE <= " . $max_TOE_year . "
@@ -769,14 +888,11 @@ function toewhiskers_json_query_function($mode){
   }
   $query .= " LIMIT 20";
   
+  $timelinequery = $query;
+  $timelinequery = str_replace("{", "", $timelinequery);
+  $timelinequery = str_replace("}", "", $timelinequery);
 
-  //AND ". $maindatatable.".REGION = '" . $region .   "' 
   //AND ". $maindatatable.".DATASET = '" . $dataset . "'  
-  
-  //drupal_set_message("Timeline query: " . $query);
-  //$showquery = str_replace("{", "", $query);
-  //$showquery = str_replace("}", "", $showquery);
-  //print($showquery . ";  ");
     
   // Setup to query non Drupal database.
   db_set_active('cig_toe');
@@ -813,13 +929,14 @@ function toewhiskers_json_query_function($mode){
   $variable_object = new stdClass();
   
   // Query for 'table' portion of /timeline page.
-  $query = "SELECT ". $maindatatable.".*,TOE_DATA_V1.VARIABLESHORTNAME FROM {". $maindatatable."}  LEFT JOIN {TOE_DATA_V1} on (TOE_DATA_V1.VARIABLEID = ". $maindatatable.".VARIABLEID) WHERE
+  $query = "SELECT ". $maindatatable.".*," . $lookupdatatable . ".VARIABLESHORTNAME FROM {". $maindatatable."}  LEFT JOIN {" . $lookupdatatable . "} on (" . $lookupdatatable . ".VARIABLEID = ". $maindatatable.".VARIABLEID) WHERE
   ". $maindatatable.".VARIABLEID in ('" . $variables . "') 
+  AND ". $maindatatable.".REGION = '" . $region .   "' 
   AND ". $maindatatable.".EMERGTHRES = " . $tolerance . "
   AND ". $maindatatable.".SIGNALCONFIDENCE = " . $confidence . "
   AND ". $maindatatable.".MODELAGREEMENT = 'XX'
   AND (". $maindatatable.".GCM = 'GCM_ensemble_25' OR ". $maindatatable.".GCM = 'GCM_ensemble' OR ". $maindatatable.".GCM = 'GCM_ensemble_75' ) ";
-    if($compare['emission'] == "high"){
+  if($compare['emission'] == "high"){
     $query .= "AND (". $maindatatable.".EMISSCENARIO = 'rcp85' OR " . $maindatatable.".EMISSCENARIO = 'a1b') ";
   }
   if($compare['emission'] == "low"){
@@ -828,13 +945,7 @@ function toewhiskers_json_query_function($mode){
   $query .= " ORDER BY ". $maindatatable.".VARIABLEID ";
   $result = db_query($query);
   
-  //  AND ". $maindatatable.".REGION = '" . $region .   "' 
   //  AND ". $maindatatable.".DATASET = '" . $dataset . "' 
-  
-  //$showquery = str_replace("{", "", $query);
-  //$showquery = str_replace("}", "", $showquery);
-  //print($showquery . ";  ");
-  
   
   // Result is returned as a iterable object that returns a stdClass object on each iteration
   foreach ($result as $record) {
@@ -862,6 +973,9 @@ function toewhiskers_json_query_function($mode){
     $toe_array[$record->VARIABLEID]->CHANGEDIR = $record->CHANGEDIR;
 
   }  // End tabledata query.
+  $tablequery = $query;
+  $tablequery = str_replace("{", "", $tablequery);
+  $tablequery = str_replace("}", "", $tablequery);
   
   db_set_active();
   
@@ -874,6 +988,8 @@ function toewhiskers_json_query_function($mode){
     "dataset" => $dataset,
     "timelinedata" => $timelinedata,
     "tabledata" => $toe_array,
+    "timelinequery" => $timelinequery,
+    "tablequery" => $tablequery,
   );  
   
   
