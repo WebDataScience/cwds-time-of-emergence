@@ -69,7 +69,9 @@
  * @see template_process()
  */
 ?>
-<!-- toewhiskers/page-explore.tpl.php-->
+<!-- toewhiskers/page-toewhiskers.tpl.php-->
 
   <?php print $explore_form; ?><br/>
+  
+  <div id="hiddenconsole"></div>  
 

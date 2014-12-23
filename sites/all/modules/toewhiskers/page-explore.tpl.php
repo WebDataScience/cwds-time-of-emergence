@@ -76,4 +76,7 @@
     </div>
     <?php print $explore_form; ?><br/>
     
+    <div id="hiddenconsole"></div>  
+    
+    
     

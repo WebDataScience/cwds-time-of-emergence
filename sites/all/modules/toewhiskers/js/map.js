@@ -151,30 +151,6 @@ jQuery( document ).ready(function( $ ) {
         }
       
       
-  } // end if loadthed3map   
-      
-  // Show and hide form elements depending on user selections.
-  if(!$('input[name=compare]:radio').is(':checked')) {
-    $('div.form-item-region').hide();     
-    $('div.form-item-geodomain').hide(); 
-    $('#edit-submit').attr('disabled', 'disabled');
-  }      
-  // Hide/show additional form components as necessary.
-  $('input[name=compare]:radio').click(function(){
-    if($('input:radio[name=compare]:checked').val() == '0'){ 
-      $('div.form-item-geodomain').show(); 
-      $('div.form-item-region').show(); 
-    }
-    if($('input:radio[name=compare]:checked').val() == '1'){ 
-      $('div.form-item-geodomain').hide(); 
-      $('div.form-item-region').hide(); 
-    }
-    if($('input:radio[name=compare]:checked').val() == '2'){ 
-      $('div.form-item-geodomain').show(); 
-      $('div.form-item-region').show(); 
-    }  
-    $('#edit-submit').removeAttr('disabled');  
-  });
-        
+  } // end if loadthed3map      
         
 }); 
