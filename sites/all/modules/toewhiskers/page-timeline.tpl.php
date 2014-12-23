@@ -82,15 +82,15 @@ ini_set('display_startup_errors', TRUE);
 			text-align: center;
 		}  
   	hr {
-			max-width: 915px;
+			max-width: 915px;r
 			margin: 0;
 		} 
 </style>
-<h2 style="float:left">Multi-Model Median Time of Emergence for <span class="region">King County</span> under <span class="emission"></span></h2>
+<h2 style="float:left">Time of Emergence in <span class="region" id="region"><?php echo $_SESSION['compare']['region']; ?></span> </h2>
  <div class="timeline-thumbnail"><img src="/sites/all/modules/toewhiskers/images/kingcounty200x200.png"></img></div><div style="clear:both"></div>
   <!--<p>   
   ToE Range: <span class="confidence"></span><br/>
-  Historical "Noise" Range: <span class="tolerance"></span><br/>
+  Past Sensitivity*: <span class="tolerance"></span><br/>
   Climate Data: <span class="dataset"></span>
   </p>-->
 <div id="chartmessage"></div>
@@ -132,7 +132,8 @@ ini_set('display_startup_errors', TRUE);
     </div>
   </div>  
 </div>
-    
+  
+<div id="hiddenconsole"></div>  
         
     
 <script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/rgbcolor.js"></script> 

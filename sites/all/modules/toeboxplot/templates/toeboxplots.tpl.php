@@ -20,17 +20,21 @@
   <h1 id="top-x-title"></h1>
 
   <div id="boxplot-key">
+  <div id="key-table">
+  	  <div id="key-table-swatch">&nbsp;</div>
+	  <div id="key-table-text">Rate of Climate Change</div>
+  </div>
     <div id="lowerbound-key">
             <div id="lowerbound-key-swatch"></div>
-            <div id="lowerbound-key-text">Lower bound (earlier ToE)</div>
+            <div id="lowerbound-key-text">Faster</div>
     </div>
     <div id="central-key">
             <div id="central-key-swatch"></div>
-            <div id="central-key-text">Central tendency</div>
+            <div id="central-key-text">Central</div>
     </div>
     <div id="upperbound-key">
             <div id="upperbound-key-swatch"></div>
-            <div id="upperbound-key-text">Upper bound (later ToE)</div>
+            <div id="upperbound-key-text">Slower</div>
     </div>
   </div>
   
@@ -91,9 +95,13 @@ jQuery( document ).ready(function( $ ) {
     charttitle += "<br/>Climate Data: " + jsonobj.dataname;    
     $("#top-x-title").html(charttitle);
     
-    drawBoxplot("chart-area-1", "High Emissions (RCP 8.5)", parse4data(jsonobj.emergencethreshold95.emissionscenariorcp85),"Low Historical Noise Range");
+    
+    //trying to debug the "slower" band which is not drawing correctly
+    //console.log(JSON.stringify(jsonobj.emergencethreshold95.emissionscenariorcp85));
+    
+    drawBoxplot("chart-area-1", "High Emissions (RCP 8.5)", parse4data(jsonobj.emergencethreshold95.emissionscenariorcp85),"Past Sensitivity Low (to extreme 10% of 1950-1999 conditions)");
     drawBoxplot("chart-area-2", "Low Emissions (RCP 4.5)", parse4data(jsonobj.emergencethreshold95.emissionscenariorcp45),"");
-    drawBoxplot("chart-area-3", "High Emissions (RCP 8.5)",parse4data(jsonobj.emergencethreshold80.emissionscenariorcp85),"High Historical Noise Range");
+    drawBoxplot("chart-area-3", "High Emissions (RCP 8.5)",parse4data(jsonobj.emergencethreshold80.emissionscenariorcp85),"Past Sensitivity High (to extreme 40% of 1950-1999 conditions)");
     drawBoxplot("chart-area-4", "Low Emissions (RCP 4.5)", parse4data(jsonobj.emergencethreshold80.emissionscenariorcp45),"");    
   });
   
@@ -105,6 +113,8 @@ jQuery( document ).ready(function( $ ) {
         var margin = {top: 30, right: 50, bottom: 70, left: 50};
         var width = 400 - margin.left - margin.right;
         var height = 400 - margin.top - margin.bottom;
+	
+	
 
           var rowMax = 2100;
           var min = 2000;
@@ -179,10 +189,13 @@ jQuery( document ).ready(function( $ ) {
           //text label for x axis
           svg.append("text")      
             .attr("x", -150 )
-            .attr("y", -380 )
+            .attr("y", -410 )
+	    .attr("dx", "-2em")
+	    .attr("dy", ".81em")
             .style("text-anchor", "middle")
             .style("font-size", "18px")
             .text(xtitle)
+	    .call(wrap, 300)
             .attr("transform", function(d) {
               return "rotate(180)" 
             });;
@@ -200,10 +213,46 @@ jQuery( document ).ready(function( $ ) {
     }  // end drawboxplot
     
     
+    /**
+     *http://bl.ocks.org/mbostock/7555321
+     */
+    function wrap(text, width) {
+  text.each(function() {
+    var text = d3.select(this),
+        words = text.text().split(/\s+/).reverse(),
+        word,
+        line = [],
+        lineNumber = 0,
+        lineHeight = 1.5, // ems
+        y = text.attr("y"),
+        dx = parseFloat(text.attr("dx")),
+	dy = parseFloat(text.attr("dy")),
+        tspan = text.text(null)
+	      .append("tspan")
+	      .attr("x", -100)
+	      .attr("y", y)
+	      .attr("dx", dx + "em")
+	      .attr("dy", dy + "em");
+    while (word = words.pop()) {
+      line.push(word);
+      tspan.text(line.join(" "));
+      if (tspan.node().getComputedTextLength() > width) {
+        line.pop();
+        tspan.text(line.join(" "));
+        line = [word];
+        tspan = text.append("tspan").attr("x", -100).attr("y", y)
+		  .attr("dx", dx + "em")
+		  .attr("dy", ++lineNumber * lineHeight + dy + "em")
+		  .text(word);
+      }
+    }
+  });
+}
+    
     function parse4data(obj){
       var data = [];
           data[0] = [];
-          data[0][0] = "Lower bound (earlier ToE)";
+          data[0][0] = "Faster";
           data[0][1] = [];
           data[0][2] = [];
           $.each(obj.signalconfidence95.dots, function(i, obj) {
@@ -213,7 +262,7 @@ jQuery( document ).ready(function( $ ) {
             data[0][2].push(Math.min(obj,2100));
           });
           data[1] = [];
-          data[1][0] = "Central tendency";
+          data[1][0] = "Central";
           data[1][1] = [];
           data[1][2] = [];
           $.each(obj.signalconfidence50.dots, function(i, obj) {
@@ -223,7 +272,7 @@ jQuery( document ).ready(function( $ ) {
             data[1][2].push(Math.min(obj,2100));
           });
           data[2] = [];
-          data[2][0] = "Upper bound (later ToE)";
+          data[2][0] = "Slower";
           data[2][1] = [];
           data[2][2] = [];
           $.each(obj.signalconfidence5.dots, function(i, obj) {
@@ -281,15 +330,23 @@ jQuery( document ).ready(function( $ ) {
 float: left;
 width: 100%;
 clear: both;
-margin-left: 50px;
+margin-left: 250px;
 margin-right: auto;
-margin-top: 30px;
+margin-top: 0px;
 margin-bottom: 30px;
 }
 
-#lowerbound-key, #central-key, #upperbound-key {
+#key-table, #lowerbound-key, #central-key, #upperbound-key {
 float: left;
 margin-right: 30px;
+}
+#key-table-swatch{
+height: 15px;
+width: 15px;
+
+
+
+margin: 10px;
 }
 #lowerbound-key-swatch {
 height: 15px;
