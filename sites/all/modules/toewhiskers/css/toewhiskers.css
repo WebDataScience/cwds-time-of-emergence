@@ -3,9 +3,10 @@
 /* /compare form and map form */
 div.form-type-radios.form-item-theme,
 div.form-type-radios.form-item-impact,
+div.form-type-radios.form-item-type,
 div.form-type-radios.form-item-descriptor{
   float: left;
-  width: 32%;
+  width: 22%;
 }
 
 
