@@ -3,9 +3,10 @@
 /* /compare form and map form */
 div.form-type-radios.form-item-theme,
 div.form-type-radios.form-item-impact,
+div.form-type-radios.form-item-type,
 div.form-type-radios.form-item-descriptor{
   float: left;
-  width: 32%;
+  width: 22%;
 }
 
 
@@ -44,4 +45,9 @@ body.page-timeline div.form-item-variable{
 .page-timeline div.timeline-thumbnail img{
   width: 100px;
   height: 100px;
+}
+
+/* /timeline page */
+#hiddenconsole{
+  display:none;
 }
