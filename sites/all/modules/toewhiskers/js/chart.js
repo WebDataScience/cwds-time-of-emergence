@@ -58,7 +58,7 @@ jQuery( document ).ready(function( $ ) {
     drawD3Timeline(
       timelinedataarray, 
       jsonobj.maxtoeyear,
-      'Time of Emergence in:' + 'Region Placeholder',
+      'Time of Emergence in:' + websitetextarray['region'],
       'Estimated Rate of Climate Change: ' + websitetextarray['confidence'][jsonobj.confidence],
       'Past Sensitivity*: ' +websitetextarray['tolerance'][jsonobj.tolerance],
       'Climate Data: ' + websitetextarray['dataset'][jsonobj.dataset],

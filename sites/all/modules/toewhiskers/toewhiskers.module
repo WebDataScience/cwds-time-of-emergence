@@ -189,7 +189,7 @@ function toewhiskers_explore_form($form, &$form_submit) {
     '#default_value' => '1',
     /*'#disabled' => TRUE,*/
   );
-  /*
+  
   $options = array('1' => 'King County',);
   $form['region'] = array(
     '#type' => 'select',
@@ -200,7 +200,7 @@ function toewhiskers_explore_form($form, &$form_submit) {
     //'#default_value' => isset($previousvaluesearray['region'])?$previousvaluesearray['region']:key($options),
     '#default_value' => '2.1.17',
   );
-  */
+  
   $form['submit'] = array(
     '#title' => t('Next'),
     '#value' => 'Next',
@@ -223,6 +223,7 @@ function toewhiskers_explore_form_submit($form, &$form_state) {
   $comparearray['geodomain'] = check_plain($form_state['values']['geodomain']); 
   //$comparearray['region'] = check_plain($form_state['values']['region']);
   $comparearray['compare'] = check_plain($form_state['values']['compare']);
+   $comparearray['region'] = check_plain($form_state['values']['region']);
   $_SESSION['compare'] = $comparearray;
   
   $form_state['redirect'] = 'compare';

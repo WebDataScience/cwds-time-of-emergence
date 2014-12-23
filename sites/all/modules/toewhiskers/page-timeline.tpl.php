@@ -86,7 +86,7 @@ ini_set('display_startup_errors', TRUE);
 			margin: 0;
 		} 
 </style>
-<h2 style="float:left">Time of Emergence in <span class="region" id="region">{Specific Region}</span> </h2>
+<h2 style="float:left">Time of Emergence in <span class="region" id="region"><?php echo $_SESSION['compare']['region']; ?></span> </h2>
  <div class="timeline-thumbnail"><img src="/sites/all/modules/toewhiskers/images/kingcounty200x200.png"></img></div><div style="clear:both"></div>
   <!--<p>   
   ToE Range: <span class="confidence"></span><br/>
