@@ -173,7 +173,7 @@ function toewhiskers_explore_form($form, &$form_submit) {
   $options = array(
     0 => 'A specific locale',
     1 => 'A specific environmental variable',
-    2 => 'Examine hotspots',
+    /* 2 => 'Examine hotspots', */
   );
   $form['compare'] = array(
     '#type' => 'radios',
@@ -181,7 +181,11 @@ function toewhiskers_explore_form($form, &$form_submit) {
     '#options' => $options,
     '#required' => TRUE,
   );
-  $options = array(1 => 'County',2 => 'Watershed (8-digit HUC)',3 => 'Streamflow locations');
+  $options = array(
+    1 => 'County',
+    /* 2 => 'Watershed (8-digit HUC)', */
+    3 => 'Streamflow locations',
+  );
   $form['geodomain'] = array(
     '#type' => 'radios',
     '#title' => t('Choose location of interest'),
@@ -395,7 +399,7 @@ function toewhiskers_explore_form_submit($form, &$form_state) {
   $comparearray['compare'] = check_plain($form_state['values']['compare']);
   if($comparearray['compare'] == 0){
     $comparearray['geodomain'] = check_plain($form_state['values']['geodomain']); 
-    if($comparearray['geodomain'] == '1'){
+    if($comparearray['geodomain'] == '1' || $comparearray['geodomain'] == '2'){
       $comparearray['region'] = check_plain($form_state['values']['regioncounty']);
     }
     if($comparearray['geodomain'] == '3'){
@@ -507,7 +511,7 @@ function toewhiskers_compare_form($form,&$form_submit) {
     '#title' => t('Estimated Rate of Climate Change*'),
     '#options' => $options,
     '#required' => TRUE,
-    '#default_value' => 50,//isset($comparearray['confidence'])?$comparearray['confidence']:key($options),
+    '#default_value' => isset($comparearray['confidence'])?$comparearray['confidence']:key($options),
   );
   $form['submit'] = array(
     '#title' => t('Calculate'),
@@ -1128,7 +1132,7 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
   db_set_active('cig_toe');
   
   // Query for variable name.
-  $query = "SELECT variablename FROM TOE_DATA_V1 where variableid='" . $variable . "' LIMIT 1";
+  $query = "SELECT variablename FROM " . $lookupdatatable . " where variableid='" . $variable . "' LIMIT 1";
   $row = (object)db_query($query)->fetchAssoc();
   $jasondata['variablename'] = $row->variablename;
   $boxplotdata = array();
@@ -1141,7 +1145,6 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
         $box = array();
         $query="select * from " . $maindatatable . " WHERE variableid='" . $variable . "' and  emisscenario='" . $emissionscenario . "' and modelagreement='XX' and emergthres=" . $emergencethreshold . " and signalconfidence=" . $signalconfidence;
         // ?? Which dataset??  'BCSD5' => 'BCSD5', 
-        
         $result = db_query($query);
         // Result is returned as a iterable object that returns a stdClass object on each iteration
         foreach ($result as $record) {
