@@ -86,7 +86,7 @@ ini_set('display_startup_errors', TRUE);
 			margin: 0;
 		} 
 </style>
-<h2 style="float:left">Time of Emergence in <span class="region" id="region"><?php echo $_SESSION['compare']['region']; ?></span> </h2>
+<h2 style="float:left">Time of Emergence in <span class="region" id="region"><?php echo $_SESSION['compare']['regionname']; ?></span> </h2>
  <div class="timeline-thumbnail"><img src="/sites/all/modules/toewhiskers/images/kingcounty200x200.png"></img></div><div style="clear:both"></div>
   <!--<p>   
   ToE Range: <span class="confidence"></span><br/>
@@ -113,7 +113,7 @@ ini_set('display_startup_errors', TRUE);
 <div id="range-revise-wrapper">
   <div id="toe-range">
   
-  <h2>Projected Range of Time of Emergence for <span class="region">King County</span> under <span class="emission"></span> </h2>
+  <h2>Projected Range of Time of Emergence for <span class="region" id="region"><?php echo $_SESSION['compare']['regionname']; ?>  <span class="emission"></span> </h2>
     <p>
       <table id="tabledata">
       <th>Hydro-climatic Variable</th><th>ToE Range</th><th>Direction of Change</th>

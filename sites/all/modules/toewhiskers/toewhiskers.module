@@ -400,10 +400,15 @@ function toewhiskers_explore_form_submit($form, &$form_state) {
   if($comparearray['compare'] == 0){
     $comparearray['geodomain'] = check_plain($form_state['values']['geodomain']); 
     if($comparearray['geodomain'] == '1' || $comparearray['geodomain'] == '2'){
-      $comparearray['region'] = check_plain($form_state['values']['regioncounty']);
+      $regionVal = check_plain($form_state['values']['regioncounty']);
+      $comparearray['region'] = $regionVal;
+       $comparearray['regionname'] = check_plain($form_state['complete form']['regioncounty']['#options'][$regionVal]);
     }
     if($comparearray['geodomain'] == '3'){
-      $comparearray['region'] = check_plain($form_state['values']['regionwatershed']);
+      $regionVal = check_plain($form_state['values']['regionwatershed']);
+      $comparearray['region'] = $regionVal;
+      $comparearray['regionname'] = check_plain($form_state['complete form']['regionwatershed']['#options'][$regionVal]);
+     
     }
   }
   $_SESSION['compare'] = $comparearray;
@@ -479,16 +484,17 @@ function toewhiskers_compare_form($form,&$form_submit) {
     '#required' => TRUE,
     '#default_value' => isset($comparearray['emission'])?$comparearray['emission']:key($options),
   );
-  /*
+  
   $options = array( 'BCSD5' => 'Statistically-downscaled (CMIP5 BCSD)',  );
   $form['parameter']['dataset'] = array(
-    '#type' => 'radios',
+   // '#type' => 'radios',
+   '#type' => 'hidden',
     '#title' => t('Climate Data'),
     '#options' => $options,
     '#required' => TRUE,
     '#default_value' => isset($comparearray['dataset'])?$comparearray['dataset']:key($options),
   );
-  */
+  
   if($comparearray['geodomain'] == 3 ){
     $form['parameter']['dataset'] = array('#type' => 'hidden', '#value' => 'BCSD5');
   }
@@ -511,7 +517,7 @@ function toewhiskers_compare_form($form,&$form_submit) {
     '#title' => t('Estimated Rate of Climate Change*'),
     '#options' => $options,
     '#required' => TRUE,
-    '#default_value' => isset($comparearray['confidence'])?$comparearray['confidence']:key($options),
+    '#default_value' => isset($comparearray['confidence'])?$comparearray['confidence']:50,//key($options),
   );
   $form['submit'] = array(
     '#title' => t('Calculate'),
@@ -591,8 +597,8 @@ function toewhiskers_compare_form_submit($form, &$form_state) {
   $comparearray['type'] = check_plain($form_state['values']['type']);
   $comparearray['variable'] = toewhiskers_clean_array($form_state['values']['variable']);
   $comparearray['emission'] = check_plain($form_state['values']['emission']);
-  //$comparearray['emission'] = toewhiskers_clean_array($form_state['values']['emission']);
-  //$comparearray['dataset'] = check_plain($form_state['values']['dataset']);
+  $comparearray['emission'] = toewhiskers_clean_array($form_state['values']['emission']);
+  $comparearray['dataset'] = check_plain($form_state['values']['dataset']);
   $comparearray['tolerance'] = check_plain($form_state['values']['tolerance']);
   $comparearray['confidence'] = check_plain($form_state['values']['confidence']);
   // Set session variable.
@@ -929,7 +935,7 @@ function toewhiskers_json_query_function($mode){
   //$emissions = implode("','",$compare['emission']);
   //$emissions = str_replace(" ", "", $emissions);
   
-  //$dataset = trim($compare['dataset']);
+  $dataset = trim($compare['dataset']);
   $tolerance = trim($compare['tolerance']);
   $confidence = trim($compare['confidence']);
   $region = trim($compare['region']);
@@ -1081,7 +1087,8 @@ function toewhiskers_json_query_function($mode){
       'BCSD5'	=>	'Statistically-downscaled (CMIP5 BCSD)',
     );
     
-    $o = "Region: King County
+    echo "DATASET" . $dataset;
+    $o = "Region: " . $_SESSION['compare']['regionname'] . "
 Emission Scenario: " . $prettynames['emission'][$emission] . "
 Estimated Rate of Climate Change: " . $prettynames['confidence'][$confidence] . "
 Historical 'Noise' Range: " . $prettynames['tolerance'][$tolerance] . "
@@ -1121,7 +1128,7 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
   $jasondata = array();
   $jasondata['variable'] = $variable;
   // Database contains only the King County region. This will need updating when additional regions are added to data in db.
-  $jasondata['regionname'] = "King County";
+  $jasondata['regionname'] = $_SESSION['compare']['regionname'];
   // Database contains only the BCSD5 dataset. This will need updating when additional datasets are added to data in db.
   $jasondata['dataname'] = "Statistically-downscaled (CMIP5 BCSD)";
   $emergencethreshold_array = array('95','80');
