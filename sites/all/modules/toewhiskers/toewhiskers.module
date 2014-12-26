@@ -572,7 +572,7 @@ function toewhiskers_narrow_subform(&$form){
  * Helper function for forms that reuse the 'narrow variables' filters. Provides only the 'theme' options.
  */
 function toewhiskers_narrow_subform_theme(&$form){
-  $options = array(4 => 'All',0 => 'Air Temperature', 1 => 'Precipitation', 2 => 'Hydrological', 3 => 'Stream', );
+  $options = array(4 => 'All',0 => 'Air Temperature', 1 => 'Precipitation', 2 => 'Hydrologic', 3 => 'Stream', );
   // Not all themes are represented in list of variables at this time.
   //$options = array(4 => 'All',0 => 'Air Temperature', 1 => 'Precipitation',  );
   $form['narrow']['theme'] = array(
@@ -1224,7 +1224,7 @@ function variablesarray($themeindex = 4, $impactindex = 9, $typeindex = 2){
   $theme = NULL;
   if($themeindex == 0) {$theme = 'Air Temperature';}
   if($themeindex == 1) {$theme = 'Precipitation';}
-  if($themeindex == 2) {$theme = 'Hydrological';}
+  if($themeindex == 2) {$theme = 'Hydrologic';}
   if($themeindex == 3) {$theme = 'Stream';}
   //$options = array(9 => 'All',0 => 'Drought', 1 => 'Energy', 2 => 'Fish', 3 => 'Flood',4 => 'General', 5 => 'Human health', 6 => 'Infrastructure', 7 => 'Streamflow',8 => 'Water quality',);
   $impact = NULL;

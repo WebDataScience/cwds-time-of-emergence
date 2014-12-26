@@ -1,0 +1,10 @@
+# Ignore configuration files that may contain sensitive information.
+sites/*/settings*.php
+
+.htaccess
+
+# Ignore paths that contain user-generated content.
+sites/*/files
+sites/*/private
+
+mysql_dumps/mysqldump_cig_toe.sql
