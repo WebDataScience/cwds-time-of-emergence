@@ -1225,7 +1225,7 @@ function variablesarray($themeindex = 4, $impactindex = 9, $typeindex = 2){
   if($themeindex == 0) {$theme = 'Air Temperature';}
   if($themeindex == 1) {$theme = 'Precipitation';}
   if($themeindex == 2) {$theme = 'Hydrologic';}
-  if($themeindex == 3) {$theme = 'Stream';}
+  if($themeindex == 3) {$theme = 'Streamflow';}
   //$options = array(9 => 'All',0 => 'Drought', 1 => 'Energy', 2 => 'Fish', 3 => 'Flood',4 => 'General', 5 => 'Human health', 6 => 'Infrastructure', 7 => 'Streamflow',8 => 'Water quality',);
   $impact = NULL;
   if($impactindex == 0) {$impact = 'Drought';}
