@@ -113,7 +113,25 @@ ini_set('display_startup_errors', TRUE);
 <div id="range-revise-wrapper">
   <div id="toe-range">
   
-  <h2>Projected Range of Time of Emergence for <span class="region" id="region"><?php echo $_SESSION['compare']['regionname']; ?>  <span class="emission"></span> </h2>
+  <h2>Projected Range of Time of Emergence for <span class="region" id="region">
+  <?php echo $_SESSION['compare']['regionname']; ?></span> under
+  <span class="emission">
+  
+  <?php
+  if(isset($_SESSION['compare']['emission'])){
+		( ($_SESSION['compare']['emission'] == 'low') ?  print "Low (RCP4.5/B1)": null );
+		( ($_SESSION['compare']['emission'] == 'high') ? print  "High (RCP8.5/A1B)": null );
+  }
+  ?>
+     
+    
+				
+
+  
+  
+  </span> </h2>
+  
+   
     <p>
       <table id="tabledata">
       <th>Hydro-climatic Variable</th><th>ToE Range</th><th>Direction of Change</th>

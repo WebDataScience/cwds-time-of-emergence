@@ -9,15 +9,19 @@ jQuery( document ).ready(function( $ ) {
   confidence['5'] = 'Slower';
   websitetextarray['confidence'] = confidence;
   var tolerance = new Object;
-  tolerance['95'] = 'Low (to extreme 10% of 1950-1999 conditions))';
+  tolerance['95'] = 'Low (to extreme 10% of 1950-1999 conditions)';
   tolerance['80'] = 'High (to extreme 40% of 1950-1999 conditions)';
   websitetextarray['tolerance'] = tolerance;
   var dataset = new Object;
   dataset['BCSD5'] = 'Statistically-downscaled (CMIP5 BCSD)';
   websitetextarray['dataset'] = dataset;
   var emission = new Object;
-  emission['rcp45'] = 'RCP4.5';
-  emission['rcp85'] = 'RCP8.5';
+  //emission['rcp45'] = 'RCP4.5';
+  //emission['rcp85'] = 'RCP8.5';
+  
+  emission['low'] = 'Low (RCP4.5)';
+  emission['high'] = 'High (RCP8.5)';
+  
   websitetextarray['emission'] = emission;
   websitetextarray['region'] = jQuery( "#region" ).html();
 
@@ -55,26 +59,37 @@ jQuery( document ).ready(function( $ ) {
     } 
     
     // D3.js based timeline chart
+    
+    console.log(websitetextarray['emission'][jsonobj.emission] + timelinedataarray +  
+      jsonobj.maxtoeyear);
     drawD3Timeline(
       timelinedataarray, 
       jsonobj.maxtoeyear,
-      'Time of Emergence in: ' + websitetextarray['region'],
+      'Time of Emergence in : ' + websitetextarray['region'] + ' under ' + websitetextarray['emission'][jsonobj.emission],
       'Estimated Rate of Climate Change: ' + websitetextarray['confidence'][jsonobj.confidence],
-      'Past Sensitivity*: ' +websitetextarray['tolerance'][jsonobj.tolerance],
-      'Climate Data: ' + websitetextarray['dataset'][jsonobj.dataset],
-      'Region: ' + websitetextarray['region']
+      'Past Sensitivity: ' +websitetextarray['tolerance'][jsonobj.tolerance]
+      //'Climate Data: ' + websitetextarray['dataset'][jsonobj.dataset]
+     // 'Region: ' + websitetextarray['region']
+     // 'Emission: ' + websitetextarray['emission'][jsonobj.emission]
     );
-    
-    $(".emission" ).html( websitetextarray['emission'][jsonobj.emission] );
+    //console.log($(".emission" ));
+
+   // $(".emission" ).html( websitetextarray['emission'][jsonobj.emission] );
     $(".confidence" ).html( websitetextarray['confidence'][jsonobj.confidence] );
     $(".tolerance" ).html( websitetextarray['tolerance'][jsonobj.tolerance] );
-    $(".dataset" ).html( websitetextarray['dataset'][jsonobj.dataset] );
+   // $(".dataset" ).html( websitetextarray['dataset'][jsonobj.dataset] );
+    
     
     // Table modification via jQuery.
     tabledata = jsonobj.tabledata;
+    console.log(jsonobj);
     for (var key in tabledata) {
       var onerow = tabledata[key];
-      $('#tabledata tr:last').after("<tr><td><a href='/boxplots/" + key + "'>" + onerow.VARIABLESHORTNAME + "</a></td><td>" + onerow.YEARA + " - " + onerow.YEARB + "</td><td>" + (onerow.CHANGEDIR == '1'?'Increasing':'Decreasing')  + "</td></tr>");  
+      $('#tabledata tr:last').after("<tr><td><a href='/boxplots/"
+				    + key + "'>" + onerow.VARIABLESHORTNAME
+				    + "</a></td><td>"
+				    + (onerow.TOE? onerow.TOE:onerow.YEARA + " - " + onerow.YEARB) + "</td><td>"
+				    + (onerow.CHANGEDIR == '1'?'Increasing':'Decreasing')  + "</td></tr>");  
     }
     
     // Display debug info into hidden div
@@ -84,9 +99,12 @@ jQuery( document ).ready(function( $ ) {
   
 }); 
   
-  
-function drawD3Timeline(timelinedataarray, maxtoeyear,confidence,tolerance,dataset,region){
- var data = [[2000,0,"tooltip1","label1","rcp45",50], [2020,0,"tooltip2","label2","rcp85",50], [2085,0,"tooltip3","label3","rcp45",50], [2040,0,"tooltip4","label4","rcp45",50]];
+//function drawD3Timeline(timelinedataarray, maxtoeyear,confidence,tolerance,dataset,region, emission)  
+function drawD3Timeline(timelinedataarray, maxtoeyear,confidence,tolerance,dataset, region){
+ var data = [[2000,0,"tooltip1","label1","rcp45",50],
+	     [2020,0,"tooltip2","label2","rcp85",50],
+	     [2085,0,"tooltip3","label3","rcp45",50],
+	     [2040,0,"tooltip4","label4","rcp45",50]];
  
  var chartheight = 280;
  data = timelinedataarray;
@@ -157,14 +175,16 @@ for (var i = 0; i < data.length; i++) {
         .style("stroke", "white")
         .style('font-size', '14px')
         .style('font-family', 'sans-serif')
-        .text(dataset);  
+        .text(dataset);
+	/*  Region is included in "time of emergence" line
     chart.append("text")
         .attr("x", 15)             
         .attr("y", 80)
         .style("stroke", "white")
         .style('font-size', '14px')
         .style('font-family', 'sans-serif')
-        .text(region);  
+        .text(region);
+	*/
     /*
     chart.append("svg:image")
         .attr("xlink:href", "http://toe/sites/all/modules/toewhiskers/images/kingcounty200x200.png")

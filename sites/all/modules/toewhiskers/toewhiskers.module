@@ -10,7 +10,7 @@ $maindatatable = "variablev5";
 global $lookupdatatable;
 $lookupdatatable = "lookupv2";
 global $toleranceoptions;
-$toleranceoptions = array(  1 => 'Low (to extreme 10% of 1950-1999 conditions))',  2 => 'High (to extreme 40% of 1950-1999 conditions)',);
+$toleranceoptions = array(  1 => 'Low (to extreme 10% of 1950-1999 conditions)',  2 => 'High (to extreme 40% of 1950-1999 conditions)',);
 
 function toewhiskers_menu() {
   $items['explore'] = array(
@@ -501,7 +501,7 @@ function toewhiskers_compare_form($form,&$form_submit) {
   
   
   $options = array(
-    '95' => 'Low (to extreme 10% of 1950-1999 conditions))',
+    '95' => 'Low (to extreme 10% of 1950-1999 conditions)',
     '80' => 'High (to extreme 40% of 1950-1999 conditions)',
   );
   $form['parameter']['tolerance'] = array(
@@ -1002,12 +1002,15 @@ function toewhiskers_json_query_function($mode){
   $variable_object = new stdClass();
   
   // Query for 'table' portion of /timeline page.
-  $query = "SELECT ". $maindatatable.".*," . $lookupdatatable . ".VARIABLESHORTNAME FROM {". $maindatatable."}  LEFT JOIN {" . $lookupdatatable . "} on (" . $lookupdatatable . ".VARIABLEID = ". $maindatatable.".VARIABLEID) WHERE
+ 
+  $query = "SELECT ". $maindatatable.".*," . $lookupdatatable
+  . ".VARIABLESHORTNAME FROM {". $maindatatable."}  LEFT JOIN {"
+  . $lookupdatatable . "} on (" . $lookupdatatable . ".VARIABLEID = ". $maindatatable.".VARIABLEID) WHERE
   ". $maindatatable.".VARIABLEID in ('" . $variables . "') 
   AND ". $maindatatable.".REGION = '" . $region .   "' 
   AND ". $maindatatable.".EMERGTHRES = " . $tolerance . "
   AND ". $maindatatable.".SIGNALCONFIDENCE = " . $confidence . "
-  AND ". $maindatatable.".MODELAGREEMENT = 'XX'
+  AND " .$maindatatable.".MODELAGREEMENT = 'XX'  
   AND (". $maindatatable.".GCM = 'GCM_ensemble_25' OR ". $maindatatable.".GCM = 'GCM_ensemble' OR ". $maindatatable.".GCM = 'GCM_ensemble_75' ) ";
   if($compare['emission'] == "high"){
     $query .= "AND (". $maindatatable.".EMISSCENARIO = 'rcp85' OR " . $maindatatable.".EMISSCENARIO = 'a1b') ";
@@ -1022,6 +1025,7 @@ function toewhiskers_json_query_function($mode){
   
   // Result is returned as a iterable object that returns a stdClass object on each iteration
   foreach ($result as $record) {
+ 
     
     if(!isset($toe_array[$record->VARIABLEID])){
       $toe_array[$record->VARIABLEID] = new stdClass();
@@ -1046,6 +1050,9 @@ function toewhiskers_json_query_function($mode){
     $toe_array[$record->VARIABLEID]->CHANGEDIR = $record->CHANGEDIR;
 
   }  // End tabledata query.
+  
+  //print_r($result);
+  
   $tablequery = $query;
   $tablequery = str_replace("{", "", $tablequery);
   $tablequery = str_replace("}", "", $tablequery);
@@ -1217,7 +1224,7 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
 /*
  *
  */
-function variablesarray($themeindex = 4, $impactindex = 9, $typeindex = 2){
+function variablesarray($themeindex = 4, $impactindex = 10, $typeindex = 2){
   global $maindatatable;
   global $lookupdatatable;
   $comparearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
@@ -1236,7 +1243,8 @@ function variablesarray($themeindex = 4, $impactindex = 9, $typeindex = 2){
   if($impactindex == 5) {$impact = 'Human health';}
   if($impactindex == 6) {$impact = 'Infrastructure';}
   if($impactindex == 7) {$impact = 'Streamflow';}   
-  if($impactindex == 8) {$impact = 'Water quality';}
+  if($impactindex == 8) {$impact = 'Water availability';}
+  if($impactindex == 9) {$impact = 'Water quality';}
   $averageextreme = NULL;
   if($typeindex == 0) {$averageextreme = 'Average';}
   if($typeindex == 1) {$averageextreme = 'Extreme';}
@@ -1245,7 +1253,10 @@ function variablesarray($themeindex = 4, $impactindex = 9, $typeindex = 2){
   
   $o = "";
   db_set_active('cig_toe');
-  $query = "SELECT DISTINCT " .$maindatatable. ".VARIABLEID AS k, " . $lookupdatatable . ".VARIABLENAME AS v FROM " .$maindatatable. " LEFT JOIN " . $lookupdatatable . " ON (" . $lookupdatatable . ".VARIABLEID = " .$maindatatable. ".VARIABLEID) WHERE 1=1 ";
+  $query = "SELECT DISTINCT " .$maindatatable. ".VARIABLEID AS k, "
+  . $lookupdatatable . ".VARIABLENAME AS v FROM "
+  .$maindatatable. " LEFT JOIN " . $lookupdatatable . " ON (" . $lookupdatatable . ".VARIABLEID = "
+  .$maindatatable. ".VARIABLEID) WHERE 1=1 AND " .$maindatatable. ".MODELAGREEMENT = 'XX'";
   if($theme){ $query .= " AND " . $lookupdatatable . ".THEME = '" . $theme . "'";}
   if($impact){ $query .= " AND " . $lookupdatatable . ".IMPACT LIKE '%" . $impact . "%'";} 
   if($averageextreme){ $query .= " AND " . $lookupdatatable . ".AVERAGEEXTREME = '" . $averageextreme . "'";}
