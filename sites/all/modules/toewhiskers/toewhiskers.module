@@ -172,7 +172,7 @@ function toewhiskers_explore_form($form, &$form_submit) {
   $previousvaluesearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
   $options = array(
     0 => 'A specific locale',
-    1 => 'A specific environmental variable',
+    1 => 'A specific environmental variable [under development]',
     /* 2 => 'Examine hotspots', */
   );
   $form['compare'] = array(
@@ -184,7 +184,7 @@ function toewhiskers_explore_form($form, &$form_submit) {
   $options = array(
     1 => 'County',
     /* 2 => 'Watershed (8-digit HUC)', */
-    3 => 'Streamflow locations',
+    3 => 'Streamflow locations [under development]',
   );
   $form['geodomain'] = array(
     '#type' => 'radios',
