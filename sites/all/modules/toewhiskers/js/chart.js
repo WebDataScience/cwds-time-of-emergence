@@ -19,8 +19,8 @@ jQuery( document ).ready(function( $ ) {
   //emission['rcp45'] = 'RCP4.5';
   //emission['rcp85'] = 'RCP8.5';
   
-  emission['low'] = 'Low (RCP4.5)';
-  emission['high'] = 'High (RCP8.5)';
+  emission['low'] = 'Low (RCP4.5 or B1)';
+  emission['high'] = 'High (RCP8.5 or A1B)';
   
   websitetextarray['emission'] = emission;
   websitetextarray['region'] = jQuery( "#region" ).html();
@@ -69,16 +69,17 @@ jQuery( document ).ready(function( $ ) {
     drawD3Timeline(
       timelinedataarray, 
       jsonobj.maxtoeyear,
-      'Time of Emergence in : ' + websitetextarray['region'] + ' under ' + websitetextarray['emission'][jsonobj.emission],
+      'Time of Emergence in : ' + websitetextarray['region'],
+    
       'Estimated Rate of Climate Change: ' + websitetextarray['confidence'][jsonobj.confidence],
-      'Past Sensitivity: ' +websitetextarray['tolerance'][jsonobj.tolerance]
+      'Past Sensitivity: ' +websitetextarray['tolerance'][jsonobj.tolerance],
       //'Climate Data: ' + websitetextarray['dataset'][jsonobj.dataset]
      // 'Region: ' + websitetextarray['region']
-     // 'Emission: ' + websitetextarray['emission'][jsonobj.emission]
+      'Emission: ' + websitetextarray['emission'][jsonobj.emission]
     );
     //console.log($(".emission" ));
 
-   // $(".emission" ).html( websitetextarray['emission'][jsonobj.emission] );
+    $(".emission" ).html( websitetextarray['emission'][jsonobj.emission] );
     $(".confidence" ).html( websitetextarray['confidence'][jsonobj.confidence] );
     $(".tolerance" ).html( websitetextarray['tolerance'][jsonobj.tolerance] );
    // $(".dataset" ).html( websitetextarray['dataset'][jsonobj.dataset] );
@@ -181,7 +182,7 @@ for (var i = 0; i < data.length; i++) {
         .style('font-size', '14px')
         .style('font-family', 'sans-serif')
         .text(dataset);
-	/*  Region is included in "time of emergence" line
+
     chart.append("text")
         .attr("x", 15)             
         .attr("y", 80)
@@ -189,7 +190,7 @@ for (var i = 0; i < data.length; i++) {
         .style('font-size', '14px')
         .style('font-family', 'sans-serif')
         .text(region);
-	*/
+	
     /*
     chart.append("svg:image")
         .attr("xlink:href", "http://toe/sites/all/modules/toewhiskers/images/kingcounty200x200.png")

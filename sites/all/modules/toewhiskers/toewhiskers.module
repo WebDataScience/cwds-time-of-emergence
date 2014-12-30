@@ -1080,6 +1080,8 @@ function toewhiskers_json_query_function($mode){
       'rcp85'	=>	'RCP8.5',
       'A1B'	=>	'SRES A1B',
       'B1'	=>	'SRES B1',
+      'low'	=>	'Low (RCP4.5 or B1)',
+      'high'	=>	'High (RCP8.5 or A1B)',
     );
     $prettynames['confidence'] = array(
       '5'	=>	'Slow',
