@@ -47,6 +47,17 @@ body.page-timeline div.form-item-variable{
   height: 100px;
 }
 
+
+#timeline-chart{
+  
+  height: 285px;
+  width: 100%;
+}
+
+#loading{
+  text-align: center;
+}
+
 #hiddenconsole{
   display:none;
 }

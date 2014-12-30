@@ -65,6 +65,13 @@
 <script>
 jQuery( document ).ready(function( $ ) {
     
+    
+     //Show the loading progress bar
+  var loadingGif = $("#top-x-title");
+ // timelineChart.progressbar({value:400});
+  loadingGif.html("<img src='/sites/all/modules/toewhiskers/images/ajax-loader.gif' alt='loading...' />");
+  
+  
 
   $('#print-button').click(function(){
     // Find existing svg content.
@@ -93,6 +100,9 @@ jQuery( document ).ready(function( $ ) {
     charttitle += "<br/>Multi-Model Projections (21 global climate models)";
     charttitle = charttitle + "<br/>Region: " + jsonobj.regionname ;
     charttitle += "<br/>Climate Data: " + jsonobj.dataname;    
+    
+    //empty the loading gif
+    //$("#top-x-title").empty();
     $("#top-x-title").html(charttitle);
     
     

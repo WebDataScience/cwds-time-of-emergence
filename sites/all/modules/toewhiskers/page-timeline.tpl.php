@@ -156,12 +156,22 @@ ini_set('display_startup_errors', TRUE);
     
 <script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/rgbcolor.js"></script> 
 <script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/StackBlur.js"></script>
-<script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/canvg.js"></script> 
+<script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/canvg.js"></script>
+  <script src="http://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
     
 <script type="text/javascript">
 
 jQuery( document ).ready(function( $ ) {
 
+ 
+
+  //Show the loading progress bar
+  var loadingGif = $("#timeline-chart");
+ // timelineChart.progressbar({value:400});
+  loadingGif.html("<div id='loading'><img src='/sites/all/modules/toewhiskers/images/ajax-loader-black.gif' alt='loading...' /></div>");
+  
+  
+  
   $('#print-button').click(function(){
     // Find existing svg content.
     var $container = $('#timeline-chart');

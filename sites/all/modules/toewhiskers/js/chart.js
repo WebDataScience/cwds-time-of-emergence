@@ -33,6 +33,8 @@ jQuery( document ).ready(function( $ ) {
   // Gradient colors from http://www.perbang.dk/rgbgradient/
   colorarray = ["#E59C00","#E39400","#E18C00","#DF8400","#DD7C00","#DB7400","#D96C00","#D76400","#D55C00","#D35400","#D14C01","#CF4401","#CD3C01","#CB3401","#C92C01","#C72401","#C51C01","#C31401","#C10C01","#C00402"];
 
+
+  
   // Ajax endpoint will retrieve vars and parameters from session.
   $.post( "timelinedata" , function( jsonobj ) { 
   
@@ -58,10 +60,12 @@ jQuery( document ).ready(function( $ ) {
       return;
     } 
     
+    //remove the loading gif
+    $("#timeline-chart" ).empty();
     // D3.js based timeline chart
     
-    console.log(websitetextarray['emission'][jsonobj.emission] + timelinedataarray +  
-      jsonobj.maxtoeyear);
+    //console.log(websitetextarray['emission'][jsonobj.emission] + timelinedataarray +  
+      //jsonobj.maxtoeyear);
     drawD3Timeline(
       timelinedataarray, 
       jsonobj.maxtoeyear,
@@ -143,6 +147,7 @@ for (var i = 0; i < data.length; i++) {
 		        .domain([0, d3.max(data, function(d) { return d[1]; })])
 		        .range([ height, 0 ]);
 
+		      
 		var chart = d3.select('#timeline-chart')
 		.append('svg:svg')
 		.attr('width', width + margin.right + margin.left)
