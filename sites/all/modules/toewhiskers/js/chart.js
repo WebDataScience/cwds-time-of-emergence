@@ -93,7 +93,7 @@ jQuery( document ).ready(function( $ ) {
       $('#tabledata tr:last').after("<tr><td><a href='/boxplots/"
 				    + key + "'>" + onerow.VARIABLESHORTNAME
 				    + "</a></td><td>"
-				    + (onerow.TOE? onerow.TOE:onerow.YEARA + " - " + onerow.YEARB) + "</td><td>"
+				    + onerow.YEARA + " - " + onerow.YEARB + "</td><td>"
 				    + (onerow.CHANGEDIR == '1'?'Increasing':'Decreasing')  + "</td></tr>");  
     }
     
