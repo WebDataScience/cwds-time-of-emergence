@@ -75,7 +75,7 @@ jQuery( document ).ready(function( $ ) {
       'Past Sensitivity: ' +websitetextarray['tolerance'][jsonobj.tolerance],
       //'Climate Data: ' + websitetextarray['dataset'][jsonobj.dataset]
      // 'Region: ' + websitetextarray['region']
-      'Emission: ' + websitetextarray['emission'][jsonobj.emission]
+      'Emissions Scenario: ' + websitetextarray['emission'][jsonobj.emission]
     );
     //console.log($(".emission" ));
 
@@ -93,7 +93,7 @@ jQuery( document ).ready(function( $ ) {
       $('#tabledata tr:last').after("<tr><td><a href='/boxplots/"
 				    + key + "'>" + onerow.VARIABLESHORTNAME
 				    + "</a></td><td>"
-				    + onerow.YEARA + " - " + onerow.YEARB + "</td><td>"
+				    + (onerow.YEARA == 'Unknown' && onerow.YEARB == 'Unknown'?'No emergence':onerow.YEARA + " - " + onerow.YEARB) + "</td><td>"
 				    + (onerow.CHANGEDIR == '1'?'Increasing':'Decreasing')  + "</td></tr>");  
     }
     

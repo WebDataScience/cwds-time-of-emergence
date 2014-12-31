@@ -1048,9 +1048,10 @@ function toewhiskers_json_query_function($mode){
     
     if($record->GCM == 'GCM_ensemble'){
       $toe_array[$record->VARIABLEID]->TOE = $toe;
-      $toe_array[$record->VARIABLEID]->YEARA = ($year[0] == 0? "No Emergence":ceil($year[0]/5)*5);
-      $toe_array[$record->VARIABLEID]->YEARB = ($year[1] == 0? "No Emergence":ceil($year[1]/5)*5);
+      $toe_array[$record->VARIABLEID]->YEARA = ($year[0] == 0? "Unknown":ceil($year[0]/5)*5);
+      $toe_array[$record->VARIABLEID]->YEARB = ($year[1] == 0? "Unknown":ceil($year[1]/5)*5);
     }
+    
     if($record->GCM == 'GCM_ensemble_25'){
       
       $toe_array[$record->VARIABLEID]->YEARA = $toe;
@@ -1058,6 +1059,7 @@ function toewhiskers_json_query_function($mode){
     if($record->GCM == 'GCM_ensemble_75'){
       $toe_array[$record->VARIABLEID]->YEARB = $toe;
     }
+    
     
     $toe_array[$record->VARIABLEID]->CHANGEDIR = $record->CHANGEDIR;
 
@@ -1114,9 +1116,9 @@ Emission Scenario: " . $prettynames['emission'][$emission] . "
 Estimated Rate of Climate Change: " . $prettynames['confidence'][$confidence] . "
 Historical 'Noise' Range: " . $prettynames['tolerance'][$tolerance] . "
 Climate Data: " . $prettynames['dataset'][$dataset] . "\n\n";
-    
+ 
     foreach($toe_array as $toe_object){
-      $csv .= '"' . $toe_object->VARIABLESHORTNAME . '",' . $toe_object->TOE . ',"' . $toe_object->YEARA . ' - ' . $toe_object->YEARB . '",';
+      $csv .= '"' . $toe_object->VARIABLESHORTNAME . '",' . $toe_object->TOE . ',"' . (($toe_object->YEARA == 'Unknown' && $toe_object->YEARB = 'Unknown')?'No emergence':$toe_object->YEARA . ' - ' . $toe_object->YEARB) . '",';
       $csv .= ($toe_object->CHANGEDIR == 1)?'"Increasing"':'"Decreasing"';
       $csv .= "\n";
     }
@@ -1171,22 +1173,39 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
       foreach ($signalconfidence_array as $key=>$signalconfidence){
         $dots = array();
         $box = array();
-        $query="select * from " . $maindatatable . " WHERE variableid='" . $variable . "' and  emisscenario='" . $emissionscenario . "' and (modelagreement='25' or modelagreement='75') and emergthres=" . $emergencethreshold . " and signalconfidence=" . $signalconfidence;
+        //and (modelagreement='XX') 
+        $query="select * from " . $maindatatable . " WHERE variableid='" . $variable . "' and  emisscenario='" . $emissionscenario . "' and emergthres=" . $emergencethreshold . " and signalconfidence=" . $signalconfidence;
         // ?? Which dataset??  'BCSD5' => 'BCSD5', 
         $result = db_query($query);
         // Result is returned as a iterable object that returns a stdClass object on each iteration
         foreach ($result as $record) {
+         // $pos = strpos($record->GCM, 'ensemble');
+         /*
+            if($record->TOE <= 2100){
+              $dots[$record->GCM] = $record->TOE;
+            }
+         else {
+            $box[$record->GCM] = $record->TOE;
+          }
+          */
+          
           $pos = strpos($record->GCM, 'ensemble');
           if ($pos === false) {
             if($record->TOE <= 2100){
               $dots[$record->GCM] = $record->TOE;
             }
           } else {
-            $box[$record->GCM] = $record->TOE;
+           // $box[$record->GCM] = $record->TOE;
+            $box[$record->MODELAGREEMENT] = $record->TOE;
+            $foo = bar;
           }
+         
+          
         }
+        $foo = bar;
         $oneboxplot = array(
-          "box" => array($box['GCM_ensemble_25'],$box['GCM_ensemble'],$box['GCM_ensemble_75']),
+         // "box" => array($box['GCM_ensemble_25'],$box['GCM_ensemble'],$box['GCM_ensemble_75']),
+          "box" => array($box['25'],$box['50'],$box['75']),
           "dots" => $dots,
           "query" => $query,
         );  

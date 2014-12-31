@@ -106,8 +106,11 @@ jQuery( document ).ready(function( $ ) {
     $("#top-x-title").html(charttitle);
     
     
-    //trying to debug the "slower" band which is not drawing correctly
-    //console.log(JSON.stringify(jsonobj.emergencethreshold95.emissionscenariorcp85));
+    //trying to debug the "lower" band which is not drawing correctly
+    console.log(JSON.stringify(jsonobj.emergencethreshold95.emissionscenariorcp85));
+    console.log(JSON.stringify(jsonobj.emergencethreshold95.emissionscenariorcp45));
+    console.log(JSON.stringify(jsonobj.emergencethreshold80.emissionscenariorcp85));
+    console.log(JSON.stringify(jsonobj.emergencethreshold80.emissionscenariorcp45));
     
     drawBoxplot("chart-area-1", "High Emissions (RCP 8.5)", parse4data(jsonobj.emergencethreshold95.emissionscenariorcp85),"Past Sensitivity Low (to extreme 10% of 1950-1999 conditions)");
     drawBoxplot("chart-area-2", "Low Emissions (RCP 4.5)", parse4data(jsonobj.emergencethreshold95.emissionscenariorcp45),"");
