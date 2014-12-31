@@ -93,7 +93,7 @@ jQuery( document ).ready(function( $ ) {
       $('#tabledata tr:last').after("<tr><td><a href='/boxplots/"
 				    + key + "'>" + onerow.VARIABLESHORTNAME
 				    + "</a></td><td>"
-				    + (onerow.YEARA == 'Unknown' && onerow.YEARB == 'Unknown'?'No emergence':onerow.YEARA + " - " + onerow.YEARB) + "</td><td>"
+				    + dateConversion(onerow) + "</td><td>"
 				    + (onerow.CHANGEDIR == '1'?'Increasing':'Decreasing')  + "</td></tr>");  
     }
     
@@ -102,7 +102,29 @@ jQuery( document ).ready(function( $ ) {
     
   });
   
-}); 
+});
+
+
+// Handle the multiple date conversion scenarios
+function dateConversion(onerow) {
+  //code
+  
+
+   if (onerow.YEARA >= '2100') {
+    return 'Beyond 2100';
+  }
+  
+     if (onerow.YEARB >= '2100') {
+    return onerow.YEARA + " - " + 'Beyond 2100';
+  }
+    //if Unkownn
+  if (onerow.YEARA == 'Unknown' || onerow.YEARB == 'Unknown') {
+    return  (onerow.YEARA == 'Unknown' && onerow.YEARB == 'Unknown'?'No emergence':onerow.YEARA + " - " + onerow.YEARB);
+  }
+  return onerow.YEARA + " - " + onerow.YEARB;
+
+ 
+}
   
 //function drawD3Timeline(timelinedataarray, maxtoeyear,confidence,tolerance,dataset,region, emission)  
 function drawD3Timeline(timelinedataarray, maxtoeyear,confidence,tolerance,dataset, region){
