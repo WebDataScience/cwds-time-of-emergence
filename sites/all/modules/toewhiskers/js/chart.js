@@ -87,7 +87,6 @@ jQuery( document ).ready(function( $ ) {
     
     // Table modification via jQuery.
     tabledata = jsonobj.tabledata;
-    console.log(jsonobj);
     for (var key in tabledata) {
       var onerow = tabledata[key];
       $('#tabledata tr:last').after("<tr><td><a href='/boxplots/"
