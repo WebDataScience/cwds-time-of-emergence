@@ -383,9 +383,7 @@ $options = array(
     '#value' => 'Next',
     '#type' => 'submit',
   );
-    
   $form_submit['redirect'] = 'compare';
-    
   return $form;
 }
 
@@ -408,7 +406,6 @@ function toewhiskers_explore_form_submit($form, &$form_state) {
       $regionVal = check_plain($form_state['values']['regionwatershed']);
       $comparearray['region'] = $regionVal;
       $comparearray['regionname'] = check_plain($form_state['complete form']['regionwatershed']['#options'][$regionVal]);
-     
     }
   }
   $_SESSION['compare'] = $comparearray;
@@ -499,7 +496,6 @@ function toewhiskers_compare_form($form,&$form_submit) {
     $form['parameter']['dataset'] = array('#type' => 'hidden', '#value' => 'BCSD5');
   }
   
-  
   $options = array(
     '95' => 'Low (to extreme 10% of 1950-1999 conditions)',
     '80' => 'High (to extreme 40% of 1950-1999 conditions)',
@@ -531,17 +527,7 @@ function toewhiskers_compare_form($form,&$form_submit) {
  * Helper function for forms that reuse the 'narrow variables' filters.
  */
 function toewhiskers_narrow_subform(&$form){
-  $options = array(10 => 'All',
-                   0 => 'Drought',
-                   1 => 'Energy',
-                   2 => 'Fish',
-                   3 => 'Flood',
-                   4 => 'General',
-                   5 => 'Human health',
-                   6 => 'Infrastructure',
-                   7 => 'Streamflow',
-                   8 => 'Water availability',
-                   9 => 'Water quality',);
+  $options = queryForImpact();
   $form['narrow']['impact'] = array(
     '#type' => 'radios',
     '#title' => t('Related Impact'),
@@ -1257,7 +1243,7 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
 /*
  *
  */
-function variablesarray($themeindex = 4, $impactindex = 10, $typeindex = 2){
+function variablesarray($themeindex = 4, $impactindex = 0, $typeindex = 2){
   global $maindatatable;
   global $lookupdatatable;
   $comparearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
@@ -1267,17 +1253,14 @@ function variablesarray($themeindex = 4, $impactindex = 10, $typeindex = 2){
   if($themeindex == 2) {$theme = 'Hydrologic';}
   if($themeindex == 3) {$theme = 'Streamflow';}
   //$options = array(9 => 'All',0 => 'Drought', 1 => 'Energy', 2 => 'Fish', 3 => 'Flood',4 => 'General', 5 => 'Human health', 6 => 'Infrastructure', 7 => 'Streamflow',8 => 'Water quality',);
+
+  /* Construct list of impacts, validate user input, define '$impact' if input is valid. */
   $impact = NULL;
-  if($impactindex == 0) {$impact = 'Drought';}
-  if($impactindex == 1) {$impact = 'Energy';}
-  if($impactindex == 2) {$impact = 'Fish';}
-  if($impactindex == 3) {$impact = 'Flood';}  
-  if($impactindex == 4) {$impact = 'General';}
-  if($impactindex == 5) {$impact = 'Human health';}
-  if($impactindex == 6) {$impact = 'Infrastructure';}
-  if($impactindex == 7) {$impact = 'Streamflow';}   
-  if($impactindex == 8) {$impact = 'Water availability';}
-  if($impactindex == 9) {$impact = 'Water quality';}
+  $impactsarray = queryForImpact();
+  if (array_key_exists($impactindex, $impactsarray )  && $impactindex != 0) {
+    $impact = $impactsarray[$impactindex];
+  }
+  
   $averageextreme = NULL;
   if($typeindex == 0) {$averageextreme = 'Average';}
   if($typeindex == 1) {$averageextreme = 'Extreme';}
@@ -1309,9 +1292,36 @@ function variablesarray($themeindex = 4, $impactindex = 10, $typeindex = 2){
     }
   }
   db_set_active();
+  
+  if(count($variablesarray) == 0){
+    $variablesarray[0] = t("No variables match those filter settings");
+  }
   $returnarray['filterquery'] = $query;
   $returnarray['variablesarray'] = $variablesarray;
   return $returnarray;
+}
+
+
+function queryForImpact(){
+  $impactsarray = array();
+  global $lookupdatatable;
+  $query = "SELECT DISTINCT impact FROM " . $lookupdatatable;
+  db_set_active('cig_toe');
+  $result = db_query($query);
+  // Result is returned as a iterable object that returns a stdClass object on each iteration
+  foreach ($result as $record) {
+    if(isset($record->impact)){
+      $impact = $record->impact;
+      $impactarray = explode("/" , $impact);
+      $impactsarray = array_merge($impactsarray, $impactarray);
+    }
+  }
+  db_set_active();
+  $impactsarray = array_map('trim',$impactsarray);
+  $impactsarray = array_unique($impactsarray);
+  sort($impactsarray);
+  array_unshift($impactsarray, "All");
+  return $impactsarray;
 }
 
 
