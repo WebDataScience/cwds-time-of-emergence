@@ -163,8 +163,19 @@ function template_preprocess_mapdetails_template(&$variables) {
 function template_preprocess_displaymap_template(&$variables) {
   $maparray = isset($_SESSION['map'])?$_SESSION['map']:array();
   $pathtomap = drupal_get_path('module', 'toewhiskers');
-  $o = "<img src='" . $pathtomap . "/images/Samples/" . $maparray['stage1filename'] . "'>";
+  $o = "<p>Stage 1 filename is: " . $maparray['stage1filename'] . "</p>";
+  $o .= "<img src='" . $pathtomap . "/images/Samples/" . $maparray['stage1filename'] . "'>";
   $o .= "<p>Stage 2 filename is: " . $maparray['stage2filename'] . "</p>";
+  $o .= "<img src='" . $pathtomap . "/images/SampleMaps4UWT/" . $maparray['stage2filename'] . "'>";
+  
+  $block = module_invoke('block', 'block_view', '6');
+  $o .= render($block['content']);
+  
+  if($maparray['dataset'] == '3'){
+    $block = module_invoke('block', 'block_view', '7');
+    $o .= render($block['content']);
+  }
+  
   $variables['explore_form'] = $o;
 }
 function toewhiskers_explore_form($form, &$form_submit) {
@@ -424,7 +435,6 @@ function toewhiskers_page_function(){
     return theme('timeline_template');
 }
 
-
 function template_preprocess_timeline_template(&$variables) {
   $variables['parameterform'] = toewhiskers_renderwebformelement_function();
 }
@@ -435,7 +445,6 @@ function toewhiskers_renderwebformelement_function(){
   $o = drupal_render($form);
   return $o;
 }
-
 
 function toewhiskers_compare_form($form,&$form_submit) {
   // Session variable used to prepopulate if available.
@@ -481,21 +490,17 @@ function toewhiskers_compare_form($form,&$form_submit) {
     '#required' => TRUE,
     '#default_value' => isset($comparearray['emission'])?$comparearray['emission']:key($options),
   );
-  
   $options = array( 'BCSD5' => 'Statistically-downscaled (CMIP5 BCSD)',  );
   $form['parameter']['dataset'] = array(
-   // '#type' => 'radios',
    '#type' => 'hidden',
     '#title' => t('Climate Data'),
     '#options' => $options,
     '#required' => TRUE,
     '#default_value' => isset($comparearray['dataset'])?$comparearray['dataset']:key($options),
   );
-  
   if($comparearray['geodomain'] == 3 ){
     $form['parameter']['dataset'] = array('#type' => 'hidden', '#value' => 'BCSD5');
   }
-  
   $options = array(
     '95' => 'Low (to extreme 10% of 1950-1999 conditions)',
     '80' => 'High (to extreme 40% of 1950-1999 conditions)',
@@ -532,7 +537,7 @@ function toewhiskers_narrow_subform(&$form){
     '#type' => 'radios',
     '#title' => t('Related Impact'),
     '#options' => $options,
-    '#default_value' => '10',
+    '#default_value' => '0',
   ); 
   $averageextremeoptions = array(2 => 'All', 0 => 'Average', 1 => 'Extreme',);
   $form['narrow']['descriptor'] = array(
@@ -612,10 +617,12 @@ function toewhiskers_map_form($form,&$form_submit) {
   );
   toewhiskers_narrow_subform_theme($form);
   toewhiskers_narrow_subform($form);
+  $filterarraylist = variablesarray();
+  $options = $filterarraylist['variablesarray'];
   $form['variable'] = array(
     '#type' => 'select',
     '#title' => t('Hydroclimatic Variables'),
-    '#options' => variablesarray(),
+    '#options' =>  $options,
     '#description' => t('Select one hydroclimatic variable.'),
     '#required' => TRUE,
     '#default_value' => '1',
@@ -639,13 +646,22 @@ function toewhiskers_map_form($form,&$form_submit) {
     '#required' => TRUE,
     '#default_value' => key($maptypeoptions),
   );
+  $extentoptions = array(1 => 'WA/OR/ID/BC', 2 => 'Puget Sound', );
+  $form['parameter']['extent'] = array(
+    '#type' => 'radios',
+    '#title' => t('Extent'),
+    '#options' => $extentoptions,
+    '#default_value' => '1',
+  );
+  /*
   $options = array(1 => '80', 2 => '95', );
   $form['parameter']['emergencethreshold'] = array(
     '#type' => 'radios',
     '#title' => t('Emergence Threshold'),
     '#options' => $options,
     '#default_value' => '1',
-  );  
+  );*/
+  
   $form['submit'] = array(
     '#title' => t('Calculate'),
     '#value' => 'Next',
@@ -659,11 +675,11 @@ function toewhiskers_map_form($form,&$form_submit) {
  */
 function toewhiskers_map_form_validate($form, &$form_state) {
   $variableid = check_plain($form_state['values']['variable']);
-  //drupal_set_message('variableid:<pre>'. print_r($variableid, TRUE) .'</pre>');
   $allvariablearray = array();
   $allvariablearray = variablesarray();
+  //drupal_set_message('variableid:<pre>'. print_r($variableid, TRUE) .'</pre>');
   //drupal_set_message('maparray:<pre>'. print_r($allvariablearray, TRUE) .'</pre>');
-  if( ! (array_key_exists( $variableid, $allvariablearray )) ){
+  if( ! (array_key_exists( $variableid, $allvariablearray['variablesarray'] )) ){
     form_set_error('variable', 'Invalid variable choice.');
   }
 }
@@ -677,36 +693,16 @@ function toewhiskers_map_form_submit($form, &$form_state) {
   $maparray = isset($_SESSION['map'])?$_SESSION['map']:array();
   $maparray['theme'] = check_plain($form_state['values']['theme']);
   $maparray['impact'] = check_plain($form_state['values']['impact']);
-  //$comparearray['variable'] = toewhiskers_clean_array($form_state['values']['variable']);
   $maparray['variable'] = check_plain($form_state['values']['variable']);
   $maparray['maptype'] = check_plain($form_state['values']['maptype']);
-  $maparray['emergencethreshold'] = check_plain($form_state['values']['emergencethreshold']);
+  $maparray['extent'] = check_plain($form_state['values']['extent']);
   
   // Set session variable.
   $_SESSION['map'] = $maparray;
-  
-  /* Stage one map file observations. Supported by actual image filenames. */
-  
-  // m = map type
-  // b = boundary types (1 = state, 2 = state and county, 3 = state, 4 = state and reservation)
-  // xx.xx = variable
-  // t = tolerance
-  // s = scenario set (rcp45,a1b:1, rcp85,b1: 2)
-  // c = confidence, always 2 for maps
-  // d = dataset
-  // p = ??
-  // rcp85 = high
-  // rcp45 = low
-  // aib = high
-  // b1 = low
-  // s1 = 45, a1b
-  // s2 = 85, b1
-  // p only applies to 'm2' maps. Values are 1,2,3.
-  
+
   /*
 The following data to map linkages provided in a Trello based document by Rita.
 From CIG:  
-  
 Dimensions	Options	1	2	3	4
 Map	M[1,2]	Emergence Year	Emergence Location		
 Extent	E[1,2]	WA/OR/ID/BC	Puget Sound		
@@ -716,129 +712,65 @@ EmergThres	T[1,2]	80	95
 EmisScenario	S[1,2]	rcp45 or B1	rcp85 or A1B		
 SignalConfidence	C[1,2,3]	5	50	95	
 Period	P[1,2,3]	2025	2050	2075	2100
-Dataset	D[1,2,3]	BCSD5	BCSD3	WRF3	
-					
-Naming convention:	M_E_B_V_T_S_C_P_D.png				
-For example: 	2_2_3_8_1_1_2_3_1.png => 				
-	Emergence location (by watershed) for Puget Sound area for variable 8 with the lower (middle 60%) threshold, the RCP4.5 scenario, 50% confidence level for the period 2075, based on BCSD5 dataset.				
+Dataset	D[1,2,3]	BCSD5	BCSD3	WRF3				
   */ 
-  
-  $form_state['redirect'] = 'mapbytype';
-  
-}
-
-
-function toewhiskers_mapbytype_form($form,&$form_submit) {
-  $maptype = "";
-  $theme = "";
- 
-  $maparray = isset($_SESSION['map'])?$_SESSION['map']:array();
-  $maptype = $maparray['maptype'];
-  //drupal_set_message('maparray:<pre>'. print_r($maparray, TRUE) .'</pre>');
-  
-  $variableid = $maparray['variable'];
-  
-  global $secondarydatatable;
-  $query = "SELECT * FROM " . $secondarydatatable . " WHERE variableid = '" . $variableid . "'";
-  //drupal_set_message($query);
-  
-  // Setup to query non Drupal database. Then query for 'theme' value for this one variableid.
-  db_set_active('cig_toe');
-  $row = (object)db_query($query)->fetchAssoc();
-  $theme = $row->THEME;
-  //drupal_set_message('row:<pre>'. print_r($row, TRUE) .'</pre>');
-  db_set_active();
-  
-  $form['parameter'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Apply the following parameters to the query:'),
-    '#collapsible' => FALSE,
-    '#collapsed' => FALSE,
-  );
-  if ($maptype == '2'){
-    $options = array(1 => 'Low (RCP45 or B1)', 2 => 'High (RCP85 or A1B)', );
-    $form['parameter']['emissionscenario'] = array(
-      '#type' => 'radios',
-      '#title' => t('Emission Scenario'),
-      '#options' => $options,
-      '#default_value' => '1',
-    );
-  }
-  $datasetoptions = array(2 => 'BCSD3',);
-  if ($theme == "Air Temperature" || $theme == "Precipitation"){
-    $datasetoptions = array(1 => 'BCSD5', 3 => 'WRF3',  );
-  }
-  if ($theme == "Streamflow"){
-    $datasetoptions = array(1 => 'BCSD5', 2 => 'BCSD3',  );
-  }
-  $form['parameter']['dataset'] = array(
-    '#type' => 'radios',
-    '#title' => t('Dataset'),
-    '#options' => $datasetoptions,
-    '#default_value' => '1',
-  );
-	$form['submit'] = array(
-    '#title' => t('Calculate'),
-    '#value' => 'Next',
-    '#type' => 'submit',
-  );
-  return $form;
-}
-
-/**
- * Submit handler for the 'mapbytype' form.
- */
-function toewhiskers_mapbytype_form_submit($form, &$form_state) {
-  $maparray = isset($_SESSION['map'])?$_SESSION['map']:array();
-  //drupal_set_message('formstate:<pre>'. print_r($form_state, TRUE) .'</pre>');
-  $maparray['dataset'] = check_plain($form_state['values']['dataset']);
-  if($maparray['dataset'] == '1'){$maparray['scenario'] = 2;}
-  if($maparray['dataset'] == '2' || $maparray['dataset'] == '3'){$maparray['scenario'] = 1;}
-  //drupal_set_message('maparray:<pre>'. print_r($maparray, TRUE) .'</pre>');
-  
-  $_SESSION['map'] = $maparray;
   $form_state['redirect'] = 'mapdetails';
 }
 
 
 function toewhiskers_mapdetails_form($form,&$form_submit) {
+  // User has supplied variable, maptype (emergence year or location), and Extent(PNW or Puget Sound). Let's present parameter choices for:
+  // Emergence Year => tolerance,scenario,boundaries,dataset(db lookup based on vid)
+  // Emergence Loc  => tolerance,scenario,boundaries,dataset(db lookup based on vid),timeperiod
+  
   $maparray = isset($_SESSION['map'])?$_SESSION['map']:array();
-  //drupal_set_message('maparray:<pre>'. print_r($maparray, TRUE) .'</pre>');
+  global $maindatatable;
+  $query = "SELECT DISTINCT dataset FROM " . $maindatatable . " WHERE variableid = '" . $maparray['variable'] . "'";
+  $datasetoptions = array();
+  db_set_active('cig_toe');
+  $result = db_query($query);
+  foreach ($result as $record) {
+    $dataset = $record->dataset;
+    $datasetoptions[$dataset] = $dataset;
+  }
+  db_set_active();
+
+  $maparray = isset($_SESSION['map'])?$_SESSION['map']:array();
   $form['parameter'] = array(
     '#type' => 'fieldset',
     '#title' => t('Apply the following parameters to the query:'),
     '#collapsible' => FALSE,
     '#collapsed' => FALSE,
   );
-  $extentoptions = array(1 => 'WA/OR/ID/BC', 2 => 'Puget Sound', );
-  $form['parameter']['extent'] = array(
+  $form['parameter']['emergthres'] = array(
     '#type' => 'radios',
-    '#title' => t('Extent'),
-    '#options' => $extentoptions,
+    '#title' => t('Past Sensitivity'),
+    '#options' => array(  '1' => 'Low (to extreme 10% of 1950-1999 conditions)', '2' => 'High (to extreme 40% of 1950-1999 conditions)',  ),
     '#default_value' => '1',
   );
-  $options = array(1 => 'State', 2 => 'County', 3 => 'Watershed', 4 => 'Tribal Land', );
+  $form['parameter']['emissionscenario'] = array(
+    '#type' => 'radios',
+    '#title' => t('Emission Scenario'),
+    '#options' => array(1 => 'Low (RCP45/B1)', 2 => 'High (RCP85/A1B)', ),
+    '#default_value' => '1',
+  );
   $form['parameter']['boundary'] = array(
     '#type' => 'radios',
     '#title' => t('Boundary'),
-    '#options' => $options,
+    '#options' => array(1 => 'State', 2 => 'County', 3 => 'Watershed', 4 => 'Tribal Land', ),
     '#default_value' => '1',
   );
-  $options = array(1 => '5', 2 => '50', 3 => '90', );
-  $form['parameter']['signalconfidence'] = array(
+  $form['parameter']['dataset'] = array(
     '#type' => 'radios',
-    '#title' => t('Signal Confidence'),
-    '#options' => $options,
-    '#default_value' => '1',
-    '#description' => 'This datapoint not applicable to stage 1 mapset.',
-  ); 
+    '#title' => t('Dataset'),
+    '#options' => $datasetoptions,
+    '#default_value' => key($datasetoptions),
+  );
   if(array_key_exists('maptype', $maparray) && $maparray['maptype'] == 2 ){
-    $stage1options = array(1 => '2025', 2 => '2050', 3 => '2075');
-    $stage2options = array(1 => '2025', 2 => '2050', 3 => '2075', 4 => '2100', );
     $form['parameter']['period'] = array(
       '#type' => 'radios',
       '#title' => t('Period'),
-      '#options' => $stage1options,
+      '#options' => array(1 => '2025', 2 => '2050', 3 => '2075', 4 => '2100', ),
       '#default_value' => '1',
     );
   }
@@ -856,26 +788,32 @@ function toewhiskers_mapdetails_form($form,&$form_submit) {
 function toewhiskers_mapdetails_form_submit($form, &$form_state) {
   $maparray = isset($_SESSION['map'])?$_SESSION['map']:array();
   
-  if($maparray['dataset'] == '1'){$maparray['scenario'] = 2;}
-  if($maparray['dataset'] == '2' || $maparray['dataset'] == '3'){$maparray['scenario'] = 1;}
+  $maparray['emergthres'] = check_plain($form_state['values']['emergthres']);
+  $maparray['emissionscenario'] = check_plain($form_state['values']['emissionscenario']);
   $maparray['boundary'] = check_plain($form_state['values']['boundary']);
-  $maparray['extent'] = check_plain($form_state['values']['extent']);
-  $maparray['signalconfidence'] = check_plain($form_state['values']['signalconfidence']);
+  $maparray['dataset'] = 1;
+  $formsubmitdataset = check_plain($form_state['values']['dataset']);
+  if(strcasecmp ($formsubmitdataset, "BCSD5") == 0){$maparray['dataset'] = 1;}
+  if(strcasecmp ($formsubmitdataset, "BCSD3") == 0){$maparray['dataset'] = 2;}
+  if(strcasecmp ($formsubmitdataset, "WRF3") == 0){$maparray['dataset'] = 3;}
   $maparray['period'] = (array_key_exists('period', $form_state['values']))?check_plain($form_state['values']['period']):'';
   
-  // This is filename format in document. 
-  $filenametemplate = "M_E_B_V_T_S_C_P_D.png";
-  $maparray['stage2filename'] = $maparray['maptype'] . "_"   . $maparray['extent'] . "_" . $maparray['boundary'] . "_"   . $maparray['variable'] . "_"   . $maparray['emergencethreshold'] . "_"   . $maparray['scenario'] . "_"   . $maparray['signalconfidence'] . "_"   . $maparray['period'] . "_"   . $maparray['dataset'] . ".png";
+  $_SESSION['map'] = $maparray;
   
   // This is filename format represented by actual files.
   $filenametemplate = "mx_bx_v_tx_sx_c2_dx[_px].png";
-  $maparray['stage1filename'] = "m" . $maparray['maptype'] . "_b" . $maparray['boundary'] . "_" . ltrim($maparray['variable'], 'V') . "_t"   . $maparray['emergencethreshold'] . "_s"   . $maparray['scenario'] . "_c2_d"   . $maparray['dataset'];
-  if(array_key_exists('maptype', $maparray) && $maparray['maptype'] == 2 ){$maparray['stage1filename']  .= "_p"   . $maparray['period'];}
+  $maparray['stage1filename'] = "m" . $maparray['maptype'] . "_b" . $maparray['boundary'] . "_" . ltrim($maparray['variable'], 'V') . "_t"   . $maparray['emergthres'] . "_s"   . $maparray['emissionscenario'] . "_c2_d"   . $maparray['dataset'];
+  if(array_key_exists('maptype', $maparray) && $maparray['maptype'] == 2 ){$maparray['stage1filename'] .= "_p" . $maparray['period'];}
   $maparray['stage1filename'] .= ".png";
   
+  // Files of this format in /sites/all/modules/toewhiskers/images/SampleMaps4UWT   m1_e1_b1_1.01_t1_s1_c2_d1[_p1].png
+  $maparray['stage2filename'] = "m" . $maparray['maptype'] . "_e" . $maparray['extent'] . "_b" . $maparray['boundary'] . "_" . ltrim($maparray['variable'], 'V') . "_t"   . $maparray['emergthres'] . "_s" . $maparray['emissionscenario'] . "_c2" . "_d" . $maparray['dataset'] ;
+  if(array_key_exists('maptype', $maparray) && $maparray['maptype'] == 2 ){$maparray['stage2filename']  .= "_p" . $maparray['period'];}
+  $maparray['stage2filename'] .= ".png";  
+
   //drupal_set_message('maparray:<pre>'. print_r($maparray, TRUE) .'</pre>');
   $_SESSION['map'] = $maparray;
-  $form_state['redirect'] = 'displaymap';
+  $form_state['redirect'] = 'displaymap';  
 }
 
 
@@ -1025,12 +963,7 @@ function toewhiskers_json_query_function($mode){
       $toe = ceil($record->TOE/5)*5;
     }
     
-    
-
-
     $year = explode(',', $record->TOERange);
-    
-
     
     if($record->GCM == 'GCM_ensemble'){
       $toe_array[$record->VARIABLEID]->TOE = $toe;
@@ -1186,7 +1119,6 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
             $foo = bar;
           }
          
-          
         }
         $foo = bar;
         $oneboxplot = array(
@@ -1200,7 +1132,6 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
     }
   }
   $jasondata = array_merge( $jasondata,$boxplotdata);
-  
   db_set_active();
 
   if($verbose_test_mode){ 
@@ -1252,7 +1183,6 @@ function variablesarray($themeindex = 4, $impactindex = 0, $typeindex = 2){
   if($themeindex == 1) {$theme = 'Precipitation';}
   if($themeindex == 2) {$theme = 'Hydrologic';}
   if($themeindex == 3) {$theme = 'Streamflow';}
-  //$options = array(9 => 'All',0 => 'Drought', 1 => 'Energy', 2 => 'Fish', 3 => 'Flood',4 => 'General', 5 => 'Human health', 6 => 'Infrastructure', 7 => 'Streamflow',8 => 'Water quality',);
 
   /* Construct list of impacts, validate user input, define '$impact' if input is valid. */
   $impact = NULL;
@@ -1277,7 +1207,7 @@ function variablesarray($themeindex = 4, $impactindex = 0, $typeindex = 2){
   if($theme){ $query .= " AND " . $lookupdatatable . ".THEME = '" . $theme . "'";}
   if($impact){ $query .= " AND " . $lookupdatatable . ".IMPACT LIKE '%" . $impact . "%'";} 
   if($averageextreme){ $query .= " AND " . $lookupdatatable . ".AVERAGEEXTREME = '" . $averageextreme . "'";}
-  if($comparearray['region']){ $query .= " AND " . $maindatatable . ".REGION = '" . $comparearray['region'] . "'";}
+  if(array_key_exists('region', $comparearray)){ $query .= " AND " . $maindatatable . ".REGION = '" . $comparearray['region'] . "'";}
   
   $queries = array($query);
   /* drupal_set_message('function variablesarray() query:<pre>'. print_r($queries, TRUE) .'</pre>'); */
@@ -1347,7 +1277,7 @@ function toewhiskers_cigtoeconfig_function(){
   db_set_active('cig_toe');
   
   $columns = array('REGION','EMISSCENARIO','DATASET','EMERGTHRES','SIGNALCONFIDENCE','MODELAGREEMENT','GCM');
-$columns = array('GCM');
+  $columns = array('GCM');
   foreach ($columns as $column) {
     $o .= "<br/>" . $column . "<br/>";
     $query = "SELECT DISTINCT " . $column . " FROM {" .$maindatatable. "}";    
@@ -1376,38 +1306,6 @@ $columns = array('GCM');
     }
   }
   db_set_active();
-  
-/*  $o .= "<pre>  				
-Dataset				Dataset
-GCM - Phase 2				GCM
-BCSD5				Statistically-downscaled (CMIP5 BCSD)
-WRF - Phase 2				Dynamically-downscaled
-				
-EmergThres				Tolerance:          Text to appear on website (e.g. in timeline title)
-95				  Low (to extreme 10% of 1950-1999 conditions))
-80				 High (to extreme 40% of 1950-1999 conditions)
-				
-SignalConfidence				
-Confidence:
-5				Low (5% confidence interval)
-50				Medium (50% confidence interval)
-95				High (95% confidence interval)
-v				
-Lower bound (earlier ToE)
-Central tendency
-Upper bound (later ToE)
-			 
-ModelAgreement				Model agreement:
-25				Low (25%)
-50				Medium (50%)
-75				High (75%)
-				
-EmisScenario				Emission Scenario:
-rcp45				RCP4.5
-rcp85				RCP8.5
-A1B				SRES A1B
-B1				SRES B1</pre>
-";*/
   print($o);
   
 }

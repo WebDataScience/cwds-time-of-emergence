@@ -7,10 +7,9 @@ jQuery( document ).ready(function( $ ) {
     else {      
       themeindex = $('input:radio[name=theme]:checked').val();    
     }
-    
     var impactindex = $('input:radio[name=impact]:checked').val();
     var averageextremeindex = $('input:radio[name=descriptor]:checked').val();
-    var typeindex = $('input:radio[name=descriptor]:checked').val();
+    var typeindex = $('input:radio[name=type]:checked').val();
     
     $.getJSON( 'map/variablelist/' + themeindex + '/' + impactindex + '/' + averageextremeindex+ '/' + typeindex, function ( options ) { 
       $("#hiddenconsole" ).html( "filterquery: " + options.filterquery );
