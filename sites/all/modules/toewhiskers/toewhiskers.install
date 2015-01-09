@@ -1,0 +1,50 @@
+<?php
+
+/**
+ * Implements hook_enable().
+ */
+function toewhiskers_enable() {
+    /*
+  $bid = db_insert('block_custom')
+    ->fields(array(
+      'body' => '<div>My Custom Block</div>',
+      'info' => 'Map Interpretive Text',
+      'format' => 'filtered_html',
+    ))
+    ->execute();
+
+  db_insert('block')
+    ->fields(array(
+      'module' => 'block',
+      'delta' => 'mapinterpretivetext',
+      'status' => 1,
+      'weight' => 0,
+      'region' => 'sidebar',
+      'pages' => '',
+      'cache' => DRUPAL_CACHE_PER_ROLE,
+    ))
+    ->execute();
+    
+
+    $bid = db_insert('mapinterpretivetextwrf')
+    ->fields(array(
+      'body' => '<div>My Custom Block</div>',
+      'info' => 'Map Interpretive Text for WRF',
+      'format' => 'filtered_html',
+    ))
+    ->execute();
+
+  db_insert('block')
+    ->fields(array(
+      'module' => 'block',
+      'delta' => $bid,
+      'status' => 1,
+      'weight' => 0,
+      'region' => 'sidebar',
+      'pages' => '',
+      'cache' => DRUPAL_CACHE_PER_ROLE,
+    ))
+    ->execute();
+    */
+
+}

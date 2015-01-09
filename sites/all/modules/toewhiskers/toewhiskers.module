@@ -168,11 +168,11 @@ function template_preprocess_displaymap_template(&$variables) {
   $o .= "<p>Stage 2 filename is: " . $maparray['stage2filename'] . "</p>";
   $o .= "<img src='" . $pathtomap . "/images/SampleMaps4UWT/" . $maparray['stage2filename'] . "'>";
   
-  $block = module_invoke('block', 'block_view', '6');
+  $block = module_invoke('block', 'block_view', '8');
   $o .= render($block['content']);
   
   if($maparray['dataset'] == '3'){
-    $block = module_invoke('block', 'block_view', '7');
+    $block = module_invoke('block', 'block_view', '9');
     $o .= render($block['content']);
   }
   
