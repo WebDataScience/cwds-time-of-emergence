@@ -92,7 +92,7 @@ function toewhiskers_theme(){
         'template' => 'page-toewhiskers',
       ),
       'displaymap_template' => array(
-        'template' => 'page-toewhiskers',
+        'template' => 'page-map',
       ),
       'timeline_template' => array(
         // file name will be page-timeline.tpl.php
@@ -163,20 +163,20 @@ function template_preprocess_mapdetails_template(&$variables) {
 function template_preprocess_displaymap_template(&$variables) {
   $maparray = isset($_SESSION['map'])?$_SESSION['map']:array();
   $pathtomap = drupal_get_path('module', 'toewhiskers');
-  $o = "<p>Stage 1 filename is: " . $maparray['stage1filename'] . "</p>";
+  $o = "<p>Stage 1 map filename is: " . $maparray['stage1filename'] . "</p>";
   $o .= "<img src='" . $pathtomap . "/images/Samples/" . $maparray['stage1filename'] . "'>";
-  $o .= "<p>Stage 2 filename is: " . $maparray['stage2filename'] . "</p>";
+  $o .= "<p>Stage 2 map filename is: " . $maparray['stage2filename'] . "</p>";
   $o .= "<img src='" . $pathtomap . "/images/SampleMaps4UWT/" . $maparray['stage2filename'] . "'>";
+  $variables['map'] = $o;
+    
+  $variables['pathtoimage'] = $pathtomap . "/images/SampleMaps4UWT/" . $maparray['stage2filename'];
   
   $block = module_invoke('block', 'block_view', '8');
-  $o .= render($block['content']);
-  
+  $variables['interpretivetext'] = render($block['content']);
   if($maparray['dataset'] == '3'){
     $block = module_invoke('block', 'block_view', '9');
-    $o .= render($block['content']);
+    $variables['interpretivetext'] .= render($block['content']);
   }
-  
-  $variables['explore_form'] = $o;
 }
 function toewhiskers_explore_form($form, &$form_submit) {
   // Session variable used to prepopulate if available.
