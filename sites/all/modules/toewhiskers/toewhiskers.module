@@ -170,6 +170,7 @@ function template_preprocess_displaymap_template(&$variables) {
   $variables['map'] = $o;
     
   $variables['pathtoimage'] = $pathtomap . "/images/SampleMaps4UWT/" . $maparray['stage2filename'];
+  $variables['imagefilename'] = $maparray['stage2filename'];
   
   $block = module_invoke('block', 'block_view', '8');
   $variables['interpretivetext'] = render($block['content']);
@@ -177,6 +178,10 @@ function template_preprocess_displaymap_template(&$variables) {
     $block = module_invoke('block', 'block_view', '9');
     $variables['interpretivetext'] .= render($block['content']);
   }
+  
+  $form = drupal_get_form('toewhiskers_mapdetails_form');
+  $o = drupal_render($form);
+  $variables['map_detail_form'] = $o;
 }
 function toewhiskers_explore_form($form, &$form_submit) {
   // Session variable used to prepopulate if available.
@@ -746,32 +751,32 @@ function toewhiskers_mapdetails_form($form,&$form_submit) {
     '#type' => 'radios',
     '#title' => t('Past Sensitivity'),
     '#options' => array(  '1' => 'Low (to extreme 10% of 1950-1999 conditions)', '2' => 'High (to extreme 40% of 1950-1999 conditions)',  ),
-    '#default_value' => '1',
+    '#default_value' => isset($maparray['emergthres'])?$maparray['emergthres']:'1',
   );
   $form['parameter']['emissionscenario'] = array(
     '#type' => 'radios',
     '#title' => t('Emission Scenario'),
     '#options' => array(1 => 'Low (RCP45/B1)', 2 => 'High (RCP85/A1B)', ),
-    '#default_value' => '1',
+    '#default_value' => isset($maparray['emissionscenario'])?$maparray['emissionscenario']:'1',
   );
   $form['parameter']['boundary'] = array(
     '#type' => 'radios',
     '#title' => t('Boundary'),
     '#options' => array(1 => 'State', 2 => 'County', 3 => 'Watershed', 4 => 'Tribal Land', ),
-    '#default_value' => '1',
+    '#default_value' => isset($maparray['boundary'])?$maparray['boundary']:'1',
   );
   $form['parameter']['dataset'] = array(
     '#type' => 'radios',
     '#title' => t('Dataset'),
     '#options' => $datasetoptions,
-    '#default_value' => key($datasetoptions),
+    '#default_value' => isset($maparray['dataset'])?$maparray['dataset']:key($datasetoptions),
   );
   if(array_key_exists('maptype', $maparray) && $maparray['maptype'] == 2 ){
     $form['parameter']['period'] = array(
       '#type' => 'radios',
       '#title' => t('Period'),
       '#options' => array(1 => '2025', 2 => '2050', 3 => '2075', 4 => '2100', ),
-      '#default_value' => '1',
+    '#default_value' => isset($maparray['period'])?$maparray['period']:'1',
     );
   }
 	$form['submit'] = array(
@@ -791,23 +796,24 @@ function toewhiskers_mapdetails_form_submit($form, &$form_state) {
   $maparray['emergthres'] = check_plain($form_state['values']['emergthres']);
   $maparray['emissionscenario'] = check_plain($form_state['values']['emissionscenario']);
   $maparray['boundary'] = check_plain($form_state['values']['boundary']);
-  $maparray['dataset'] = 1;
+  $maparray['dataset'] = check_plain($form_state['values']['dataset']);
+  $maparray['datasetimagecode'] = 1;
   $formsubmitdataset = check_plain($form_state['values']['dataset']);
-  if(strcasecmp ($formsubmitdataset, "BCSD5") == 0){$maparray['dataset'] = 1;}
-  if(strcasecmp ($formsubmitdataset, "BCSD3") == 0){$maparray['dataset'] = 2;}
-  if(strcasecmp ($formsubmitdataset, "WRF3") == 0){$maparray['dataset'] = 3;}
+  if(strcasecmp ($formsubmitdataset, "BCSD5") == 0){$maparray['datasetimagecode'] = 1;}
+  if(strcasecmp ($formsubmitdataset, "BCSD3") == 0){$maparray['datasetimagecode'] = 2;}
+  if(strcasecmp ($formsubmitdataset, "WRF3") == 0){$maparray['datasetimagecode'] = 3;}
   $maparray['period'] = (array_key_exists('period', $form_state['values']))?check_plain($form_state['values']['period']):'';
   
   $_SESSION['map'] = $maparray;
   
   // This is filename format represented by actual files.
   $filenametemplate = "mx_bx_v_tx_sx_c2_dx[_px].png";
-  $maparray['stage1filename'] = "m" . $maparray['maptype'] . "_b" . $maparray['boundary'] . "_" . ltrim($maparray['variable'], 'V') . "_t"   . $maparray['emergthres'] . "_s"   . $maparray['emissionscenario'] . "_c2_d"   . $maparray['dataset'];
+  $maparray['stage1filename'] = "m" . $maparray['maptype'] . "_b" . $maparray['boundary'] . "_" . ltrim($maparray['variable'], 'V') . "_t"   . $maparray['emergthres'] . "_s"   . $maparray['emissionscenario'] . "_c2_d"   . $maparray['datasetimagecode'];
   if(array_key_exists('maptype', $maparray) && $maparray['maptype'] == 2 ){$maparray['stage1filename'] .= "_p" . $maparray['period'];}
   $maparray['stage1filename'] .= ".png";
   
   // Files of this format in /sites/all/modules/toewhiskers/images/SampleMaps4UWT   m1_e1_b1_1.01_t1_s1_c2_d1[_p1].png
-  $maparray['stage2filename'] = "m" . $maparray['maptype'] . "_e" . $maparray['extent'] . "_b" . $maparray['boundary'] . "_" . ltrim($maparray['variable'], 'V') . "_t"   . $maparray['emergthres'] . "_s" . $maparray['emissionscenario'] . "_c2" . "_d" . $maparray['dataset'] ;
+  $maparray['stage2filename'] = "m" . $maparray['maptype'] . "_e" . $maparray['extent'] . "_b" . $maparray['boundary'] . "_" . ltrim($maparray['variable'], 'V') . "_t"   . $maparray['emergthres'] . "_s" . $maparray['emissionscenario'] . "_c2" . "_d" . $maparray['datasetimagecode'] ;
   if(array_key_exists('maptype', $maparray) && $maparray['maptype'] == 2 ){$maparray['stage2filename']  .= "_p" . $maparray['period'];}
   $maparray['stage2filename'] .= ".png";  
 

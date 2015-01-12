@@ -72,16 +72,19 @@
 <!-- toewhiskers/page-map.tpl.php-->
 
 
-  <?php print $map; ?><br/>
+  <?php print $map; ?>
   
   <div>
-    <a id='downloadmapanchor' href='<?php print $pathtoimage; ?>' download='mapimage-<?php print $pathtoimage; ?>'>
+    <a id='downloadmapanchor' href='<?php print $pathtoimage; ?>' download='mapimage-<?php print $imagefilename; ?>'>
       <input id='print-text-button' name='op' value='Export Map Image' class='form-submit' type='submit'>
     </a>
   </div>
   <br>
   
   <?php print $interpretivetext; ?><br/>
+  
+  <h2>Revise and requery</h2>
+  <?php print $map_detail_form; ?><br/>
   
   <div id="hiddenconsole"></div>  
 
