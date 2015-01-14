@@ -3,3 +3,5 @@ description = A placeholder for some Google Charts JS
 core = 7.x
 
 stylesheets[all][] = css/toewhiskers.css
+
+files[] = includes/toewhiskers.options.inc

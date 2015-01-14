@@ -1,6 +1,11 @@
 
 jQuery( document ).ready(function( $ ) {
 
+
+  $(window).load(function() {
+    $('#slider').nivoSlider("controlNav":1);
+  });
+
   var loadthed3map = false;
   
   if(loadthed3map){
