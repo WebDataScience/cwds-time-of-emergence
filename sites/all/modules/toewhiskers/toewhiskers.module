@@ -56,7 +56,7 @@ function toewhiskers_menu() {
   );
   $items['map/variablelist'] = array(
     'page callback' => 'toewhiskers_variablelist_function',
-    'page arguments' => array(2,3,4),
+    'page arguments' => array(2,3,4,5),
     'access callback' => TRUE,
   );
   return $items;
@@ -353,12 +353,11 @@ function toewhiskers_narrow_subform(&$form){
     '#options' => $averageextremeoptions,
     '#default_value' => '2',
   );
-  $typeoptions = array(3 => 'All', 0 => 'Monthly', 1 => 'Seasonal', 2 => 'Annual');
   $form['narrow']['type'] = array(
     '#type' => 'radios',
     '#title' => t('Type'),
-    '#options' => $typeoptions,
-    '#default_value' => '3',
+    '#options' => array(0 => 'All', 1 => 'Monthly', 2 => 'Seasonal', 3 => 'Annual'),
+    '#default_value' => '0',
     '#suffix' => '<div class="clearfix"></div>',
   ); 
   $form['narrow']['filter'] = array(
@@ -959,7 +958,7 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
 /*
  *
  */
-function variablesarray($themeindex = 4, $impactindex = 0, $typeindex = 2){
+function variablesarray($themeindex = 4, $impactindex = 0, $typeindex = 2, $timescaleindex = 0){
   global $maindatatable;
   global $lookupdatatable;
   $comparearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
@@ -975,13 +974,14 @@ function variablesarray($themeindex = 4, $impactindex = 0, $typeindex = 2){
   if (array_key_exists($impactindex, $impactsarray )  && $impactindex != 0) {
     $impact = $impactsarray[$impactindex];
   }
-  
   $averageextreme = NULL;
   if($typeindex == 0) {$averageextreme = 'Average';}
   if($typeindex == 1) {$averageextreme = 'Extreme';}
-  
+  $timescale = NULL;
+  if($timescaleindex == 1) {$timescale = 'Monthly';}
+  if($timescaleindex == 2) {$timescale = 'Seasonal';}
+  if($timescaleindex == 3) {$timescale = 'Annual';}
   $variablesarray = array();
-  
   $o = "";
   db_set_active('cig_toe');
   $query = "SELECT DISTINCT " .$maindatatable. ".VARIABLEID AS k, "
@@ -992,6 +992,7 @@ function variablesarray($themeindex = 4, $impactindex = 0, $typeindex = 2){
   if($theme){ $query .= " AND " . $lookupdatatable . ".THEME = '" . $theme . "'";}
   if($impact){ $query .= " AND " . $lookupdatatable . ".IMPACT LIKE '%" . $impact . "%'";} 
   if($averageextreme){ $query .= " AND " . $lookupdatatable . ".AVERAGEEXTREME = '" . $averageextreme . "'";}
+  if($timescale){ $query .= " AND " . $lookupdatatable . ".TIMESCALE = '" . $timescale . "'";}
   if(array_key_exists('region', $comparearray)){ $query .= " AND " . $maindatatable . ".REGION = '" . $comparearray['region'] . "'";}
   
   $queries = array($query);
@@ -1043,8 +1044,8 @@ function queryForImpact(){
 /*
  * Ajax/JSON data retriever.
  */
-function toewhiskers_variablelist_function($themeindex,$impactindex,$typeindex){
-  $variableoptions = variablesarray($themeindex,$impactindex,$typeindex);
+function toewhiskers_variablelist_function($themeindex,$impactindex,$typeindex,$timescaleindex){
+  $variableoptions = variablesarray($themeindex,$impactindex,$typeindex,$timescaleindex);
   if(count($variableoptions) == 0){
     $variableoptions = array( 'No variables available for that set of parameters' );
   }
