@@ -1,7 +1,8 @@
 jQuery( document ).ready(function( $ ) {
 
       $('div.form-item-regioncounty').hide();   
-      $('div.form-item-regionwatershed').hide();         
+      $('div.form-item-regionwatershed').hide();   
+      $('div.form-item-regionstreamflow').hide();      
       $('div.form-item-geodomain').hide(); 
       $('#edit-submit').attr('disabled', 'disabled');
      
@@ -29,16 +30,21 @@ jQuery( document ).ready(function( $ ) {
     
     function exploreformvisibilityinterest(){
       $('div.form-item-regioncounty').hide(); 
+      $('div.form-item-regionstreamflow').hide();      
       $('div.form-item-regionwatershed').hide(); 
       if($('input:radio[name=compare]:checked').val() == '0'){
-         if($('input:radio[name=geodomain]:checked').val() == '1' ||$('input:radio[name=geodomain]:checked').val() == '2'){ 
+         if($('input:radio[name=geodomain]:checked').val() == '1'){ 
            $('div.form-item-regioncounty').show();
            $('#edit-submit').removeAttr('disabled');         
          }
-         if($('input:radio[name=geodomain]:checked').val() == '3'){ 
+         if($('input:radio[name=geodomain]:checked').val() == '2'){ 
            $('div.form-item-regionwatershed').show(); 
            $('#edit-submit').removeAttr('disabled');  
          }
+         if($('input:radio[name=geodomain]:checked').val() == '3'){ 
+           $('div.form-item-regionstreamflow').show(); 
+           $('#edit-submit').removeAttr('disabled');  
+         }  
       }
     }
   

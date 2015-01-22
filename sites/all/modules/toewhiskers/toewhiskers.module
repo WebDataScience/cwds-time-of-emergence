@@ -6,7 +6,7 @@ ini_set('display_errors', TRUE);
 ini_set('display_startup_errors', TRUE);
 
 global $maindatatable;
-$maindatatable = "variablev5";
+$maindatatable = "variablev6";
 global $lookupdatatable;
 $lookupdatatable = "lookupv2";
 global $toleranceoptions;
@@ -163,21 +163,16 @@ function toewhiskers_explore_form($form, &$form_submit) {
   module_load_include('inc', 'toewhiskers', 'includes/toewhiskers.options');
   // Session variable used to prepopulate if available.
   $previousvaluesearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
-  $options = array(
-    0 => 'A specific locale',
-    1 => 'A specific environmental variable [under development]',
-    /* 2 => 'Examine hotspots', */
-  );
   $form['compare'] = array(
     '#type' => 'radios',
     '#title' => t('I want to focus on...'),
-    '#options' => $options,
+    '#options' => array( 0 => 'A specific locale', 1 => 'A specific environmental variable', /* 2 => 'Examine hotspots', */ ),
     '#required' => TRUE,
   );
   $form['geodomain'] = array(
     '#type' => 'radios',
     '#title' => t('Choose location of interest'),
-    '#options' => array(    1 => 'County',    /* 2 => 'Watershed (8-digit HUC)', */    3 => 'Streamflow locations [under development]',  ),
+    '#options' => array( 1 => 'County', 2 => 'Watershed (8-digit HUC)',  3 => 'Streamflow locations',  ),
     '#default_value' => '1',
   );
   $form['regioncounty'] = array(
@@ -194,8 +189,16 @@ function toewhiskers_explore_form($form, &$form_submit) {
     '#options' => toewhiskers_get_watershed_array(),
     '#multiple' => FALSE,
     '#required' => TRUE,
-    '#default_value' => '',
-  );   
+    '#default_value' => '4.17.010101',
+  );
+  $form['regionstreamflow'] = array(
+    '#type' => 'select',
+    '#title' => t('Region'),
+    '#options' => toewhiskers_get_streamflow_array(),
+    '#multiple' => FALSE,
+    '#required' => TRUE,
+    '#default_value' => 'H0006',
+  );
   $form['submit'] = array(
     '#title' => t('Next'),
     '#value' => 'Next',
@@ -215,15 +218,20 @@ function toewhiskers_explore_form_submit($form, &$form_state) {
   $comparearray['compare'] = check_plain($form_state['values']['compare']);
   if($comparearray['compare'] == 0){
     $comparearray['geodomain'] = check_plain($form_state['values']['geodomain']); 
-    if($comparearray['geodomain'] == '1' || $comparearray['geodomain'] == '2'){
+    if($comparearray['geodomain'] == '1'){
       $regionVal = check_plain($form_state['values']['regioncounty']);
       $comparearray['region'] = $regionVal;
        $comparearray['regionname'] = check_plain($form_state['complete form']['regioncounty']['#options'][$regionVal]);
     }
-    if($comparearray['geodomain'] == '3'){
+    if($comparearray['geodomain'] == '2'){
       $regionVal = check_plain($form_state['values']['regionwatershed']);
       $comparearray['region'] = $regionVal;
       $comparearray['regionname'] = check_plain($form_state['complete form']['regionwatershed']['#options'][$regionVal]);
+    }
+    if($comparearray['geodomain'] == '3'){
+      $regionVal = check_plain($form_state['values']['regionstreamflow']);
+      $comparearray['region'] = $regionVal;
+      $comparearray['regionname'] = check_plain($form_state['complete form']['regionstreamflow']['#options'][$regionVal]);
     }
   }
   $_SESSION['compare'] = $comparearray;
@@ -727,7 +735,7 @@ function toewhiskers_json_query_function($mode){
   // Query for 'table' portion of /timeline page.
  
   $query = "SELECT ". $maindatatable.".*," . $lookupdatatable
-  . ".VARIABLESHORTNAME, GROUP_CONCAT(variablev5.toe order by variablev5.modelagreement SEPARATOR ', ') as TOERange
+  . ".VARIABLESHORTNAME, GROUP_CONCAT(" . $maindatatable . ".toe order by " . $maindatatable . ".modelagreement SEPARATOR ', ') as TOERange
   FROM {". $maindatatable."}  LEFT JOIN {"
   . $lookupdatatable . "} on (" . $lookupdatatable . ".VARIABLEID = ". $maindatatable.".VARIABLEID) WHERE
   ". $maindatatable.".VARIABLEID in ('" . $variables . "') 
@@ -996,7 +1004,7 @@ function variablesarray($themeindex = 4, $impactindex = 0, $typeindex = 2, $time
   if(array_key_exists('region', $comparearray)){ $query .= " AND " . $maindatatable . ".REGION = '" . $comparearray['region'] . "'";}
   
   $queries = array($query);
-  /* drupal_set_message('function variablesarray() query:<pre>'. print_r($queries, TRUE) .'</pre>'); */
+  /*drupal_set_message('function variablesarray() query:<pre>'. print_r($queries, TRUE) .'</pre>');*/
   foreach ($queries as $query) {
     $o .= "<br/>" . $query . "<br/>";   
     $result = db_query($query);
