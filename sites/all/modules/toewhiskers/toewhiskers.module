@@ -194,10 +194,10 @@ function toewhiskers_explore_form($form, &$form_submit) {
   $form['regionstreamflow'] = array(
     '#type' => 'select',
     '#title' => t('Region'),
-    '#options' => toewhiskers_get_streamflow_array(),
+    '#options' => toewhiskers_get_streamflow_regions_array(),
     '#multiple' => FALSE,
     '#required' => TRUE,
-    '#default_value' => 'H0006',
+    '#default_value' => '5.1.6002',
   );
   $form['submit'] = array(
     '#title' => t('Next'),
@@ -208,6 +208,38 @@ function toewhiskers_explore_form($form, &$form_submit) {
   return $form;
 }
 
+/**
+ * Validate handler for the '/explore' form.
+ */
+function toewhiskers_explore_form_validate($form, &$form_state) {
+  // Grab session values if present.
+  $comparearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
+  $comparearray['compare'] = check_plain($form_state['values']['compare']);
+  if($comparearray['compare'] == 0){
+    $comparearray['geodomain'] = check_plain($form_state['values']['geodomain']); 
+    if($comparearray['geodomain'] == '1'){
+      $regionVal = check_plain($form_state['values']['regioncounty']);
+      $safelist = toewhiskers_getregionarray();
+      if(!(array_key_exists($regionVal,$safelist))){
+        form_set_error('regioncounty', t("Please select a county region."));
+      }
+    }
+    if($comparearray['geodomain'] == '2'){
+      $regionVal = check_plain($form_state['values']['regionwatershed']);
+      $safelist = toewhiskers_get_watershed_array();
+      if(!(array_key_exists($regionVal,$safelist))){
+        form_set_error('regionwatershed', t("Please select a watershed region."));
+      }
+    }
+    if($comparearray['geodomain'] == '3'){
+      $regionVal = check_plain($form_state['values']['regionstreamflow']);
+      $safelist = toewhiskers_get_streamflow_regions_array();
+      if(!(array_key_exists($regionVal,$safelist))){
+        form_set_error('regionstreamflow', t("Please select a streamflow region."));
+      }
+    }
+  }
+}
 
 /**
  * Submit handler for the '/explore' form.
@@ -322,7 +354,7 @@ function toewhiskers_compare_form($form,&$form_submit) {
   );
   $form['parameter']['tolerance'] = array(
     '#type' => 'radios',
-    '#title' => t('Past Sensitivity*'),
+    '#title' => t('Past Sensitivity'),
     '#options' => $options,
     '#required' => TRUE,
     '#default_value' => isset($comparearray['tolerance'])?$comparearray['tolerance']:key($options),
@@ -330,7 +362,7 @@ function toewhiskers_compare_form($form,&$form_submit) {
   $options = array('95' => 'Fast', '50' => 'Central', '5' => 'Slow',);
   $form['parameter']['confidence'] = array(
     '#type' => 'radios',
-    '#title' => t('Estimated Rate of Climate Change*'),
+    '#title' => t('Estimated Rate of Climate Change'),
     '#options' => $options,
     '#required' => TRUE,
     '#default_value' => isset($comparearray['confidence'])?$comparearray['confidence']:50,//key($options),
