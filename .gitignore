@@ -7,4 +7,3 @@ sites/*/settings*.php
 sites/*/files
 sites/*/private
 
-mysql_dumps/mysqldump_cig_toe.sql
