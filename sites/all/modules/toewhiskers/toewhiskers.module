@@ -474,16 +474,12 @@ function toewhiskers_map_form($form,&$form_submit) {
     '#collapsible' => FALSE,
     '#collapsed' => FALSE,
   );
-  $maptypeoptions = array(
-    '1' => 'Emergence Year',
-    '2' => 'Emergence Location',
-  );
   $form['parameter']['maptype'] = array(
     '#type' => 'radios',
     '#title' => t('Map Type'),
-    '#options' => $maptypeoptions,
+    '#options' => array('1' => 'Emergence Year', '2' => 'Emergence Location', ),
     '#required' => TRUE,
-    '#default_value' => key($maptypeoptions),
+    '#default_value' => '1',
   );
   $extentoptions = array(1 => 'WA/OR/ID/BC', 2 => 'Puget Sound', );
   $form['parameter']['extent'] = array(
@@ -523,7 +519,7 @@ function toewhiskers_mapdetails_form($form,&$form_submit) {
   // User has supplied variable, maptype (emergence year or location), and Extent(PNW or Puget Sound). Let's present parameter choices for:
   // Emergence Year => tolerance,scenario,boundaries,dataset(db lookup based on vid)
   // Emergence Loc  => tolerance,scenario,boundaries,dataset(db lookup based on vid),timeperiod
-  
+  /*
   $maparray = isset($_SESSION['map'])?$_SESSION['map']:array();
   global $maindatatable;
   $query = "SELECT DISTINCT dataset FROM " . $maindatatable . " WHERE variableid = '" . $maparray['variable'] . "'";
@@ -534,6 +530,20 @@ function toewhiskers_mapdetails_form($form,&$form_submit) {
     $dataset = $record->dataset;
     $datasetoptions[$dataset] = $dataset;
   }
+  */
+  
+  
+  $maparray = isset($_SESSION['map'])?$_SESSION['map']:array();
+  global $lookupdatatable;
+  $query = "SELECT theme FROM " . $lookupdatatable . " WHERE variableid = '" . $maparray['variable'] . "'";
+  db_set_active('cig_toe');
+  $theme = db_query($query)->fetchField();
+  db_set_active();
+
+  $datasetoptions = array( "BCSD5" => "BCSD5", "BCSD3-WRF" => "BCSD3-WRF");
+  if($theme == "Hydrologic"){ $datasetoptions = array( "BCSD3" => "BCSD3"); }
+  if($theme == "Streamflow"){ $datasetoptions = array( "BCSD5" => "BCSD5", "BCSD3" => "BCSD3"); }
+  
   db_set_active();
   $maparray = isset($_SESSION['map'])?$_SESSION['map']:array();
   $form['parameter'] = array(
@@ -588,14 +598,14 @@ function toewhiskers_mapdetails_form_submit($form, &$form_state) {
   $formsubmitdataset = check_plain($form_state['values']['dataset']);
   if(strcasecmp ($formsubmitdataset, "BCSD5") == 0){$maparray['datasetimagecode'] = 1;}
   if(strcasecmp ($formsubmitdataset, "BCSD3") == 0){$maparray['datasetimagecode'] = 2;}
-  if(strcasecmp ($formsubmitdataset, "WRF3") == 0){$maparray['datasetimagecode'] = 3;}
+  if(strcasecmp ($formsubmitdataset, "BCSD3-WRF") == 0){$maparray['datasetimagecode'] = 3;}
   $maparray['period'] = (array_key_exists('period', $form_state['values']))?check_plain($form_state['values']['period']):'';
   
   $_SESSION['map'] = $maparray;
   
   // This is filename format represented by actual files.
   $filenametemplate = "mx_bx_v_tx_sx_c2_dx[_px].png";
-  $maparray['stage1filename'] = "m" . $maparray['maptype'] . "_b" . $maparray['boundary'] . "_" . ltrim($maparray['variable'], 'V') . "_t"   . $maparray['emergthres'] . "_s"   . $maparray['emissionscenario'] . "_c2_d"   . $maparray['datasetimagecode'];
+  $maparray['stage1filename'] = "m" . $maparray['maptype'] . "_b" . $maparray['boundary'] . "_" . ltrim($maparray['variable'], 'V') . "_t"   . $maparray['emergthres'] . "_s" . $maparray['emissionscenario'] . "_c2_d" . $maparray['datasetimagecode'];
   if(array_key_exists('maptype', $maparray) && $maparray['maptype'] == 2 ){$maparray['stage1filename'] .= "_p" . $maparray['period'];}
   $maparray['stage1filename'] .= ".png";
   
