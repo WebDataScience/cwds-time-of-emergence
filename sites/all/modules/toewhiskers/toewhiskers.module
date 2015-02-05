@@ -19,7 +19,6 @@ function toewhiskers_menu() {
     'access callback' => TRUE,
   );
   $items['compare'] = array(
-    //'page callback' => 'toewhiskers_renderwebformelement_function',
     'page callback' => 'toewhiskers_compare_page_function',
     'page arguments' => array(),
     'access callback' => TRUE,
@@ -419,8 +418,8 @@ function toewhiskers_narrow_subform_theme(&$form){
     '#default_value' => '4',
   );
 }
-  
-  
+
+
 /**
  * Submit handler for the 'compare' form.
  */
@@ -428,13 +427,8 @@ function toewhiskers_compare_form_submit($form, &$form_state) {
   //drupal_set_message('formstate:<pre>'. print_r($form_state, TRUE) .'</pre>');
   // Grab session values if present.
   $comparearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
-  //$comparearray['theme'] = check_plain($form_state['values']['theme']);
-  $comparearray['impact'] = check_plain($form_state['values']['impact']);
-  $comparearray['descriptor'] = check_plain($form_state['values']['descriptor']);
-  $comparearray['type'] = check_plain($form_state['values']['type']);
   $comparearray['variable'] = toewhiskers_clean_array($form_state['values']['variable']);
   $comparearray['emission'] = check_plain($form_state['values']['emission']);
-  // $comparearray['emission'] = toewhiskers_clean_array($form_state['values']['emission']);
   $comparearray['dataset'] = check_plain($form_state['values']['dataset']);
   $comparearray['tolerance'] = check_plain($form_state['values']['tolerance']);
   $comparearray['confidence'] = check_plain($form_state['values']['confidence']);
@@ -448,7 +442,6 @@ function toewhiskers_compare_form_submit($form, &$form_state) {
   } else {
     $form_state['redirect'] = 'timeline';
   }
-
 }
 
 
@@ -499,15 +492,6 @@ function toewhiskers_map_form($form,&$form_submit) {
     '#options' => $extentoptions,
     '#default_value' => '1',
   );
-  /*
-  $options = array(1 => '80', 2 => '95', );
-  $form['parameter']['emergencethreshold'] = array(
-    '#type' => 'radios',
-    '#title' => t('Emergence Threshold'),
-    '#options' => $options,
-    '#default_value' => '1',
-  );
-  */
   $form['submit'] = array(
     '#title' => t('Calculate'),
     '#value' => 'Next',
@@ -516,17 +500,6 @@ function toewhiskers_map_form($form,&$form_submit) {
   return $form;
 }
 
-/**
- * Validate handler for the 'map' form
- */
-function toewhiskers_map_form_validate($form, &$form_state) {
-  $variableid = check_plain($form_state['values']['variable']);
-  $allvariablearray = array();
-  $allvariablearray = variablesarray();
-  if( ! (array_key_exists( $variableid, $allvariablearray['variablesarray'] )) ){
-    form_set_error('variable', 'Invalid variable choice.');
-  }
-}
 
 /**
  * Submit handler for the 'map' form.
@@ -540,24 +513,8 @@ function toewhiskers_map_form_submit($form, &$form_state) {
   $maparray['variable'] = check_plain($form_state['values']['variable']);
   $maparray['maptype'] = check_plain($form_state['values']['maptype']);
   $maparray['extent'] = check_plain($form_state['values']['extent']);
-  
   // Set session variable.
   $_SESSION['map'] = $maparray;
-
-  /*
-The following data to map linkages provided in a Trello based document by Rita.
-From CIG:  
-Dimensions	Options	1	2	3	4
-Map	M[1,2]	Emergence Year	Emergence Location		
-Extent	E[1,2]	WA/OR/ID/BC	Puget Sound		
-Boundaries overlaid	B[1,2,3,4]	State	County	Watershed	Tribal Land
-Variable	V				
-EmergThres	T[1,2]	80	95		
-EmisScenario	S[1,2]	rcp45 or B1	rcp85 or A1B		
-SignalConfidence	C[1,2,3]	5	50	95	
-Period	P[1,2,3]	2025	2050	2075	2100
-Dataset	D[1,2,3]	BCSD5	BCSD3	WRF3				
-  */ 
   $form_state['redirect'] = 'mapdetails';
 }
 
@@ -578,7 +535,6 @@ function toewhiskers_mapdetails_form($form,&$form_submit) {
     $datasetoptions[$dataset] = $dataset;
   }
   db_set_active();
-
   $maparray = isset($_SESSION['map'])?$_SESSION['map']:array();
   $form['parameter'] = array(
     '#type' => 'fieldset',
@@ -610,16 +566,6 @@ function toewhiskers_mapdetails_form($form,&$form_submit) {
     '#options' => $datasetoptions,
     '#default_value' => isset($maparray['dataset'])?$maparray['dataset']:key($datasetoptions),
   );
-  /* No need for Period. 'Nivo_slider' code is showing all four images as a slideshow.
-  if(array_key_exists('maptype', $maparray) && $maparray['maptype'] == 2 ){
-    $form['parameter']['period'] = array(
-      '#type' => 'radios',
-      '#title' => t('Period'),
-      '#options' => array(1 => '2025', 2 => '2050', 3 => '2075', 4 => '2100', ),
-    '#default_value' => isset($maparray['period'])?$maparray['period']:'1',
-    );
-  }
-  */
 	$form['submit'] = array(
     '#title' => t('Calculate'),
     '#value' => 'Query for map',
@@ -885,18 +831,16 @@ Climate Data: " . $prettynames['dataset'][$dataset] . "\n\n";
  * This function returns data for the boxplot page.
  */
 function toewhiskers_json_query_boxplot_function($variable,$mode){
-
   $verbose_test_mode = FALSE;
-  
   global $maindatatable;
   global $lookupdatatable;
-  
   $jasondata = array();
-  $jasondata['variable'] = $variable;
-  // Database contains only the King County region. This will need updating when additional regions are added to data in db.
+  $safevariablelist = variablesarray();
+  if(in_array(check_plain($variable), $safevariablelist ) ){
+    $jasondata['variable'] = check_plain($variable);
+  } 
   $jasondata['regionname'] = $_SESSION['compare']['regionname'];
-  // Database contains only the BCSD5 dataset. This will need updating when additional datasets are added to data in db.
-  $jasondata['dataname'] = "Statistically-downscaled (CMIP5 BCSD)";
+  $jasondata['dataname'] = $_SESSION['compare']['dataset'];
   $emergencethreshold_array = array('95','80');
   $emissionscenario_array = array('rcp85','rcp45');
   $signalconfidence_array = array('95','50','5');
@@ -923,15 +867,12 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
         // Result is returned as a iterable object that returns a stdClass object on each iteration
         foreach ($result as $record) {
          // $pos = strpos($record->GCM, 'ensemble');
-         /*
-            if($record->TOE <= 2100){
+         /* if($record->TOE <= 2100){
               $dots[$record->GCM] = $record->TOE;
             }
          else {
             $box[$record->GCM] = $record->TOE;
-          }
-          */
-          
+          }          */
           $pos = strpos($record->GCM, 'ensemble');
           if ($pos === false) {
             if($record->TOE <= 2100){
@@ -1002,13 +943,12 @@ function variablesarray($themeindex = 4, $impactindex = 0, $typeindex = 2, $time
   global $maindatatable;
   global $lookupdatatable;
   $comparearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
+  /* Validate user input, define the theme variable if input is valid, repeat for each of the four filters. */
   $theme = NULL;
   if($themeindex == 0) {$theme = 'Air Temperature';}
   if($themeindex == 1) {$theme = 'Precipitation';}
   if($themeindex == 2) {$theme = 'Hydrologic';}
   if($themeindex == 3) {$theme = 'Streamflow';}
-
-  /* Construct list of impacts, validate user input, define '$impact' if input is valid. */
   $impact = NULL;
   $impactsarray = queryForImpact();
   if (array_key_exists($impactindex, $impactsarray )  && $impactindex != 0) {
@@ -1035,16 +975,12 @@ function variablesarray($themeindex = 4, $impactindex = 0, $typeindex = 2, $time
   if($timescale){ $query .= " AND " . $lookupdatatable . ".TIMESCALE = '" . $timescale . "'";}
   if(array_key_exists('region', $comparearray)){ $query .= " AND " . $maindatatable . ".REGION = '" . $comparearray['region'] . "'";}
   
-  $queries = array($query);
-  /*drupal_set_message('function variablesarray() query:<pre>'. print_r($queries, TRUE) .'</pre>');*/
-  foreach ($queries as $query) {
-    $o .= "<br/>" . $query . "<br/>";   
-    $result = db_query($query);
-    // Result is returned as a iterable object that returns a stdClass object on each iteration
-    foreach ($result as $record) {
-      if(isset($record->v)){
-        $variablesarray[$record->k] = t($record->v);
-      }
+  $o .= "<br/>" . $query . "<br/>";   
+  $result = db_query($query);
+  // Result is returned as a iterable object that returns a stdClass object on each iteration
+  foreach ($result as $record) {
+    if(isset($record->v)){
+      $variablesarray[$record->k] = t($record->v);
     }
   }
   db_set_active();
