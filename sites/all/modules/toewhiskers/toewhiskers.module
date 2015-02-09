@@ -519,19 +519,6 @@ function toewhiskers_mapdetails_form($form,&$form_submit) {
   // User has supplied variable, maptype (emergence year or location), and Extent(PNW or Puget Sound). Let's present parameter choices for:
   // Emergence Year => tolerance,scenario,boundaries,dataset(db lookup based on vid)
   // Emergence Loc  => tolerance,scenario,boundaries,dataset(db lookup based on vid),timeperiod
-  /*
-  $maparray = isset($_SESSION['map'])?$_SESSION['map']:array();
-  global $maindatatable;
-  $query = "SELECT DISTINCT dataset FROM " . $maindatatable . " WHERE variableid = '" . $maparray['variable'] . "'";
-  $datasetoptions = array();
-  db_set_active('cig_toe');
-  $result = db_query($query);
-  foreach ($result as $record) {
-    $dataset = $record->dataset;
-    $datasetoptions[$dataset] = $dataset;
-  }
-  */
-  
   
   $maparray = isset($_SESSION['map'])?$_SESSION['map']:array();
   global $lookupdatatable;
@@ -646,15 +633,12 @@ function toewhiskers_json_query_function($mode){
   $max_TOE_year = 2100;
   $verbose_test_mode = TRUE;
   $compare = $_SESSION['compare'];
-  //$region = trim($compare['region']);
   // Multiple variables allowed.
   $variables = implode("','",$compare['variable']);
   $variables = str_replace(" ", "", $variables);
   // Radios
   $emission = trim($compare['emission']);
   // Checkboxes
-  //$emissions = implode("','",$compare['emission']);
-  //$emissions = str_replace(" ", "", $emissions);
   $dataset = trim($compare['dataset']);
   $tolerance = trim($compare['tolerance']);
   $confidence = trim($compare['confidence']);
@@ -678,13 +662,12 @@ function toewhiskers_json_query_function($mode){
   if($compare['emission'] == "low"){
     $query .= "AND (". $maindatatable.".EMISSCENARIO = 'rcp45' OR " . $maindatatable.".EMISSCENARIO = 'b1') ";
   }
+  $query .= "  AND ( ( ( " . $lookupdatatable . ".THEME = 'Air temperature' OR " . $lookupdatatable . ".THEME = 'Precipitation' OR " . $lookupdatatable . ".THEME = 'Streamflow') AND ". $maindatatable.".DATASET = 'BCSD5') OR (" . $lookupdatatable . ".THEME = 'Hydrologic' AND ". $maindatatable.".DATASET = 'BCSD3') )";
   $query .= " LIMIT 20";
   
   $timelinequery = $query;
   $timelinequery = str_replace("{", "", $timelinequery);
-  $timelinequery = str_replace("}", "", $timelinequery);
-
-  //AND ". $maindatatable.".DATASET = '" . $dataset . "'  
+  $timelinequery = str_replace("}", "", $timelinequery); 
     
   // Setup to query non Drupal database.
   db_set_active('cig_toe');
@@ -740,8 +723,6 @@ function toewhiskers_json_query_function($mode){
   }
   $query .= " group BY ". $maindatatable.".VARIABLEID ";
   $result = db_query($query);
-  
-  //  AND ". $maindatatable.".DATASET = '" . $dataset . "' 
   
   // Result is returned as a iterable object that returns a stdClass object on each iteration
   foreach ($result as $record) {
