@@ -336,21 +336,7 @@ function toewhiskers_compare_form($form,&$form_submit) {
     '#required' => TRUE,
     '#default_value' => isset($comparearray['emission'])?$comparearray['emission']:key($options),
   );
-  $options = array( 'BCSD5' => 'Statistically-downscaled (CMIP5 BCSD)',  );
-  $form['parameter']['dataset'] = array(
-   '#type' => 'hidden',
-    '#title' => t('Climate Data'),
-    '#options' => $options,
-    '#required' => TRUE,
-    '#default_value' => isset($comparearray['dataset'])?$comparearray['dataset']:key($options),
-  );
-  if($comparearray['geodomain'] == 3 ){
-    $form['parameter']['dataset'] = array('#type' => 'hidden', '#value' => 'BCSD5');
-  }
-  $options = array(
-    '95' => 'Low (to extreme 10% of 1950-1999 conditions)',
-    '80' => 'High (to extreme 40% of 1950-1999 conditions)',
-  );
+  $options = array(    '95' => 'Low (to extreme 10% of 1950-1999 conditions)',    '80' => 'High (to extreme 40% of 1950-1999 conditions)',  );
   $form['parameter']['tolerance'] = array(
     '#type' => 'radios',
     '#title' => t('Past Sensitivity'),
