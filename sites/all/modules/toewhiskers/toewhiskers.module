@@ -770,9 +770,6 @@ function toewhiskers_json_query_function($mode){
       '95'	=>	'Low (to extreme 10% of 1950-1999 conditions))',
       '80'	=>	'High (to extreme 40% of 1950-1999 conditions)',
     );
-    $prettynames['dataset'] = array(
-      'BCSD5'	=>	'Statistically-downscaled (CMIP5 BCSD)',
-    );
     
     $o = "Region: " . $_SESSION['compare']['regionname'] . "
 Emission Scenario: " . $prettynames['emission'][$emission] . "
@@ -793,8 +790,7 @@ Historical 'Noise' Range: " . $prettynames['tolerance'][$tolerance] . "
     
   } else {
     // Output JSON data for /timeline AJAX query.
-    // Cleaner output for testing only:
-    // drupal_json_output(print_r($toedata));
+    // Cleaner output for testing only: drupal_json_output(print_r($toedata));
     drupal_json_output($toedata);  
   }
 }
@@ -825,7 +821,7 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
   // Query for variable name and theme.
   $query = "SELECT variablename,theme FROM " . $lookupdatatable . " where variableid='" . $variable . "' LIMIT 1";
   $row = (object)db_query($query)->fetchAssoc();
-  $jasondata['variablename'] = substr($row->variablename, 0, 90);
+  $jasondata['variablename'] = substr($row->variablename, 0, 70);
   $jasondata['theme'] = $row->theme;
   $boxplotdata = array();
   
@@ -844,7 +840,7 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
     foreach ($emissionscenario_array as $key=>$emissionscenario){    
       foreach ($signalconfidence_array as $key=>$signalconfidence){
         $dots = array();
-        $box = array();
+        $box = array('25' => 0, '50' => 0, '75' => 0);
         
         $query="select * from " . $maindatatable . " WHERE variableid='" . $variable . "' and emergthres=" . $emergencethreshold . " and signalconfidence=" . $signalconfidence . " AND REGION = '" . $_SESSION['compare']['region'] . "'";
         
@@ -869,11 +865,15 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
              //$box[$record->GCM] = $record->TOE;
             $box[$record->MODELAGREEMENT] = $record->TOE;
           }
-         
+        }
+        
+        $oneboxarray = array(0,0,0);
+        if($box['25'] > 0 && $box['50'] > 0 && $box['75'] >0 ){
+          $oneboxarray = array($box['25'],$box['50'],$box['75']);
         }
         $oneboxplot = array(
           // "box" => array($box['GCM_ensemble_25'],$box['GCM_ensemble'],$box['GCM_ensemble_75']),
-          "box" => array($box['25'],$box['50'],$box['75']),
+          "box" => $oneboxarray,
           "dots" => $dots,
           "query" => $query,
         );  
