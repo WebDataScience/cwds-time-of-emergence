@@ -100,15 +100,12 @@ jQuery( document ).ready(function( $ ) {
     charttitle += "<br/>Multi-Model Projections (21 global climate models)";
     charttitle = charttitle + "<br/>Region: " + jsonobj.regionname ;
     charttitle += "<br/>Climate Data: " + jsonobj.dataname;    
-    
-    //empty the loading gif
-    //$("#top-x-title").empty();
     $("#top-x-title").html(charttitle);
     
-    drawBoxplot("chart-area-1", "High Emissions (RCP 8.5)", parse4data(jsonobj.emergencethreshold95.emissionscenariorcp85),"Past Sensitivity Low (to extreme 10% of 1950-1999 conditions)");
-    drawBoxplot("chart-area-2", "Low Emissions (RCP 4.5)", parse4data(jsonobj.emergencethreshold95.emissionscenariorcp45),"");
-    drawBoxplot("chart-area-3", "High Emissions (RCP 8.5)",parse4data(jsonobj.emergencethreshold80.emissionscenariorcp85),"Past Sensitivity High (to extreme 40% of 1950-1999 conditions)");
-    drawBoxplot("chart-area-4", "Low Emissions (RCP 4.5)", parse4data(jsonobj.emergencethreshold80.emissionscenariorcp45),"");    
+    drawBoxplot("chart-area-1", "High Emissions (RCP 8.5 or A1B)", parse4data(jsonobj.emergencethreshold95.emissionscenariohigh),"Past Sensitivity Low (to extreme 10% of 1950-1999 conditions)");
+    drawBoxplot("chart-area-2", "Low Emissions (RCP 4.5 or B1)", parse4data(jsonobj.emergencethreshold95.emissionscenariolow),"");
+    drawBoxplot("chart-area-3", "High Emissions (RCP 8.5 or A1B)",parse4data(jsonobj.emergencethreshold80.emissionscenariohigh),"Past Sensitivity High (to extreme 40% of 1950-1999 conditions)");
+    drawBoxplot("chart-area-4", "Low Emissions (RCP 4.5 or B1)", parse4data(jsonobj.emergencethreshold80.emissionscenariolow),"");    
   });
   
 
