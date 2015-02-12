@@ -57,15 +57,13 @@ jQuery( document ).ready(function( $ ) {
     var nochartmessage = "<p>No results are available for that configuration of parameters.</p>";
     if(timelinedataarray.length ==  0){
       $("#chartmessage" ).html( nochartmessage );
+      $("#timeline-chart" ).empty();
       return;
     } 
-    
     //remove the loading gif
     $("#timeline-chart" ).empty();
     // D3.js based timeline chart
-    
-    //console.log(websitetextarray['emission'][jsonobj.emission] + timelinedataarray +  
-      //jsonobj.maxtoeyear);
+    //console.log(websitetextarray['emission'][jsonobj.emission] + timelinedataarray + jsonobj.maxtoeyear);
     drawD3Timeline(
       timelinedataarray, 
       jsonobj.maxtoeyear,

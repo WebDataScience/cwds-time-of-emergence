@@ -624,7 +624,6 @@ function toewhiskers_json_query_function($mode){
   // Radios
   $emission = trim($compare['emission']);
   // Checkboxes
-  $dataset = trim($compare['dataset']);
   $tolerance = trim($compare['tolerance']);
   $confidence = trim($compare['confidence']);
   $region = trim($compare['region']);
@@ -775,12 +774,11 @@ function toewhiskers_json_query_function($mode){
       'BCSD5'	=>	'Statistically-downscaled (CMIP5 BCSD)',
     );
     
-    echo "DATASET" . $dataset;
     $o = "Region: " . $_SESSION['compare']['regionname'] . "
 Emission Scenario: " . $prettynames['emission'][$emission] . "
 Estimated Rate of Climate Change: " . $prettynames['confidence'][$confidence] . "
 Historical 'Noise' Range: " . $prettynames['tolerance'][$tolerance] . "
-Climate Data: " . $prettynames['dataset'][$dataset] . "\n\n";
+\n\n";
  
     foreach($toe_array as $toe_object){
       $csv .= '"' . $toe_object->VARIABLESHORTNAME . '",' . $toe_object->TOE . ',"' . (($toe_object->YEARA == 'Unknown' && $toe_object->YEARB = 'Unknown')?'No emergence':$toe_object->YEARA . ' - ' . $toe_object->YEARB) . '",';
