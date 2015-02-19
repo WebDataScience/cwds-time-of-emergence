@@ -681,6 +681,7 @@ function toewhiskers_json_query_function($mode){
     'TOE'=> 'ToE_CentralTendency',
     'TOE_RANGE' => 'ToE_Range',
     'CHANGEDIR'=> 'Direction_of_Change',
+    'DATASET' => 'Dataset',
   );
   $csv = implode(",", array_values($csvvariables)) . "\n";
   
@@ -705,6 +706,10 @@ function toewhiskers_json_query_function($mode){
   if($compare['emission'] == "low"){
     $query .= "AND (". $maindatatable.".EMISSCENARIO = 'rcp45' OR " . $maindatatable.".EMISSCENARIO = 'b1') ";
   }
+  
+    $query .= "  AND ( ( ( " . $lookupdatatable . ".THEME = 'Air temperature' OR " . $lookupdatatable . ".THEME = 'Precipitation' OR " . $lookupdatatable . ".THEME = 'Streamflow') AND ". $maindatatable.".DATASET = 'BCSD5') OR (" . $lookupdatatable . ".THEME = 'Hydrologic' AND ". $maindatatable.".DATASET = 'BCSD3') )";
+  
+  
   $query .= " group BY ". $maindatatable.".VARIABLEID ";
   $result = db_query($query);
   
@@ -731,6 +736,7 @@ function toewhiskers_json_query_function($mode){
       $toe_array[$record->VARIABLEID]->YEARB = $toe;
     }
     $toe_array[$record->VARIABLEID]->CHANGEDIR = $record->CHANGEDIR;
+    $toe_array[$record->VARIABLEID]->DATASET = $record->DATASET;
   }  // End tabledata query.
  
   $tablequery = $query;
@@ -744,7 +750,6 @@ function toewhiskers_json_query_function($mode){
     "emission" => $emission,
     "confidence" => $confidence,
     "tolerance" => $tolerance,
-    "dataset" => $dataset,
     "timelinedata" => $timelinedata,
     "tabledata" => $toe_array,
     "timelinequery" => $timelinequery,
@@ -779,7 +784,8 @@ Historical 'Noise' Range: " . $prettynames['tolerance'][$tolerance] . "
  
     foreach($toe_array as $toe_object){
       $csv .= '"' . $toe_object->VARIABLESHORTNAME . '",' . $toe_object->TOE . ',"' . (($toe_object->YEARA == 'Unknown' && $toe_object->YEARB = 'Unknown')?'No emergence':$toe_object->YEARA . ' - ' . $toe_object->YEARB) . '",';
-      $csv .= ($toe_object->CHANGEDIR == 1)?'"Increasing"':'"Decreasing"';
+      $csv .= ($toe_object->CHANGEDIR == 1)?'"Increasing",':'"Decreasing",';
+      $csv .= $toe_object->DATASET;
       $csv .= "\n";
     }
     $o .= $csv;
