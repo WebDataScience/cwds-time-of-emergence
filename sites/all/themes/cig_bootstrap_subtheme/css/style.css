@@ -156,43 +156,43 @@ body {
 		======================================================================== */
 @font-face {
   font-family: encode-sans-normal;
-  src: url("../assets/fonts/EncodeSansNormal-400-Regular.ttf") format('truetype');
+  src: url("/sites/all/themes/cig_bootstrap_subtheme/assets/fonts/EncodeSansNormal-400-Regular.ttf") format('truetype');
   font-weight: normal;
   font-style: normal; }
 
 @font-face {
   font-family: encode-sans-black;
-  src: url("../assets/fonts/EncodeSansNormal-900-Black.ttf") format('truetype');
+  src: url("/sites/all/themes/cig_bootstrap_subtheme/assets/fonts/EncodeSansNormal-900-Black.ttf") format('truetype');
   font-weight: normal;
   font-style: normal; }
 
 @font-face {
   font-family: encode-sans-condensed;
-  src: url("../assets/fonts/EncodeSansCondensed-800-ExtraBold.ttf") format('truetype');
+  src: url("/sites/all/themes/cig_bootstrap_subtheme/assets/fonts/EncodeSansCondensed-800-ExtraBold.ttf") format('truetype');
   font-weight: normal;
   font-style: normal; }
 
 @font-face {
   font-family: open-sans;
-  src: url("../assets/fonts/OpenSans-Regular.ttf") format('truetype');
+  src: url("/sites/all/themes/cig_bootstrap_subtheme/assets/fonts/OpenSans-Regular.ttf") format('truetype');
   font-weight: normal;
   font-style: normal; }
 
 @font-face {
   font-family: open-sans-bold;
-  src: url("../assets/fonts/OpenSans-Bold.ttf") format('truetype');
+  src: url("/sites/all/themes/cig_bootstrap_subtheme/assets/fonts/OpenSans-Bold.ttf") format('truetype');
   font-weight: normal;
   font-style: normal; }
 
 @font-face {
   font-family: open-sans-light;
-  src: url("../assets/fonts/OpenSans-Light.ttf") format('truetype');
+  src: url("/sites/all/themes/cig_bootstrap_subtheme/assets/fonts/OpenSans-Light.ttf") format('truetype');
   font-weight: normal;
   font-style: normal; }
 
 @font-face {
   font-family: uni-sans-light;
-  src: url("../assets/fonts/Fontfabric - UniSansLight.otf") format('truetype');
+  src: url("/sites/all/themes/cig_bootstrap_subtheme/assets/fonts/Fontfabric - UniSansLight.otf") format('truetype');
   font-weight: normal;
   font-style: normal; }
 
@@ -6047,16 +6047,16 @@ th.hide-for-touch {
   background-color: rgba(0, 0, 0, 0.5); }
 
 .nivo-lightbox-theme-default .nivo-lightbox-prev {
-  background-image: url('../assets/nivo-lightbox/themes/default/prev.png');
+  background-image: url('/sites/all/themes/cig_bootstrap_subtheme/assets/nivo-lightbox/themes/default/prev.png');
   border-radius: 0 3px 3px 0; }
 
 .nivo-lightbox-theme-default .nivo-lightbox-next {
-  background-image: url('../assets/nivo-lightbox/themes/default/next.png');
+  background-image: url('/sites/all/themes/cig_bootstrap_subtheme/assets/nivo-lightbox/themes/default/next.png');
   border-radius: 3px 0 0 3px; }
 
 .nivo-lightbox-theme-default .nivo-lightbox-close {
   display: block;
-  background: url('../assets/nivo-lightbox/themes/default/close.png') no-repeat;
+  background: url('/sites/all/themes/cig_bootstrap_subtheme/assets/nivo-lightbox/themes/default/close.png') no-repeat;
   width: 16px;
   height: 16px;
   text-indent: -9999px;
@@ -6093,16 +6093,16 @@ th.hide-for-touch {
 
 @media (-webkit-min-device-pixel-ratio: 1.3), (-o-min-device-pixel-ratio: 2.6/2), (min--moz-device-pixel-ratio: 1.3), (min-device-pixel-ratio: 1.3), (min-resolution: 1.3dppx) {
   .nivo-lightbox-theme-default .nivo-lightbox-content.nivo-lightbox-loading {
-    background-image: url('../assets/nivo-lightbox/themes/default/loading@2x.gif');
+    background-image: url('/sites/all/themes/cig_bootstrap_subtheme/assets/nivo-lightbox/themes/default/loading@2x.gif');
     background-size: 32px 32px; }
   .nivo-lightbox-theme-default .nivo-lightbox-prev {
-    background-image: url('../assets/nivo-lightbox/themes/default/prev@2x.png');
+    background-image: url('/sites/all/themes/cig_bootstrap_subtheme/assets/nivo-lightbox/themes/default/prev@2x.png');
     background-size: 48px 48px; }
   .nivo-lightbox-theme-default .nivo-lightbox-next {
-    background-image: url('../assets/nivo-lightbox/themes/default/next@2x.png');
+    background-image: url('/sites/all/themes/cig_bootstrap_subtheme/assets/nivo-lightbox/themes/default/next@2x.png');
     background-size: 48px 48px; }
   .nivo-lightbox-theme-default .nivo-lightbox-close {
-    background-image: url('../assets/nivo-lightbox/themes/default/close@2x.png');
+    background-image: url('/sites/all/themes/cig_bootstrap_subtheme/assets/nivo-lightbox/themes/default/close@2x.png');
     background-size: 16px 16px; } }
 
 /* Slider */
@@ -6181,8 +6181,8 @@ th.hide-for-touch {
 /* Icons */
 @font-face {
   font-family: "slick";
-  src: url(../assets/slick/fonts/slick.eot);
-  src: url(#{$slick-font-path}slick.eot?#iefix) format("embedded-opentype"), url(../assets/slick/fonts/slick.woff) format("woff"), url(../assets/slick/fonts/slick.ttf) format("truetype"), url(#{$slick-font-path}slick.svg#slick) format("svg");
+  src: url(/sites/all/themes/cig_bootstrap_subtheme/assets/slick/fonts/slick.eot);
+  src: url(#{$slick-font-path}slick.eot?#iefix) format("embedded-opentype"), url(/sites/all/themes/cig_bootstrap_subtheme/assets/slick/fonts/slick.woff) format("woff"), url(../assets/slick/fonts/slick.ttf) format("truetype"), url(#{$slick-font-path}slick.svg#slick) format("svg");
   font-weight: normal;
   font-style: normal; }
 
@@ -6638,7 +6638,7 @@ figcaption {
   padding-right: 0 !important; }
 
 .side-nav {
-  background-image: url("/wp-content/themes/coenv-cig/assets/img/side-nav-top.png");
+  background-image: url("/sites/all/themes/cig_bootstrap_subtheme/assets/img/side-nav-top.png");
   background-position: center top;
   background-repeat: no-repeat;
   border-top: 1px solid #dddddd;
@@ -6841,7 +6841,7 @@ form .field-wrap {
   position: relative; }
 
 .units {
-  background-image: url("/wp-content/themes/coenv-cig/assets/img/slash.png");
+  background-image: url("/sites/all/themes/cig_bootstrap_subtheme/assets/img/slash.png");
   background-position: left center;
   background-repeat: no-repeat;
   float: left;
@@ -6866,7 +6866,7 @@ form .field-wrap {
   margin-top: 8px; }
 
 .section-wrapper {
-  background-image: url("/wp-content/themes/coenv-cig/assets/img/header-forest.jpg");
+  background-image: url("/sites/all/themes/cig_bootstrap_subtheme/assets/img/header-forest.jpg");
   background-position: center center;
   background-color: #666666;
   height: 193px;
@@ -7216,7 +7216,7 @@ form .field-wrap {
   font-size: 1.125rem;
   line-height: 24px;
   line-height: 1.5rem;
-  background-image: url("/wp-content/themes/coenv-cig/assets/img/purple-rule.png");
+  background-image: url("/sites/all/themes/cig_bootstrap_subtheme/assets/img/purple-rule.png");
   background-repeat: no-repeat;
   background-position: bottom left;
   color: #4b2e83;
@@ -7279,7 +7279,7 @@ form .field-wrap {
   font--webkit-font-smoothing: antialiased;
   padding: 16px 32px;
   padding: 1rem 2rem;
-  background-image: url("/wp-content/themes/coenv-cig/assets/img/blockquote-top.png");
+  background-image: url("/sites/all/themes/cig_bootstrap_subtheme/assets/img/blockquote-top.png");
   background-repeat: no-repeat;
   background-position: top left;
   background-color: #ebebeb;

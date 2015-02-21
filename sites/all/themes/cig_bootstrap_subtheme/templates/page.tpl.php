@@ -169,39 +169,49 @@
                     <div class="section-title-wrapper">
                         <div class="section-row row">
                             <div class="columns large-8 section-title">
-                                
+
+   
+
                                         <?php if (!empty($site_name)): ?>
                                         <a class="name navbar-brand" href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>"><?php print $site_name; ?></a>
                                         <?php endif; ?>
+   
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="row">
 
+                    <div class="entry-content">
+                    <?php print render($page['header']); ?>
+                    </div>
 
                     <div class="small-12 medium-12 columns" role="main">
-
-
                             <?php if (!empty($page['sidebar_first'])): ?>
                             <div class="main-container container">
                             <aside id="sidebar" class="small-12 medium-3 columns">
                                 <article id="coenv_base_subnav-2" class="row widget widget_coenv_base_subnav">
-                                    <ul class="side-nav">
-                                        <ul class="side-nav">
-               
-                                        <aside class="col-sm-3" role="complementary">
-                                         <?php print render($page['sidebar_first']); ?>
-                                        </aside>  <!-- /#sidebar-second -->
-                                    </ul>
-                                    </ul>
+                                    <!--<ul class="side-nav">
+                                    </ul> -->
+                                    <aside role="complementary">   
+                                    <?php print render($page['sidebar_first']); ?>
+                                    </aside>
+                                    <!-- <aside class="col-sm-3" role="complementary">    
+                                    </aside>   /#sidebar-second -->
                                 </article>
                             </aside>
-                           </div>
-                        <?php endif; ?>
+                            </div>
+                            <?php endif; ?>
+                            
+
+
+
 
                         <article class="post-82 page type-page status-publish hentry template-page" id="post-82">
                             <div class="entry-content">
+
+
+
 
                                 <section<?php print $content_column_class; ?>>
                                                 <?php if (!empty($page['highlighted'])): ?>
@@ -246,14 +256,11 @@
                             <div class="main-container container">
                             <aside id="sidebar" class="small-12 medium-3 columns">
                                 <article id="coenv_base_subnav-2" class="row widget widget_coenv_base_subnav">
-                                    <ul class="side-nav">
-                                        <ul class="side-nav">
-               
-                                        <aside class="col-sm-3" role="complementary">
-                                         <?php print render($page['sidebar_second']); ?>
-                                        </aside>  <!-- /#sidebar-second -->
-                                    </ul>
-                                    </ul>
+                                    <!-- <ul class="side-nav">
+                                    </ul> --> 
+                                    <aside role="complementary">
+                                    <?php print render($page['sidebar_second']); ?>
+                                    </aside>  <!-- /#sidebar-second -->
                                 </article>
                             </aside>
                            </div>
