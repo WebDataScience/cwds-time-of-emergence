@@ -127,7 +127,7 @@ function toewhiskers_getregionarray() {
 
 
 function toewhiskers_get_streamflow_regions_array() {
-  return(array(
+ $streamflow = array(
  '5.1.6002' => 'Similkameen River nr Nighthawk',
  '5.1.6005' => 'Chehalis River near Doty', 
  '5.1.6006' => 'Satsop River near Satsop', 
@@ -221,14 +221,16 @@ function toewhiskers_get_streamflow_regions_array() {
  '6.4.0110' => 'N F Flathead River nr Columbia Falls', 
  '6.4.0111' => 'Middle Fork Flathead River nr West Glacier', 
  '6.4.0120' => 'Snake River near Moran', 
-  ));
+  );
+  asort($streamflow);
+  return($streamflow);
 }
 
 
 function toewhiskers_get_watershed_array() {
-  return(array(
- '4.17.010101' => 'Upper Kootenai',
-'4.17.010102' => 'Fisher',
+  $watershed = array(
+  '4.17.010101' => 'Upper Kootenai',
+  '4.17.010102' => 'Fisher',
 '4.17.010103' => 'Yaak',
 '4.17.010104' => 'Lower Kootenai',
 '4.17.010105' => 'Moyie',
@@ -446,5 +448,7 @@ function toewhiskers_get_watershed_array() {
 '4.17.120007' => 'Warner Lakes',
 '4.17.120008' => 'Guano',
 '4.17.120009' => 'Alvord Lake',
-));
+  );
+  asort($watershed);
+  return($watershed);
 }

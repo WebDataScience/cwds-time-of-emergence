@@ -188,7 +188,7 @@ function toewhiskers_explore_form($form, &$form_submit) {
     '#options' => toewhiskers_get_watershed_array(),
     '#multiple' => FALSE,
     '#required' => TRUE,
-    '#default_value' => '4.17.010101',
+    '#default_value' => 'NULL',
   );
   $form['regionstreamflow'] = array(
     '#type' => 'select',
@@ -196,7 +196,7 @@ function toewhiskers_explore_form($form, &$form_submit) {
     '#options' => toewhiskers_get_streamflow_regions_array(),
     '#multiple' => FALSE,
     '#required' => TRUE,
-    '#default_value' => '5.1.6002',
+    '#default_value' => 'NULL',
   );
   $form['submit'] = array(
     '#title' => t('Next'),
