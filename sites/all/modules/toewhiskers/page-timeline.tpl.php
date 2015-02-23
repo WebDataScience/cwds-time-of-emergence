@@ -87,7 +87,7 @@ ini_set('display_startup_errors', TRUE);
 		} 
 </style>
 <h2 style="float:left">Time of Emergence in <span class="region" id="region"><?php echo $_SESSION['compare']['regionname']; ?></span> </h2>
- <div class="timeline-thumbnail"><img src="/sites/all/modules/toewhiskers/images/kingcounty200x200.png"></img></div><div style="clear:both"></div>
+<div class="timeline-thumbnail"><img src="/sites/all/modules/toewhiskers/images/kingcounty200x200.png"></img></div><div style="clear:both"></div>
   <!--<p>   
   ToE Range: <span class="confidence"></span><br/>
   Past Sensitivity*: <span class="tolerance"></span><br/>
@@ -104,73 +104,60 @@ ini_set('display_startup_errors', TRUE);
     <input id="print-button" name="op" value="Export Timeline Image" class="form-submit" type="submit">
     <img style="display:none" id="svg-img"></img>
   </a>  
-  <a id="downloadtextanchor" href="/timelinedata/text" download="timelinedata.txt">
+  <a id="downloadtextanchor" href="timelinedata/text" download="timelinedata.txt">
     <input id="print-text-button" name="op" value="Export Timeline Data" class="form-submit" type="submit">
   </a>  
 </div>
-
   
 <div id="range-revise-wrapper">
   <div id="toe-range">
   
   <h2>Projected Range of Time of Emergence for <span class="region" id="region">
-  <?php echo $_SESSION['compare']['regionname']; ?></span> under
-  <span class="emission">
-  
-  <?php
-  if(isset($_SESSION['compare']['emission'])){
-		( ($_SESSION['compare']['emission'] == 'low') ?  print "Low (RCP4.5/B1)": null );
-		( ($_SESSION['compare']['emission'] == 'high') ? print  "High (RCP8.5/A1B)": null );
-  }
-  ?>
-     
+    <?php echo $_SESSION['compare']['regionname']; ?></span> under
+    <span class="emission">
+    <?php
+    if(isset($_SESSION['compare']['emission'])){
+      ( ($_SESSION['compare']['emission'] == 'low') ?  print "Low (RCP4.5/B1)": null );
+      ( ($_SESSION['compare']['emission'] == 'high') ? print  "High (RCP8.5/A1B)": null );
+    }
+    ?>
+    </span> 
+  </h2>
     
-				
-
+  <p>
+    <table id="tabledata">
+    <th>Hydro-climatic Variable</th><th>ToE Range</th><th>Direction of Change</th>
+    <!--<tr><td>Variable Shortname (Column G)</td><td>{Year A} – {Year B}</td><td>ChangeDir (Column C)</td></tr>
+    <tr><td>Tmax>90degF(32.2degC)</td><td>2045 - 2065</td><td>Negative</td></tr>-->
+    <span class="tablerows"></span>
+    </table>
+  </p>
   
-  
-  </span> </h2>
-  
-   
-    <p>
-      <table id="tabledata">
-      <th>Hydro-climatic Variable</th><th>ToE Range</th><th>Direction of Change</th>
-      <!--<tr><td>Variable Shortname (Column G)</td><td>{Year A} – {Year B}</td><td>ChangeDir (Column C)</td></tr>
-      <tr><td>Tmax>90degF(32.2degC)</td><td>2045 - 2065</td><td>Negative</td></tr>-->
-      <span class="tablerows"></span>
-      </table>
-    </p>
-  
- </div> 
+  </div> 
     <div id="toe-revise">  
       <h2>Revise and recalculate</h2>
       <div class="h-form">
         <?php print $parameterform; ?><br/>
-      <div style="clear:both"></div>
-    </div>
-  </div>  
-</div>
+        <div style="clear:both"></div>
+      </div>
+    </div>  
+  </div>
   
-<div id="hiddenconsole"></div>  
+  <div id="hiddenconsole"></div>  
         
-    
-<script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/rgbcolor.js"></script> 
-<script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/StackBlur.js"></script>
-<script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/canvg.js"></script>
+      
+  <script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/rgbcolor.js"></script> 
+  <script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/StackBlur.js"></script>
+  <script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/canvg.js"></script>
   <script src="http://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
     
 <script type="text/javascript">
 
 jQuery( document ).ready(function( $ ) {
-
- 
-
   //Show the loading progress bar
   var loadingGif = $("#timeline-chart");
  // timelineChart.progressbar({value:400});
   loadingGif.html("<div id='loading'><img src='/sites/all/modules/toewhiskers/images/ajax-loader-black.gif' alt='loading...' /></div>");
-  
-  
   
   $('#print-button').click(function(){
     // Find existing svg content.
