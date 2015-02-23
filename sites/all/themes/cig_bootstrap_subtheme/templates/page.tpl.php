@@ -133,13 +133,13 @@
                         <div id="unit-college-uw" class="centered">
                             <h1 class="left"><a href="<?php print $front_page; ?>" rel="home" title="Time of Emergence">Time of Emergence</a></h1>
                             <div class="units show-for-large-up right">
-                                <a href="http://coenv.uw.edu" title="UW College of the Environment"><img src="/sites/all/themes/cig_bootstrap_subtheme/assets/img/College-of-the-Environment.png" class="college-name" alt="College of the Environment"></a><br />
-                                <a href="http://uw.edu" title="University of Washington"><img src="/sites/all/themes/cig_bootstrap_subtheme/assets/img/UW-Tagline.png" class="uw-name" alt="University of Washington"></a>
+                                <a href="http://coenv.uw.edu" title="UW College of the Environment"><img src="sites/all/themes/cig_bootstrap_subtheme/assets/img/College-of-the-Environment.png" class="college-name" alt="College of the Environment"></a><br />
+                                <a href="http://uw.edu" title="University of Washington"><img src="sites/all/themes/cig_bootstrap_subtheme/assets/img/UW-Tagline.png" class="uw-name" alt="University of Washington"></a>
                             </div>
                         </div>
                     </div>
                     <div class="columns large-2 show-for-large-up">
-                        <a href="http://uw.edu" title="University of Washington"><img src="/sites/all/themes/cig_bootstrap_subtheme/assets/img/logo-cig-header.png" class="right" alt="Climate Impacts Group Logo" /></a>
+                        <a href="http://uw.edu" title="University of Washington"><img src="sites/all/themes/cig_bootstrap_subtheme/assets/img/logo-cig-header.png" class="right" alt="Climate Impacts Group Logo" /></a>
                     </div>
                 </div>
             </div>
@@ -275,7 +275,7 @@
                     <div class="row">
                         <div class="medium-6 columns">
                             <div class="footer-logo left">
-                                <img src="/sites/all/themes/cig_bootstrap_subtheme/assets/img/logo-color.png" alt="Climate Impacts Group Logo" />
+                                <img src="sites/all/themes/cig_bootstrap_subtheme/assets/img/logo-color.png" alt="Climate Impacts Group Logo" />
                             </div>
                             <header class="site-footer__header">
                                 <h2>Climate Impacts Group</h2>
@@ -291,7 +291,7 @@
                     <div class="medium-6 columns right">
                         <nav class="footer-nav">
                             <header class="site-footer__header">
-                                <h2 id="logo"><a href="http://coenv.washington.edu/" rel="home" title="UW College of the Environment"><img alt="College of the Environment Logo" src="/sites/all/themes/cig_bootstrap_subtheme/assets/img/uw-footer.svg" width="350" ></a></h2>
+                                <h2 id="logo"><a href="http://coenv.washington.edu/" rel="home" title="UW College of the Environment"><img alt="College of the Environment Logo" src="sites/all/themes/cig_bootstrap_subtheme/assets/img/uw-footer.svg" width="350" ></a></h2>
                             </header>
                             <ul class="menu-footer-units">
                                 <li><a target="_blank" href="http://fish.washington.edu/">Aquatic and Fishery Sciences</a></li>
@@ -332,4 +332,4 @@
         </div>
     <a class="exit-off-canvas"></a>
     </div>
-        <script type='text/javascript' src='/sites/all/themes/cig_bootstrap_subtheme/js/app.js?ver=1.0.0'></script>
+        <script type='text/javascript' src='sites/all/themes/cig_bootstrap_subtheme/js/app.js?ver=1.0.0'></script>

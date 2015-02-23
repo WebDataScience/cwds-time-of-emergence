@@ -61,15 +61,15 @@
 
 	<script src="http://www.washington.edu/static/alert.js" type="text/javascript"></script>
         
-        <link rel="icon" href="/sites/all/themes/cig_bootstrap_subtheme/assets/img/icons/favicon.ico" type="image/x-icon">
-        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/sites/all/themes/cig_bootstrap_subtheme/assets/img/icons/apple-touch-icon-144x144-precomposed.png">
-        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/sites/all/themes/cig_bootstrap_subtheme/assets/img/icons/apple-touch-icon-114x114-precomposed.png">
-        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/sites/all/themes/cig_bootstrap_subtheme/assets/img/icons/apple-touch-icon-72x72-precomposed.png">
-        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/sites/all/themes/cig_bootstrap_subtheme/assets/img/apple-touch-icon-57x57-precomposed.png">
-        <link rel="apple-touch-icon" href="/sites/all/themes/cig_bootstrap_subtheme/assets/img/apple-touch-icon.png">
-        <link rel="stylesheet" href="/sites/all/themes/cig_bootstrap_subtheme/assets/foundation-icons/foundation-icons.css">
-        <script type='text/javascript' src='/sites/all/themes/cig_bootstrap_subtheme/js/modernizr/modernizr.min.js?ver=1.0.0'></script>
-        <script type='text/javascript' src='/sites/all/themes/cig_bootstrap_subtheme/js/jquery/dist/jquery.min.js?ver=1.0.0'></script>
+        <link rel="icon" href="sites/all/themes/cig_bootstrap_subtheme/assets/img/icons/favicon.ico" type="image/x-icon">
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="sites/all/themes/cig_bootstrap_subtheme/assets/img/icons/apple-touch-icon-144x144-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="sites/all/themes/cig_bootstrap_subtheme/assets/img/icons/apple-touch-icon-114x114-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="sites/all/themes/cig_bootstrap_subtheme/assets/img/icons/apple-touch-icon-72x72-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="sites/all/themes/cig_bootstrap_subtheme/assets/img/icons/apple-touch-icon-57x57-precomposed.png">
+        <link rel="apple-touch-icon" href="sites/all/themes/cig_bootstrap_subtheme/assets/img/icons/apple-touch-icon.png">
+        <link rel="stylesheet" href="sites/all/themes/cig_bootstrap_subtheme/assets/foundation-icons/foundation-icons.css">
+        <script type='text/javascript' src='sites/all/themes/cig_bootstrap_subtheme/js/modernizr/modernizr.min.js?ver=1.0.0'></script>
+        <script type='text/javascript' src='sites/all/themes/cig_bootstrap_subtheme/js/jquery/dist/jquery.min.js?ver=1.0.0'></script>
 
 
 </head>
