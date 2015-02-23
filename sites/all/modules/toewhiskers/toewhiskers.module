@@ -394,9 +394,8 @@ function toewhiskers_narrow_subform(&$form){
  * Helper function for forms that reuse the 'narrow variables' filters. Provides only the 'theme' options.
  */
 function toewhiskers_narrow_subform_theme(&$form){
-  $options = array(4 => 'All',0 => 'Air Temperature', 1 => 'Precipitation', 2 => 'Hydrologic', 3 => 'Stream', );
-  // Not all themes are represented in list of variables at this time.
-  //$options = array(4 => 'All',0 => 'Air Temperature', 1 => 'Precipitation',  );
+  $options = array(4 => 'All',0 => 'Air Temperature', 1 => 'Precipitation', 2 => 'Hydrologic', /*3 => 'Stream',*/ );
+  // Not all themes are represented in '$options' at this time.
   $form['narrow']['theme'] = array(
     '#type' => 'radios',
     '#title' => t('Theme'),
