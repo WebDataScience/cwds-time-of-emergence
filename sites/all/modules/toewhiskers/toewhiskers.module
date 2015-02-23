@@ -1002,7 +1002,7 @@ function queryForImpact(){
   $impactsarray = array_unique($impactsarray);
   sort($impactsarray);
   array_unshift($impactsarray, "All");
-  return $impactsarray;
+  return $impactsarray;    
 }
 
 
