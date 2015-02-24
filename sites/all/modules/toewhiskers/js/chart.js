@@ -1,6 +1,9 @@
 
 
+console.log("begin chartjs");
+
 jQuery( document ).ready(function( $ ) {
+  console.log("document ready");
 
   var websitetextarray = new Object();
   var confidence = new Object();
