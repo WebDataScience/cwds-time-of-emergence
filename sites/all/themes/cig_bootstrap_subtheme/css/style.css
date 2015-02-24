@@ -156,19 +156,19 @@ body {
 		======================================================================== */
 @font-face {
   font-family: encode-sans-normal;
-  src: url("sites/all/themes/cig_bootstrap_subtheme/assets/fonts/EncodeSansNormal-400-Regular.ttf") format('truetype');
+  src: url("../assets/fonts/EncodeSansNormal-400-Regular.ttf") format('truetype');
   font-weight: normal;
   font-style: normal; }
 
 @font-face {
   font-family: encode-sans-black;
-  src: url("sites/all/themes/cig_bootstrap_subtheme/assets/fonts/EncodeSansNormal-900-Black.ttf") format('truetype');
+  src: url("../assets/fonts/EncodeSansNormal-900-Black.ttf") format('truetype');
   font-weight: normal;
   font-style: normal; }
 
 @font-face {
   font-family: encode-sans-condensed;
-  src: url("sites/all/themes/cig_bootstrap_subtheme/assets/fonts/EncodeSansCondensed-800-ExtraBold.ttf") format('truetype');
+  src: url("../assets/fonts/EncodeSansCondensed-800-ExtraBold.ttf") format('truetype');
   font-weight: normal;
   font-style: normal; }
 
