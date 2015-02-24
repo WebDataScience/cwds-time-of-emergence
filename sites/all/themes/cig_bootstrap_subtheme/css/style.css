@@ -174,25 +174,25 @@ body {
 
 @font-face {
   font-family: open-sans;
-  src: url("sites/all/themes/cig_bootstrap_subtheme/assets/fonts/OpenSans-Regular.ttf") format('truetype');
+  src: url("../assets/fonts/OpenSans-Regular.ttf") format('truetype');
   font-weight: normal;
   font-style: normal; }
 
 @font-face {
   font-family: open-sans-bold;
-  src: url("sites/all/themes/cig_bootstrap_subtheme/assets/fonts/OpenSans-Bold.ttf") format('truetype');
+  src: url("../assets/fonts/OpenSans-Bold.ttf") format('truetype');
   font-weight: normal;
   font-style: normal; }
 
 @font-face {
   font-family: open-sans-light;
-  src: url("sites/all/themes/cig_bootstrap_subtheme/assets/fonts/OpenSans-Light.ttf") format('truetype');
+  src: url("../assets/fonts/OpenSans-Light.ttf") format('truetype');
   font-weight: normal;
   font-style: normal; }
 
 @font-face {
   font-family: uni-sans-light;
-  src: url("sites/all/themes/cig_bootstrap_subtheme/assets/fonts/Fontfabric - UniSansLight.otf") format('truetype');
+  src: url("../assets/fonts/Fontfabric - UniSansLight.otf") format('truetype');
   font-weight: normal;
   font-style: normal; }
 
