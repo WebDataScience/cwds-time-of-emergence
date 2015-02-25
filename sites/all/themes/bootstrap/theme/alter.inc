@@ -192,10 +192,12 @@ function bootstrap_js_alter(&$js) {
   }
 
   // Always add bootstrap.js last.
-  $bootstrap = $theme_path . '/js/bootstrap.js';
-  $js[$bootstrap] = drupal_js_defaults($bootstrap);
-  $js[$bootstrap]['group'] = JS_THEME;
-  $js[$bootstrap]['scope'] = 'footer';
+  /* Actually, bootstrap.js is causing trouble. No load.  
+  * $bootstrap = $theme_path . '/js/bootstrap.js';
+  * $js[$bootstrap] = drupal_js_defaults($bootstrap);
+  * $js[$bootstrap]['group'] = JS_THEME;
+  * $js[$bootstrap]['scope'] = 'footer';
+  */
 
   if (!empty($excludes)) {
     $js = array_diff_key($js, drupal_map_assoc($excludes));

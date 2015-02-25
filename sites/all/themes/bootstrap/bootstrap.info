@@ -98,6 +98,8 @@ settings[toggle_search] = 1
 ; --------------
 ; exclude[js][] = 'modules/contextual/contextual.js'
 
+
+
 ; CSS
 ; --------------
 exclude[css][] = 'misc/vertical-tabs.css'
