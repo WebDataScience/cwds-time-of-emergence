@@ -28,10 +28,10 @@ div.form-type-radios.form-item-descriptor{
 }
 
 /* /timeline form */
-body.page-timeline #edit-narrow{
+#toe-revise #edit-narrow{
   display:none;
 }
-body.page-timeline div.form-item-variable{
+#toe-revise div.form-item-variable{
   display:none;
 }
 
