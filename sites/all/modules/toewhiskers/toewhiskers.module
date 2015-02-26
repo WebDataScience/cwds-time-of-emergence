@@ -444,11 +444,16 @@ function toewhiskers_map_form($form,&$form_submit) {
   );
   toewhiskers_narrow_subform_theme($form);
   toewhiskers_narrow_subform($form);
+  $form['variablefieldset'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Select one variable:*'),
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+  );
   $filterarraylist = variablesarray();
   $options = $filterarraylist['variablesarray'];
-  $form['variable'] = array(
+  $form['variablefieldset']['variable'] = array(
     '#type' => 'select',
-    '#title' => t('Filter variables (optional)'),
     '#options' =>  $options,
     '#description' => t('Select one hydroclimatic variable.'),
     '#required' => TRUE,
@@ -476,7 +481,7 @@ function toewhiskers_map_form($form,&$form_submit) {
     '#options' => $extentoptions,
     '#default_value' => '1',
   );
-  $form['submit'] = array(
+  $form['parameter']['submit'] = array(
     '#title' => t('Calculate'),
     '#value' => 'Next',
     '#type' => 'submit',
