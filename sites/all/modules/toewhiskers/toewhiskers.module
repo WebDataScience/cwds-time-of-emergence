@@ -308,12 +308,16 @@ function toewhiskers_compare_form($form,&$form_submit) {
     $form['narrow']['hiddentheme'] = array('#type' => 'hidden', '#value' => 4);
   }
   toewhiskers_narrow_subform($form);
-  
+  $form['variable'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('2. Select one or more variables*'),
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+  );
   $filterarraylist = variablesarray();
   $options = $filterarraylist['variablesarray'];
-  $form['variable'] = array(
+  $form['variable']['variable'] = array(
     '#type' => 'select',
-    '#title' => t('2. Select one or more variables*'),
     '#options' => $options,    
     '#description' => t('To select multiple options, hold down “ctrl” or “command” key'),
     '#multiple' => TRUE,
@@ -352,7 +356,7 @@ function toewhiskers_compare_form($form,&$form_submit) {
     '#required' => TRUE,
     '#default_value' => isset($comparearray['confidence'])?$comparearray['confidence']:50,//key($options),
   );
-  $form['submit'] = array(
+  $form['parameter']['submit'] = array(
     '#title' => t('Calculate'),
     '#value' => 'Submit',
     '#type' => 'submit',
