@@ -165,13 +165,13 @@ function toewhiskers_explore_form($form, &$form_submit) {
   $form['compare'] = array(
     '#type' => 'radios',
     '#title' => t('I want to focus on...'),
-    '#options' => array( 0 => 'A specific locale', 1 => 'A specific environmental variable', /* 2 => 'Examine hotspots', */ ),
+    '#options' => array( 0 => 'which type of changes could occur first (in a specific locale)', 1 => 'where changes could occur first (across the region)', /* 2 => 'Examine hotspots', */ ),
     '#required' => TRUE,
   );
   $form['geodomain'] = array(
     '#type' => 'radios',
     '#title' => t('Choose location of interest'),
-    '#options' => array( 1 => 'County', 2 => 'Watershed (8-digit HUC)',  3 => 'Streamflow locations',  ),
+    '#options' => array( 1 => 'County', 2 => 'Watershed (8-digit/4th-level HUC)',  3 => 'River',  ),
     '#default_value' => '1',
   );
   $form['regioncounty'] = array(
@@ -298,7 +298,7 @@ function toewhiskers_compare_form($form,&$form_submit) {
   //drupal_set_message('comparearray:<pre>'. print_r($comparearray, TRUE) .'</pre>');
   $form['narrow'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Narrow list of available Hydroclimatic Variables by following:'),
+    '#title' => t('1. Filter variables (optional)'),
     '#collapsible' => FALSE,
     '#collapsed' => FALSE,
   );
@@ -313,7 +313,7 @@ function toewhiskers_compare_form($form,&$form_submit) {
   $options = $filterarraylist['variablesarray'];
   $form['variable'] = array(
     '#type' => 'select',
-    '#title' => t('Hydroclimatic Variables'),
+    '#title' => t('2. Select one or more variables*'),
     '#options' => $options,    
     '#description' => t('To select multiple options, hold down “ctrl” or “command” key'),
     '#multiple' => TRUE,
@@ -324,7 +324,7 @@ function toewhiskers_compare_form($form,&$form_submit) {
   );
   $form['parameter'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Apply the following parameters to the query:'),
+    '#title' => t('3. Specify choices*'),
     '#collapsible' => FALSE,
     '#collapsed' => FALSE,
   );
@@ -374,7 +374,7 @@ function toewhiskers_narrow_subform(&$form){
   $averageextremeoptions = array(2 => 'All', 0 => 'Average', 1 => 'Extreme',);
   $form['narrow']['descriptor'] = array(
     '#type' => 'radios',
-    '#title' => t('Descriptor'),
+    '#title' => t('Type'),
     '#options' => $averageextremeoptions,
     '#default_value' => '2',
   );
@@ -444,7 +444,7 @@ function toewhiskers_map_form($form,&$form_submit) {
   $options = $filterarraylist['variablesarray'];
   $form['variable'] = array(
     '#type' => 'select',
-    '#title' => t('Hydroclimatic Variables'),
+    '#title' => t('Filter variables (optional)'),
     '#options' =>  $options,
     '#description' => t('Select one hydroclimatic variable.'),
     '#required' => TRUE,
@@ -461,11 +461,11 @@ function toewhiskers_map_form($form,&$form_submit) {
   $form['parameter']['maptype'] = array(
     '#type' => 'radios',
     '#title' => t('Map Type'),
-    '#options' => array('1' => 'Emergence Year', '2' => 'Emergence Location', ),
+    '#options' => array('1' => 'Emergence Year (median)', '2' => 'Emergence Location (showing model agreement on emergence)', ),
     '#required' => TRUE,
     '#default_value' => '1',
   );
-  $extentoptions = array(1 => 'WA/OR/ID/BC', 2 => 'Puget Sound', );
+  $extentoptions = array(1 => 'Pacific Northwest', 2 => 'Puget Sound', );
   $form['parameter']['extent'] = array(
     '#type' => 'radios',
     '#title' => t('Extent'),
