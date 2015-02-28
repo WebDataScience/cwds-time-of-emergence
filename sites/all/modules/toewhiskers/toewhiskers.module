@@ -354,7 +354,7 @@ function toewhiskers_compare_form($form,&$form_submit) {
   );
   $form['submit'] = array(
     '#title' => t('Calculate'),
-    '#value' => 'Submit',
+    '#value' => 'Show Results',
     '#type' => 'submit',
     );
   return $form;
