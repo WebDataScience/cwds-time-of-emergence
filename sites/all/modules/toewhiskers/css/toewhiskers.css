@@ -1,5 +1,4 @@
 
-
 /* /compare form and map form */
 div.form-type-radios.form-item-theme,
 div.form-type-radios.form-item-impact,
@@ -8,8 +7,6 @@ div.form-type-radios.form-item-descriptor{
   float: left;
   width: 22%;
 }
-
-
 #toewhiskers-compare-form  div.form-type-radios.form-item-variable{
   clear:both;
 }
@@ -17,28 +14,23 @@ div.form-type-radios.form-item-descriptor{
   width: auto;
   max-width: none;
 }
-
 .h-form  div.form-type-radios {
-  float:left;
+  //float:left;
   margin-right: 20px;
 }
-
 .h-form  div.form-submit {
   margin: 1.5em 0px;
 }
-
 /* /timeline form */
 #toe-revise #edit-narrow{
   display:none;
 }
-#toe-revise div.form-item-variable{
+#toe-revise #edit-variablefieldset{
   display:none;
 }
-
 #headline-page{
   display: block;
 }
-
 .page-timeline div.timeline-thumbnail {
   float: right;
 }
@@ -46,18 +38,13 @@ div.form-type-radios.form-item-descriptor{
   width: 100px;
   height: 100px;
 }
-
-
 #timeline-chart{
-  
   height: 285px;
   width: 100%;
 }
-
 #loading{
   text-align: center;
 }
-
 #hiddenconsole{
   display:none;
 }

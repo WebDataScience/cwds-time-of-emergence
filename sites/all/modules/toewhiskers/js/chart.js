@@ -105,36 +105,37 @@ jQuery( document ).ready(function( $ ) {
 // Handle the multiple date conversion scenarios
 function dateConversion(onerow) {
   //code
-  
-
-   if (onerow.YEARA >= '2100') {
+  if (onerow.YEARA >= '2100') {
     return 'Beyond 2100';
   }
-  
-     if (onerow.YEARB >= '2100') {
+  if (onerow.YEARB >= '2100') {
     return onerow.YEARA + " - " + 'Beyond 2100';
   }
-    //if Unkownn
+  //if Unkownn
   if (onerow.YEARA == 'Unknown' || onerow.YEARB == 'Unknown') {
     return  (onerow.YEARA == 'Unknown' && onerow.YEARB == 'Unknown'?'No emergence':onerow.YEARA + " - " + onerow.YEARB);
   }
   return onerow.YEARA + " - " + onerow.YEARB;
-
- 
 }
   
 //function drawD3Timeline(timelinedataarray, maxtoeyear,confidence,tolerance,dataset,region, emission)  
 function drawD3Timeline(timelinedataarray,maxtoeyear,confidence,tolerance,dataset,region){
- var data = [[2000,0,"tooltip1","label1","rcp45",50],
+  // js created timeline image styles
+  var bgco = "white";
+  var textco = "black";
+  var dotco = "green";
+  var dotfillco = "#248F24";
+  var dotcircleco = "#99FF99";
+ 
+  var data = [[2000,0,"tooltip1","label1","rcp45",50],
 	     [2020,0,"tooltip2","label2","rcp85",50],
 	     [2085,0,"tooltip3","label3","rcp45",50],
 	     [2040,0,"tooltip4","label4","rcp45",50]];
  
- var chartheight = 280;
- data = timelinedataarray;
+  var chartheight = 280;
+  data = timelinedataarray;
 
   /* Code to prevent label text overlapping */
-
   var temparr = [[0,0]];
 
   for (var i = 0; i < data.length; i++) {
@@ -147,27 +148,26 @@ function drawD3Timeline(timelinedataarray,maxtoeyear,confidence,tolerance,datase
         found = true;
       }
     }
-
     if (found == false) {
       temparr.push([data[i][0], 1]);
     }
   } 
 		   
-		var margin = {top: 120, right: 40, bottom: 40, left: 30}
+	var margin = {top: 120, right: 40, bottom: 40, left: 30}
 		  , width = 940 - margin.left - margin.right
 		  , height = chartheight - margin.top - margin.bottom;
 
-		var format = d3.format("0000");
+	var format = d3.format("0000");
 
-		var x = d3.scale.linear()
+	var x = d3.scale.linear()
 		          .domain([2000, 2100])
 		          .range([ 0, width ]);
 
-		var y = d3.scale.linear()
+	var y = d3.scale.linear()
 		        .domain([0, d3.max(data, function(d) { return d[1]; })])
 		        .range([ height, 0 ]);
 		      
-		var chart = d3.select('#timeline-chart')
+	var chart = d3.select('#timeline-chart')
 		.append('svg:svg')
 		.attr('width', width + margin.right + margin.left)
 		.attr('height', height + margin.top + margin.bottom);
@@ -177,36 +177,35 @@ function drawD3Timeline(timelinedataarray,maxtoeyear,confidence,tolerance,datase
     .attr("width", width + margin.right + margin.left -2)
     .attr("height", "100%")
     .attr('border', 0)
-    .attr("fill", "black");
+    .attr("fill", bgco);
     chart.append("text")
         .attr("x", 15)             
         .attr("y", 20)
-        .style("stroke", "white")
+        .style("stroke", textco)
         .style('font-size', '14px')
         .style('font-family', 'sans-serif')
         .text(confidence);
     chart.append("text")
         .attr("x", 15)             
         .attr("y", 40)
-        .style("stroke", "white")
+        .style("stroke", textco)
         .style('font-size', '14px')
         .style('font-family', 'sans-serif')
         .text(tolerance); 
     chart.append("text")
         .attr("x", 15)             
         .attr("y", 60)
-        .style("stroke", "white")
+        .style("stroke", textco)
         .style('font-size', '14px')
         .style('font-family', 'sans-serif')
         .text(dataset);
   chart.append("text")
     .attr("x", 15)             
     .attr("y", 80)
-    .style("stroke", "white")
+    .style("stroke", textco)
     .style('font-size', '14px')
     .style('font-family', 'sans-serif')
     .text(region);
-	
     /*
     chart.append("svg:image")
         .attr("xlink:href", "http://toe/sites/all/modules/toewhiskers/images/kingcounty200x200.png")
@@ -215,13 +214,11 @@ function drawD3Timeline(timelinedataarray,maxtoeyear,confidence,tolerance,datase
         .attr("width", "105")
         .attr("height", "105");
     */
-    
   var main = chart.append('g')
     .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
     .attr('width', width)
     .attr('height', height)
     .attr('class', 'main')   
-		    
   // draw the x axis
   var xAxis = d3.svg.axis()
     .scale(x)
@@ -229,25 +226,20 @@ function drawD3Timeline(timelinedataarray,maxtoeyear,confidence,tolerance,datase
     .ticks(20)
     .tickFormat(format)
     .tickSize(15,-1);
-
   main.append('g')
     .attr('transform', 'translate(0,' + height + ')')
     .attr('class', 'main axis date main-axis-date')
     .call(xAxis);
-  
   // Attributes for the xAxis.
   d3.select('.axis')
-    .attr("stroke", "white")
+    .attr("stroke", textco)
     .attr("stroke-width", 2)
     .attr('shape-rendering','crispEdges');
-         
   var g = main.append("svg:g"); 
-
   var node = g.selectAll("g")
               .data(data)
               .enter()
               .append("g");         
-        
   // vertical variable line.        
   node.append("line")
     .attr("x1", function (d,i) { return x(d[0]); } )
@@ -257,28 +249,26 @@ function drawD3Timeline(timelinedataarray,maxtoeyear,confidence,tolerance,datase
     .attr("stroke-width", 1)
     .style("shape-rendering", "crispEdges")
     .attr('opacity', 1)
-    .attr("stroke", "white");
-
+    .attr("stroke", textco);
   node.append("line:circle")
     .attr("cx", function (d,i) { return x(d[0]); } )
     .attr("cy", function (d) { return y(d[1]); } )
-    .attr("fill", "#248F24")
-    .attr("stroke", "#99FF99")
+    .attr("fill", dotco)
+    .attr("stroke", dotcircleco)
     .attr("r", "6");
-
   // Hide some of the vertical line as necessary with a black rectangle.
   node.append("line:rect") 
     .attr("x", function (d,i) { return x(d[0]) - 5; } )
     .attr("y", function (d) { return d[5] - 10; } )
     .attr("height", "15")
     .attr("width", "10")
-    .attr("fill", "#070707");
-
+    //.attr("fill", "#070707");
+    .attr("fill", bgco);
   // Add variable short name - dataset
 	node.append("line:text")
     .attr("x", function (d,i) { return x(d[0]); } ) 
     .attr("y", function (d) { return d[5]; } )
-    .style("stroke", "white")
+    .style("stroke", textco)
     .style('font-size', '11px')
     .style('font-family', 'sans-serif')
     .attr("stroke-width", .3)
@@ -288,15 +278,13 @@ function drawD3Timeline(timelinedataarray,maxtoeyear,confidence,tolerance,datase
     .attr('alt', function(d) { return d[2]; })
 		.on("click", function(d) {
 		document.location.href="/boxplot" }); 
-    
   // Attributes for all other text.
   d3.selectAll('text')
-  .attr('fill', 'white')
+  .attr('fill', textco)
   .style('font-size', '11px')
   .attr("stroke-width", .3)
   .style('font-family', 'sans-serif')
   .style('text-shadow', 'none');
-
 }
 
 

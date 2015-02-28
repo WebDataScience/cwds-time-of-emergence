@@ -3,6 +3,9 @@ description = A Bootstrap Sub-theme.
 core = 7.x
 base theme = bootstrap
 
+; The file /js/bootstrap.js in the bootstrap parent theme has caused a number of problem. The parent theme file alter.inc
+; has been modified to _not_ include this file. If the parent theme is updated this change to alter.inc will need to be 
+; manually reimplimented.
 
 ;;;;;;;;;;;;;;;;;;;;;
 ;; Regions

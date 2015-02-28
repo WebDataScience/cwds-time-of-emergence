@@ -142,9 +142,9 @@ function template_preprocess_displaymap_template(&$variables) {
   $maparray = isset($_SESSION['map'])?$_SESSION['map']:array();
     
   $variables['pathtomap'] = drupal_get_path('module', 'toewhiskers');
-  $variables['pathtoimage'] = $variables['pathtomap'] . "/images/SampleMaps4UWT/" . $maparray['stage2filename'];
+  $variables['pathtoimage'] = $variables['pathtomap'] . "/images/maps/" . $maparray['stage2filename'];
   $variables['imagefilename'] = $maparray['stage2filename'];
-  $variables['stage2path'] = $variables['pathtomap'] . "/images/SampleMaps4UWT/";
+  $variables['stage2path'] = $variables['pathtomap'] . "/images/maps/";
   $variables['imagefilenamenop'] = $maparray['stage2filenamenop'];
   $variables['maptype'] = $maparray['maptype'];
  
@@ -308,12 +308,16 @@ function toewhiskers_compare_form($form,&$form_submit) {
     $form['narrow']['hiddentheme'] = array('#type' => 'hidden', '#value' => 4);
   }
   toewhiskers_narrow_subform($form);
-  
+  $form['variablefieldset'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('2. Select one or more variables*'),
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+  );
   $filterarraylist = variablesarray();
   $options = $filterarraylist['variablesarray'];
-  $form['variable'] = array(
+  $form['variablefieldset']['variable'] = array(
     '#type' => 'select',
-    '#title' => t('2. Select one or more variables*'),
     '#options' => $options,    
     '#description' => t('To select multiple options, hold down “ctrl” or “command” key'),
     '#multiple' => TRUE,
@@ -352,7 +356,7 @@ function toewhiskers_compare_form($form,&$form_submit) {
     '#required' => TRUE,
     '#default_value' => isset($comparearray['confidence'])?$comparearray['confidence']:50,//key($options),
   );
-  $form['submit'] = array(
+  $form['parameter']['submit'] = array(
     '#title' => t('Calculate'),
     '#value' => 'Show Results',
     '#type' => 'submit',
@@ -440,11 +444,16 @@ function toewhiskers_map_form($form,&$form_submit) {
   );
   toewhiskers_narrow_subform_theme($form);
   toewhiskers_narrow_subform($form);
+  $form['variablefieldset'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Select one variable:*'),
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+  );
   $filterarraylist = variablesarray();
   $options = $filterarraylist['variablesarray'];
-  $form['variable'] = array(
+  $form['variablefieldset']['variable'] = array(
     '#type' => 'select',
-    '#title' => t('Filter variables (optional)'),
     '#options' =>  $options,
     '#description' => t('Select one hydroclimatic variable.'),
     '#required' => TRUE,
@@ -472,7 +481,7 @@ function toewhiskers_map_form($form,&$form_submit) {
     '#options' => $extentoptions,
     '#default_value' => '1',
   );
-  $form['submit'] = array(
+  $form['parameter']['submit'] = array(
     '#title' => t('Calculate'),
     '#value' => 'Next',
     '#type' => 'submit',
@@ -574,13 +583,7 @@ function toewhiskers_mapdetails_form_submit($form, &$form_state) {
   
   $_SESSION['map'] = $maparray;
   
-  // This is filename format represented by actual files.
-  $filenametemplate = "mx_bx_v_tx_sx_c2_dx[_px].png";
-  $maparray['stage1filename'] = "m" . $maparray['maptype'] . "_b" . $maparray['boundary'] . "_" . ltrim($maparray['variable'], 'V') . "_t"   . $maparray['emergthres'] . "_s" . $maparray['emissionscenario'] . "_c2_d" . $maparray['datasetimagecode'];
-  if(array_key_exists('maptype', $maparray) && $maparray['maptype'] == 2 ){$maparray['stage1filename'] .= "_p" . $maparray['period'];}
-  $maparray['stage1filename'] .= ".png";
-  
-  // Files of this format in /sites/all/modules/toewhiskers/images/SampleMaps4UWT   m1_e1_b1_1.01_t1_s1_c2_d1[_p1].png
+  // Files of this format in /sites/all/modules/toewhiskers/images/maps   m1_e1_b1_1.01_t1_s1_c2_d1[_p1].png
   $maparray['stage2filename'] = "m" . $maparray['maptype'] . "_e" . $maparray['extent'] . "_b" . $maparray['boundary'] . "_" . ltrim($maparray['variable'], 'V') . "_t"   . $maparray['emergthres'] . "_s" . $maparray['emissionscenario'] . "_c2" . "_d" . $maparray['datasetimagecode'] ;
   $maparray['stage2filenamenop'] = $maparray['stage2filename'];
   if(array_key_exists('maptype', $maparray) && $maparray['maptype'] == 2 ){$maparray['stage2filename']  .= "_p" . $maparray['period'];}
