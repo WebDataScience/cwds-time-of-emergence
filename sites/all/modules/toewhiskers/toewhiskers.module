@@ -339,22 +339,35 @@ function toewhiskers_compare_form($form,&$form_submit) {
     '#options' => $options,
     '#required' => TRUE,
     '#default_value' => isset($comparearray['emission'])?$comparearray['emission']:key($options),
+    '#label_attributes' => array(
+      'data-toggle'=> 'tooltip',
+      'title' => t('Selecting “High” emissions scenario results in earlier emergence, due to greater atmospheric concentrations of greenhouse gases, aerosols etc. Selecting “Low” results in later emergence, due to lower atmospheric concentrations.'),
+    ),
+
   );
-  $options = array(    '95' => 'Low (to extreme 10% of 1950-1999 conditions)',    '80' => 'High (to extreme 40% of 1950-1999 conditions)',  );
+  $options = array(    '95' => 'Low (to extreme 5% high or 5% low of 1950-1999 conditions)',    '80' => 'High (to extreme 20% high or 20% low of 1950-1999 conditions)',  );
   $form['parameter']['tolerance'] = array(
     '#type' => 'radios',
-    '#title' => t('Past Sensitivity'),
+    '#title' => t('Management Sensitivity'),
     '#options' => $options,
     '#required' => TRUE,
     '#default_value' => isset($comparearray['tolerance'])?$comparearray['tolerance']:key($options),
+    '#label_attributes' => array(
+      'data-toggle'=> 'tooltip',
+      'title' => t('Selecting “High” management sensitivity to changing conditions results in earlier emergence. Selecting “Low” results in later emergence.'),
+    ),
   );
-  $options = array('95' => 'Fast', '50' => 'Central', '5' => 'Slow',);
+  $options = array('95' => 'Fast', '50' => 'Moderate', '5' => 'Slow',);
   $form['parameter']['confidence'] = array(
     '#type' => 'radios',
     '#title' => t('Estimated Rate of Climate Change'),
     '#options' => $options,
     '#required' => TRUE,
     '#default_value' => isset($comparearray['confidence'])?$comparearray['confidence']:50,//key($options),
+        '#label_attributes' => array(
+      'data-toggle'=> 'tooltip',
+      'title' => t('Selecting “Fast” results in earlier emergence. Selecting “Slow” results in later emergence. And selecting “Central” results in emergence roughly centered between “Fast” and “Slow”.'),
+    ),
   );
   $form['parameter']['submit'] = array(
     '#title' => t('Calculate'),
@@ -469,7 +482,7 @@ function toewhiskers_map_form($form,&$form_submit) {
   );
   $form['parameter']['maptype'] = array(
     '#type' => 'radios',
-    '#title' => t('Map Type'),
+    '#title' => t('Choose Map Type'),
     '#options' => array('1' => 'Emergence Year (median)', '2' => 'Emergence Location (showing model agreement on emergence)', ),
     '#required' => TRUE,
     '#default_value' => '1',
@@ -477,7 +490,7 @@ function toewhiskers_map_form($form,&$form_submit) {
   $extentoptions = array(1 => 'Pacific Northwest', 2 => 'Puget Sound', );
   $form['parameter']['extent'] = array(
     '#type' => 'radios',
-    '#title' => t('Extent'),
+    '#title' => t('Choose domain of interest'),
     '#options' => $extentoptions,
     '#default_value' => '1',
   );
@@ -537,12 +550,23 @@ function toewhiskers_mapdetails_form($form,&$form_submit) {
     '#title' => t('Past Sensitivity'),
     '#options' => array(  '1' => 'Low (to extreme 10% of 1950-1999 conditions)', '2' => 'High (to extreme 40% of 1950-1999 conditions)',  ),
     '#default_value' => isset($maparray['emergthres'])?$maparray['emergthres']:'1',
+    '#label_attributes' => array(
+      'data-toggle'=> 'tooltip',
+      'title' => t('Selecting “High” management sensitivity to changing conditions results in earlier emergence. Selecting “Low” results in later emergence.'),
+    ),
   );
+  
+  
+  
   $form['parameter']['emissionscenario'] = array(
     '#type' => 'radios',
     '#title' => t('Emission Scenario'),
     '#options' => array(1 => 'Low (RCP45/B1)', 2 => 'High (RCP85/A1B)', ),
     '#default_value' => isset($maparray['emissionscenario'])?$maparray['emissionscenario']:'1',
+    '#label_attributes' => array(
+      'data-toggle'=> 'tooltip',
+      'title' => t('Selecting “High” emissions scenario results in earlier emergence, due to greater atmospheric concentrations of greenhouse gases, aerosols etc. Selecting “Low” results in later emergence, due to lower atmospheric concentrations.'),
+    ),
   );
   $form['parameter']['boundary'] = array(
     '#type' => 'radios',
