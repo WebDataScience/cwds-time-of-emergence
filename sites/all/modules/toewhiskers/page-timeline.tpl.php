@@ -141,18 +141,14 @@ The timeline shows the date by which half of the global climate models projectin
 The “ToE Range” indicates the range of years for which the middle 50% of global climate models projecting conditions to noticeably deviate from the baseline conditions (1950–1999) indicate emergence of change in the variable noted, based on your selections,
 
 A variable may have “No emergence” for an individual global climate model or the spatial aggregate if:
-<ul>
-	<li>Emergence occurs after 2100 </li>
-	<li>Conditions never exceeded the threshold of management sensitivity during the baseline period (1950-1999)</li>
-	<li>Less than 60% of the selected area shows emergence by 2100</li>
-	<li>Less than 60% of global climate models agree on the direction of climate change</li>
-		
-</ul>
+      <ul>
+        <li>Emergence occurs after 2100 </li>
+        <li>Conditions never exceeded the threshold of management sensitivity during the baseline period (1950-1999)</li>
+        <li>Less than 60% of the selected area shows emergence by 2100</li>
+        <li>Less than 60% of global climate models agree on the direction of climate change</li>
+      </ul>
 	
-</p>
-
-
-   
+    </p>
   </p>
   
   </div> 
@@ -167,7 +163,6 @@ A variable may have “No emergence” for an individual global climate model or
   
   <div id="hiddenconsole"></div>  
         
-      
   <script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/rgbcolor.js"></script> 
   <script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/StackBlur.js"></script>
   <script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/canvg.js"></script>

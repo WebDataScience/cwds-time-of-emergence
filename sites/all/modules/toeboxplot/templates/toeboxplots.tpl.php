@@ -10,6 +10,10 @@
     
     drupal_set_title("Boxplot");
     
+    $comparearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
+    $variableid = $comparearray['variableid']
+    
+    
   ?>
 
 <input id="module_path" type="hidden" value="<?php echo base_path() . $path ?>" />
@@ -53,25 +57,18 @@
 </div>
 
 <div>
-  <!--<canvas id="svg-canvas" width="800" height="800"></canvas>
-  <a id="svg-img-wrapper" href="" download="boxplot.png">
-    <input id="print-button" name="op" value="Export Boxplot Image" class="form-submit" type="submit">
-    <img id="svg-img"></img>
-  </a> -->
-  <a id="downloadtextanchor" href="/boxplotdata/text" download="boxplotdata.csv">
+  <a id="downloadtextanchor" href="/boxplotdata/<?php print($variableid); ?>/text" download="boxplotdata.csv">
     <input id="print-text-button" name="op" value="Export Boxplot Data" class="form-submit" type="submit">
   </a>  
 </div>
 <script>
 jQuery( document ).ready(function( $ ) {
-    
+  var baseurl = "<?php print($GLOBALS['base_url'] ); ?>";
   //Show the loading progress bar
   var loadingGif = $("#top-x-title");
   // timelineChart.progressbar({value:400});
   loadingGif.html("<img src='/sites/all/modules/toewhiskers/images/ajax-loader.gif' alt='loading...' />");
   
-  
-
   $('#print-button').click(function(){
     // Find existing svg content.
     var $container = $('#chart-area-1');
@@ -89,10 +86,10 @@ jQuery( document ).ready(function( $ ) {
     $('#svg-img-wrapper').attr('href', theImage);
   });
     
-    
   var variableid = location.pathname.match(/.*\/(V.*)/)[1];
-  $("#downloadtextanchor").prop("href","/boxplotdata/" + variableid + "/text");
-  var url =  location.protocol + "//" + location.host + "/boxplotdata/"  + variableid;
+  var url = baseurl + "/boxplotdata/" + variableid;
+  //$("#downloadtextanchor").prop(url + "/text");
+  
   $.post( url, function( jsonobj ) {  
     
     var charttitle = "Time of Emergence for " + jsonobj.variablename ;

@@ -838,7 +838,7 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
   global $lookupdatatable;
   $compare = $_SESSION['compare'];
   $jasondata = array();
-  $safevariablelist = variablesarray();
+  $safevariablelist = safevariablesarray();
   if(in_array(check_plain($variable), $safevariablelist ) ){
     $jasondata['variable'] = check_plain($variable);
   } 
@@ -852,6 +852,7 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
   
   // Query for variable name and theme.
   $query = "SELECT variablename,theme FROM " . $lookupdatatable . " where variableid='" . $variable . "' LIMIT 1";
+  //drupal_set_message('comparearray:<pre>'. $query .'</pre>');
   $row = (object)db_query($query)->fetchAssoc();
   $jasondata['variablename'] = substr($row->variablename, 0, 70);
   $jasondata['theme'] = $row->theme;
@@ -923,7 +924,7 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
     if($mode != 'text'){
       drupal_json_output($jasondata);
     } else {
-      $o = "Variable: " . $jasondata['variable'] . "\n";
+      $o = "Variable: " . $variable . "\n";
       $o .="Region: " . $jasondata['regionname'] . "\n";
       $o .="Dataset: " . $jasondata['dataname'] . "\n\n";
       $csv = "Tolerance,Emission Scenario,Confidence,GCM_Ensemble TOE(box),Model TOE(dots)\n";
@@ -1007,6 +1008,26 @@ function variablesarray($themeindex = 4, $impactindex = 0, $typeindex = 2, $time
   $returnarray['filterquery'] = $query;
   $returnarray['variablesarray'] = $variablesarray;
   return $returnarray;
+}
+
+
+/*
+ *
+ */
+function safevariablesarray(){
+  global $maindatatable;
+  $variablesarray = array();
+  db_set_active('cig_toe');
+  $query = "SELECT DISTINCT VARIABLEID AS k FROM " . $maindatatable ;
+  $result = db_query($query);
+  // Result is returned as a iterable object that returns a stdClass object on each iteration
+  foreach ($result as $record) {
+    if(isset($record->v)){
+      $variablesarray[$record->k] = t($record->k);
+    }
+  }
+  db_set_active();
+  return $variablesarray;
 }
 
 

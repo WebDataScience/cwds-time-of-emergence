@@ -4,12 +4,16 @@ function toeboxplot_menu() {
   $items['boxplots'] = array(
     'page callback' => 'toeboxplots_page_function',
     'access callback' => TRUE,
+    'page arguments' => array(1),
   );
   return $items;
 }
 
-function toeboxplots_page_function(){
-    return theme('toeboxplots_template');
+function toeboxplots_page_function($variableid){
+  $comparearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
+  $comparearray['variableid'] = check_plain($variableid);
+  $_SESSION['compare'] = $comparearray;
+  return theme('toeboxplots_template');
 }
 
 function toeboxplot_theme(){
