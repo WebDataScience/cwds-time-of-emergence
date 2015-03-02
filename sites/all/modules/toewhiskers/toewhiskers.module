@@ -895,7 +895,6 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
               $dots[$record->GCM] = $record->TOE;
             }
           } else {
-             //$box[$record->GCM] = $record->TOE;
             $box[$record->MODELAGREEMENT] = $record->TOE;
           }
         }
@@ -905,7 +904,6 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
           $oneboxarray = array($box['25'],$box['50'],$box['75']);
         }
         $oneboxplot = array(
-          // "box" => array($box['GCM_ensemble_25'],$box['GCM_ensemble'],$box['GCM_ensemble_75']),
           "box" => $oneboxarray,
           "dots" => $dots,
           "query" => $query,
