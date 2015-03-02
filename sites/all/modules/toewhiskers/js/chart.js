@@ -83,11 +83,11 @@ jQuery( document ).ready(function( $ ) {
     tabledata = jsonobj.tabledata;
     for (var key in tabledata) {
       var onerow = tabledata[key];
-      $('#tabledata tr:last').after("<tr><td><a href='/boxplots/"
-				    + key + "'>" + onerow.VARIABLESHORTNAME
-				    + "</a></td><td>"
-				    + dateConversion(onerow) + "</td><td>"
-				    + (onerow.CHANGEDIR == '1'?'Increasing':'Decreasing')  + "</td></tr>");  
+      $('#tabledata tr:last').after("<tr><td><a href='boxplots/"
+        + key + "'>" + onerow.VARIABLESHORTNAME
+        + "</a></td><td>"
+        + dateConversion(onerow) + "</td><td>"
+        + (onerow.CHANGEDIR == '1'?'Increasing':'Decreasing')  + "</td></tr>");  
     }
     
     // Display debug info into hidden div
