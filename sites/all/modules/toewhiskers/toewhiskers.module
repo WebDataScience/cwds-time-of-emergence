@@ -150,7 +150,7 @@ function template_preprocess_displaymap_template(&$variables) {
  
   $block = module_invoke('block', 'block_view', '8');
   $variables['interpretivetext'] = render($block['content']);
-  if($maparray['dataset'] == '3'){
+  if($maparray['datasetimagecode'] == '3'){
     $block = module_invoke('block', 'block_view', '9');
     $variables['interpretivetext'] .= render($block['content']);
   }
