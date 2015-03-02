@@ -28,7 +28,6 @@ jQuery( document ).ready(function( $ ) {
   // Gradient colors from http://www.perbang.dk/rgbgradient/
   colorarray = ["#E59C00","#E39400","#E18C00","#DF8400","#DD7C00","#DB7400","#D96C00","#D76400","#D55C00","#D35400","#D14C01","#CF4401","#CD3C01","#CB3401","#C92C01","#C72401","#C51C01","#C31401","#C10C01","#C00402"];
 
-
   // Ajax endpoint will retrieve vars and parameters from session.
   $.post( "timelinedata" , function( jsonobj ) { 
   
@@ -64,20 +63,17 @@ jQuery( document ).ready(function( $ ) {
       jsonobj.maxtoeyear,
       'Time of Emergence in : ' + websitetextarray['region'],
       'Multi-model median',
-    'Emissions Scenario: ' + websitetextarray['emission'][jsonobj.emission],
+      'Emissions Scenario: ' + websitetextarray['emission'][jsonobj.emission],
       'Management Sensitivity: ' +websitetextarray['tolerance'][jsonobj.tolerance],
       'Estimated Rate of Climate Change: ' + websitetextarray['confidence'][jsonobj.confidence],
       'Climate Data: ' + websitetextarray['dataset'][jsonobj.dataset]
      // 'Region: ' + websitetextarray['region']
-      
     );
-    //console.log($(".emission" ));
 
     $(".emission" ).html( websitetextarray['emission'][jsonobj.emission] );
     $(".confidence" ).html( websitetextarray['confidence'][jsonobj.confidence] );
     $(".tolerance" ).html( websitetextarray['tolerance'][jsonobj.tolerance] );
     $(".dataset" ).html( websitetextarray['dataset'][jsonobj.dataset] );
-    
     
     // Table modification via jQuery.
     tabledata = jsonobj.tabledata;
@@ -89,12 +85,9 @@ jQuery( document ).ready(function( $ ) {
         + dateConversion(onerow) + "</td><td>"
         + (onerow.CHANGEDIR == '1'?'Increasing':'Decreasing')  + "</td></tr>");  
     }
-    
     // Display debug info into hidden div
     $("#hiddenconsole" ).html( "timelinequery: " + jsonobj.timelinequery + "<br>tablequery: " + jsonobj.tablequery );
-    
   });
-  
 });
 
 
@@ -124,77 +117,62 @@ function drawD3Timeline(timelinedataarray,maxtoeyear,confidence,tolerance,datase
   var dotcircleco = "#99FF99";
  
   var data = [[2000,0,"tooltip1","label1","rcp45",50],
-	     [2020,0,"tooltip2","label2","rcp85",50],
-	     [2085,0,"tooltip3","label3","rcp45",50],
-	     [2040,0,"tooltip4","label4","rcp45",50]];
+	  [2020,0,"tooltip2","label2","rcp85",50],
+	  [2085,0,"tooltip3","label3","rcp45",50],
+	  [2040,0,"tooltip4","label4","rcp45",50]];
  
   var chartheight = 280;
   data = timelinedataarray;
 
-  /* Code to prevent label text overlapping */
-  var temparr = [[0,0]];
-
+  /* Code to (usually) prevent timeline marker label text overlapping */
+  var rownumber = 0;
   for (var i = 0; i < data.length; i++) {
-    var found = false;
-    for (var j = 0; j < temparr.length; j++) {
-      if (data[i][0] == temparr[j][0]) {
-        var count = temparr[j][1];
-        data[i][5] = data[i][5] + (5 + count * 10);
-        temparr[j][1] = count + 1;
-        found = true;
-      }
-    }
-    if (found == false) {
-      temparr.push([data[i][0], 1]);
-    }
-  } 
-		   
+    data[i][5] = rownumber * 12;
+    rownumber += 1;
+    if(rownumber > 8){rownumber = 0;}
+	}
+
 	var margin = {top: 120, right: 40, bottom: 40, left: 30}
-		  , width = 940 - margin.left - margin.right
-		  , height = chartheight - margin.top - margin.bottom;
-
+		, width = 940 - margin.left - margin.right
+		, height = chartheight - margin.top - margin.bottom;
 	var format = d3.format("0000");
-
 	var x = d3.scale.linear()
-		          .domain([2000, 2100])
-		          .range([ 0, width ]);
-
+		.domain([2000, 2100])
+		.range([ 0, width ]);
 	var y = d3.scale.linear()
-		        .domain([0, d3.max(data, function(d) { return d[1]; })])
-		        .range([ height, 0 ]);
-		      
+		.domain([0, d3.max(data, function(d) { return d[1]; })])
+		.range([ height, 0 ]);
 	var chart = d3.select('#timeline-chart')
 		.append('svg:svg')
 		.attr('width', width + margin.right + margin.left)
 		.attr('height', height + margin.top + margin.bottom);
-
     // Color the background.
-    chart.append("rect")
+  chart.append("rect")
     .attr("width", width + margin.right + margin.left -2)
     .attr("height", "100%")
     .attr('border', 0)
     .attr("fill", bgco);
-    chart.append("text")
-        .attr("x", 15)             
-        .attr("y", 20)
-        .style("stroke", textco)
-        .style('font-size', '14px')
-        .style('font-family', 'sans-serif')
-        .text(confidence);
-    chart.append("text")
-        .attr("x", 15)             
-        .attr("y", 40)
-        .style("stroke", textco)
-        .style('font-size', '14px')
-        .style('font-family', 'sans-serif')
-        .text(tolerance); 
-    chart.append("text")
-        .attr("x", 15)             
-        .attr("y", 60)
-        .style("stroke", textco)
-        .style('font-size', '14px')
-        .style('font-family', 'sans-serif')
-        .text(dataset);
+  chart.append("text")
+    .attr("x", 15)             
+    .attr("y", 20)
+    .style("stroke", textco)
+    .style('font-size', '14px')
+    .style('font-family', 'sans-serif')
+    .text(confidence);
+  chart.append("text")
+    .attr("x", 15)             
+    .attr("y", 40)
+    .style("stroke", textco)
+    .style('font-size', '14px')
+    .style('font-family', 'sans-serif')
+    .text(tolerance); 
+  chart.append("text")
+    .attr("x", 15)             
+    .attr("y", 60)
+    .style("stroke", textco)
+    .style('font-size', '14px')
+    .style('font-family', 'sans-serif')
+    .text(dataset);
   chart.append("text")
     .attr("x", 15)             
     .attr("y", 80)
@@ -202,14 +180,6 @@ function drawD3Timeline(timelinedataarray,maxtoeyear,confidence,tolerance,datase
     .style('font-size', '14px')
     .style('font-family', 'sans-serif')
     .text(region);
-    /*
-    chart.append("svg:image")
-        .attr("xlink:href", "http://toe/sites/all/modules/toewhiskers/images/kingcounty200x200.png")
-        .attr("x", width-105+margin.right+margin.left)
-        .attr("y", 0)
-        .attr("width", "105")
-        .attr("height", "105");
-    */
   var main = chart.append('g')
     .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
     .attr('width', width)
@@ -233,9 +203,9 @@ function drawD3Timeline(timelinedataarray,maxtoeyear,confidence,tolerance,datase
     .attr('shape-rendering','crispEdges');
   var g = main.append("svg:g"); 
   var node = g.selectAll("g")
-              .data(data)
-              .enter()
-              .append("g");         
+    .data(data)
+    .enter()
+    .append("g");         
   // vertical variable line.        
   node.append("line")
     .attr("x1", function (d,i) { return x(d[0]); } )
@@ -261,7 +231,7 @@ function drawD3Timeline(timelinedataarray,maxtoeyear,confidence,tolerance,datase
     //.attr("fill", "#070707");
     .attr("fill", bgco);
   // Add variable short name - dataset
-	node.append("line:text")
+  node.append("line:text")
     .attr("x", function (d,i) { return x(d[0]); } ) 
     .attr("y", function (d) { return d[5]; } )
     .style("stroke", textco)
@@ -272,15 +242,15 @@ function drawD3Timeline(timelinedataarray,maxtoeyear,confidence,tolerance,datase
     .text(function(d) { return d[3]+' - '+d[6]; })
     .attr('title', function(d) {  return d[2]; })
     .attr('alt', function(d) { return d[2]; })
-		.on("click", function(d) {
-		document.location.href="/boxplot" }); 
+    //.on("click", function(d) { document.location.href="/boxplot" })
+    ; 
   // Attributes for all other text.
   d3.selectAll('text')
-  .attr('fill', textco)
-  .style('font-size', '11px')
-  .attr("stroke-width", .3)
-  .style('font-family', 'sans-serif')
-  .style('text-shadow', 'none');
+    .attr('fill', textco)
+    .style('font-size', '11px')
+    .attr("stroke-width", .3)
+    .style('font-family', 'sans-serif')
+    .style('text-shadow', 'none');
 }
 
 
