@@ -547,7 +547,7 @@ function toewhiskers_mapdetails_form($form,&$form_submit) {
   );
   $form['parameter']['emergthres'] = array(
     '#type' => 'radios',
-    '#title' => t('Past Sensitivity'),
+    '#title' => t('Management Sensitivity'),
     '#options' => array(  '1' => 'Low (to extreme 10% of 1950-1999 conditions)', '2' => 'High (to extreme 40% of 1950-1999 conditions)',  ),
     '#default_value' => isset($maparray['emergthres'])?$maparray['emergthres']:'1',
     '#label_attributes' => array(
