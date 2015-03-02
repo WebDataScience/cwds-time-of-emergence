@@ -1610,13 +1610,17 @@ button, .button {
     border-radius: 2px; }
   button.round, .button.round {
     border-radius: 1000px; }
-  button.disabled, button[disabled], .button.disabled, .button[disabled] {
+  button.disabled, button[disabled],
+  .button.disabled, .button[disabled],{
     background-color: #4b2e83;
     border-color: #3b2569;
-    //color: white;
+    color: white;
     cursor: default;
     opacity: 0.7;
     box-shadow: none; }
+    
+    
+    
     button.disabled:hover, button.disabled:focus, button[disabled]:hover, button[disabled]:focus, .button.disabled:hover, .button.disabled:focus, .button[disabled]:hover, .button[disabled]:focus {
       background-color: #3b2569; }
     button.disabled:hover, button.disabled:focus, button[disabled]:hover, button[disabled]:focus, .button.disabled:hover, .button.disabled:focus, .button[disabled]:hover, .button[disabled]:focus {

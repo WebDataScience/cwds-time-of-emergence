@@ -159,7 +159,7 @@ width: 100%;
 }
 #toewhiskers-explore-form{
  float:right;
- width:40%;
+ width:42%;
 }
 .page-compare #toewhiskers-compare-form {
   position: relative;
@@ -176,10 +176,12 @@ width: 100%;
   width: 48%;
 }
 .form-type-radios.form-item-confidence{
-   //width: 48%;
-  // position: absolute;
-   //top: 85px;
-   //left: 280px;
+   /*
+   width: 48%;
+   position: absolute;
+   top: 85px;
+   left: 280px;
+   */
 }
  #edit-narrow,
  #edit-narrow{
@@ -200,3 +202,10 @@ width: 100%;
 #footer{
   width:100%;
 }
+
+
+.btn-default.disabled, .btn-default[disabled]{
+    background-color: #dedede;
+    border-color: #ccc;
+
+    }

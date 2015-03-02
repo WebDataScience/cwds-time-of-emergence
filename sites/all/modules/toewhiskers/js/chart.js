@@ -1,10 +1,5 @@
 
-
-console.log("begin chartjs");
-
 jQuery( document ).ready(function( $ ) {
-  console.log("document ready");
-
   var websitetextarray = new Object();
   var confidence = new Object();
   confidence['95'] = 'Faster';
@@ -68,19 +63,20 @@ jQuery( document ).ready(function( $ ) {
       timelinedataarray, 
       jsonobj.maxtoeyear,
       'Time of Emergence in : ' + websitetextarray['region'],
-    
+      'Multi-model median',
+    'Emissions Scenario: ' + websitetextarray['emission'][jsonobj.emission],
+      'Management Sensitivity: ' +websitetextarray['tolerance'][jsonobj.tolerance],
       'Estimated Rate of Climate Change: ' + websitetextarray['confidence'][jsonobj.confidence],
-      'Past Sensitivity: ' +websitetextarray['tolerance'][jsonobj.tolerance],
-      //'Climate Data: ' + websitetextarray['dataset'][jsonobj.dataset]
+      'Climate Data: ' + websitetextarray['dataset'][jsonobj.dataset]
      // 'Region: ' + websitetextarray['region']
-      'Emissions Scenario: ' + websitetextarray['emission'][jsonobj.emission]
+      
     );
     //console.log($(".emission" ));
 
     $(".emission" ).html( websitetextarray['emission'][jsonobj.emission] );
     $(".confidence" ).html( websitetextarray['confidence'][jsonobj.confidence] );
     $(".tolerance" ).html( websitetextarray['tolerance'][jsonobj.tolerance] );
-   // $(".dataset" ).html( websitetextarray['dataset'][jsonobj.dataset] );
+    $(".dataset" ).html( websitetextarray['dataset'][jsonobj.dataset] );
     
     
     // Table modification via jQuery.

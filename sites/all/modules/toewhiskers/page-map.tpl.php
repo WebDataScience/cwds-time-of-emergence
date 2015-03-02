@@ -72,7 +72,7 @@
 <!-- toewhiskers/page-map.tpl.php-->
 
   <?php if($maptype == '1'){ ?>
-  <img src='<?php print  $pathtomap; ?>/images/SampleMaps4UWT/<?php print $imagefilename; ?>' alt='Missing image: <?php print $imagefilename; ?>'>
+  <img src='<?php print  $pathtomap; ?>/images/maps/<?php print $imagefilename; ?>' alt='Missing image: <?php print $imagefilename; ?>'>
   <div>
     <a id='downloadmapanchor' href='<?php print $pathtoimage; ?>' download='mapimage-<?php print $imagefilename; ?>'>
       <input id='print-text-button' name='op' value='Export Map Image' class='form-submit' type='submit'>
