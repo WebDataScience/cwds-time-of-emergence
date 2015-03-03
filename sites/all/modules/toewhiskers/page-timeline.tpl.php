@@ -86,13 +86,7 @@ ini_set('display_startup_errors', TRUE);
 			margin: 0;
 		} 
 </style>
-<h2 style="float:left">Time of Emergence in <span class="region" id="region"><?php echo $_SESSION['compare']['regionname']; ?></span> </h2>
-<div class="timeline-thumbnail"><img src="/sites/all/modules/toewhiskers/images/kingcounty200x200.png"></img></div><div style="clear:both"></div>
-  <!--<p>   
-  ToE Range: <span class="confidence"></span><br/>
-  Past Sensitivity*: <span class="tolerance"></span><br/>
-  Climate Data: <span class="dataset"></span>
-  </p>-->
+<h2>Time of Emergence in <span class="region" id="region"><?php echo $_SESSION['compare']['regionname']; ?></span> </h2>
 <div id="chartmessage"></div>
 <div id="horizontal-bar-chart"></div>
 <div id="timeline-chart"></div> 
@@ -106,13 +100,17 @@ ini_set('display_startup_errors', TRUE);
   </a>  
   <a id="downloadtextanchor" href="timelinedata/text" download="timelinedata.txt">
     <input id="print-text-button" name="op" value="Export Timeline Data" class="form-submit" type="submit">
-  </a>  
+  </a>
+  
+  <p><h4>Understanding the Timeline</h4>
+The timeline shows the date by which half of the global climate models projecting conditions to noticeably deviate from the baseline conditions (1950-1999) indicate emergence of change in this variable, based on your selections. 
+</p>
 </div>
   
 <div id="range-revise-wrapper">
   <div id="toe-range">
   
-  <h2>Projected Range of Time of Emergence for <span class="region" id="region">
+  <h2>Estimated Range of Time of Emergence for <span class="region" id="region">
     <?php echo $_SESSION['compare']['regionname']; ?></span> under
     <span class="emission">
     <?php
@@ -130,7 +128,21 @@ ini_set('display_startup_errors', TRUE);
     <!--<tr><td>Variable Shortname (Column G)</td><td>{Year A} – {Year B}</td><td>ChangeDir (Column C)</td></tr>
     <tr><td>Tmax>90degF(32.2degC)</td><td>2045 - 2065</td><td>Negative</td></tr>-->
     <span class="tablerows"></span>
+    <th rowspan=3> Click on any variable for more information about how time of emergence differs for different global climate models, emissions scenarios, levels of management sensitivity, and estimated rates of climate change.</th>
     </table>
+    <p>
+    <h4>Understanding the “ToE Range”</h4>
+The “ToE Range” indicates the range of years for which the middle 50% of global climate models projecting conditions to noticeably deviate from the baseline conditions (1950–1999) indicate emergence of change in the variable noted, based on your selections,
+
+A variable may have “No emergence” for an individual global climate model or the spatial aggregate if:
+      <ul>
+        <li>Emergence occurs after 2100 </li>
+        <li>Conditions never exceeded the threshold of management sensitivity during the baseline period (1950-1999)</li>
+        <li>Less than 60% of the selected area shows emergence by 2100</li>
+        <li>Less than 60% of global climate models agree on the direction of climate change</li>
+      </ul>
+	
+    </p>
   </p>
   
   </div> 
@@ -145,7 +157,6 @@ ini_set('display_startup_errors', TRUE);
   
   <div id="hiddenconsole"></div>  
         
-      
   <script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/rgbcolor.js"></script> 
   <script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/StackBlur.js"></script>
   <script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/canvg.js"></script>

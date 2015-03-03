@@ -1,34 +1,23 @@
 <?php
-/* Error reporting */
-/*error_reporting(E_ALL);
-ini_set('display_errors', TRUE);
-ini_set('display_startup_errors', TRUE);*/
 
 function toeboxplot_menu() {
-  $items['boxplot_test'] = array(
-    'page callback' => 'toeboxplot_page_function',
-    'access callback' => TRUE,
-  );
   $items['boxplots'] = array(
     'page callback' => 'toeboxplots_page_function',
     'access callback' => TRUE,
+    'page arguments' => array(1),
   );
   return $items;
 }
 
-function toeboxplot_page_function(){
-    return theme('toeboxplot_template');
-}
-function toeboxplots_page_function(){
-    return theme('toeboxplots_template');
+function toeboxplots_page_function($variableid){
+  $comparearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
+  $comparearray['variableid'] = check_plain($variableid);
+  $_SESSION['compare'] = $comparearray;
+  return theme('toeboxplots_template');
 }
 
 function toeboxplot_theme(){
     return array(
-        'toeboxplot_template' => array(
-            // file name will be page-timeline.tpl.php
-            'template' => 'templates/toeboxplot',
-        ),
         'toeboxplots_template' => array(
             'template' => 'templates/toeboxplots',
         ),

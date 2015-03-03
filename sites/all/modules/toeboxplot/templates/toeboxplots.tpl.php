@@ -10,6 +10,10 @@
     
     drupal_set_title("Boxplot");
     
+    $comparearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
+    $variableid = $comparearray['variableid']
+    
+    
   ?>
 
 <input id="module_path" type="hidden" value="<?php echo base_path() . $path ?>" />
@@ -53,26 +57,18 @@
 </div>
 
 <div>
-  <!--<canvas id="svg-canvas" width="800" height="800"></canvas>
-  <a id="svg-img-wrapper" href="" download="boxplot.png">
-    <input id="print-button" name="op" value="Export Boxplot Image" class="form-submit" type="submit">
-    <img id="svg-img"></img>
-  </a> -->
-  <a id="downloadtextanchor" href="/boxplotdata/text" download="boxplotdata.csv">
+  <a id="downloadtextanchor" href="<?php print($GLOBALS['base_url'] ); ?>/boxplotdata/<?php print($variableid); ?>/text" download="boxplotdata.csv">
     <input id="print-text-button" name="op" value="Export Boxplot Data" class="form-submit" type="submit">
   </a>  
 </div>
 <script>
 jQuery( document ).ready(function( $ ) {
-    
-    
-     //Show the loading progress bar
+  var baseurl = "<?php print($GLOBALS['base_url'] ); ?>";
+  //Show the loading progress bar
   var loadingGif = $("#top-x-title");
- // timelineChart.progressbar({value:400});
+  // timelineChart.progressbar({value:400});
   loadingGif.html("<img src='/sites/all/modules/toewhiskers/images/ajax-loader.gif' alt='loading...' />");
   
-  
-
   $('#print-button').click(function(){
     // Find existing svg content.
     var $container = $('#chart-area-1');
@@ -90,10 +86,10 @@ jQuery( document ).ready(function( $ ) {
     $('#svg-img-wrapper').attr('href', theImage);
   });
     
-    
   var variableid = location.pathname.match(/.*\/(V.*)/)[1];
-  $("#downloadtextanchor").prop("href","/boxplotdata/" + variableid + "/text");
-  var url =  location.protocol + "//" + location.host + "/boxplotdata/"  + variableid;
+  var url = baseurl + "/boxplotdata/" + variableid;
+  //$("#downloadtextanchor").prop(url + "/text");
+  
   $.post( url, function( jsonobj ) {  
     
     var charttitle = "Time of Emergence for " + jsonobj.variablename ;
@@ -110,84 +106,79 @@ jQuery( document ).ready(function( $ ) {
   
 
   function drawBoxplot(containingElementID, ytitle, data, xtitle) {
-        var labels = false; 
-        var module_path = document.getElementById('module_path').value;
+    var labels = false; 
+    var module_path = document.getElementById('module_path').value;
 
-        var margin = {top: 30, right: 50, bottom: 70, left: 50};
-        var width = 400 - margin.left - margin.right;
-        var height = 400 - margin.top - margin.bottom;
+    var margin = {top: 30, right: 50, bottom: 70, left: 50};
+    var width = 400 - margin.left - margin.right;
+    var height = 400 - margin.top - margin.bottom;
 	
-	
-
-          var rowMax = 2100;
-          var min = 2000;
-          var rowMin = 2000;
-          var max = 2100;
-                       
-          var chart = d3.box()
-            .height(height) 
-            .domain([min, max])
-            .showLabels(labels);
-            
-          //var svg = d3.select("body").append("svg")
-          var svg = d3.select("#" + containingElementID).append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-            .attr("class", "box")  
-            .attr("width", "700")
-            .attr("height", "200")
-            .attr("transform", "translate(" + (margin.left - 30) + "," + margin.top + ")");
+    var rowMax = 2100;
+    var min = 2000;
+    var rowMin = 2000;
+    var max = 2100;
+                 
+    var chart = d3.box()
+      .height(height) 
+      .domain([min, max])
+      .showLabels(labels);
+      
+    //var svg = d3.select("body").append("svg")
+    var svg = d3.select("#" + containingElementID).append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .attr("class", "box")  
+      .attr("width", "700")
+      .attr("height", "430")
+      .attr("transform", "translate(" + (margin.left - 10) + "," + margin.top + ")");
     
-          //x-axis
-          var x = d3.scale.ordinal()     
-            .domain( data.map(function(d) { console.log(d); return d[0] } ) )     
-            .rangeRoundBands([0 , width], 0.7, 0.3);    
+    //x-axis
+    var x = d3.scale.ordinal()     
+      .domain( data.map(function(d) { console.log(d); return d[0] } ) )     
+      .rangeRoundBands([0 , width], 0.7, 0.3);    
 
-          var xAxis = d3.svg.axis()
-            .scale(x)
-            .orient("bottom");
+    var xAxis = d3.svg.axis()
+      .scale(x)
+      .orient("bottom");
 
-          //y-axis
-          var y = d3.scale.linear()
-            .domain([2000, 2100])
-            .range([height + margin.top, 0 + margin.top]);
-          
-          var yAxis = d3.svg.axis()
-            .scale(y)
-            .orient("right")
-            .ticks(4);
+    //y-axis
+    var y = d3.scale.linear()
+      .domain([2000, 2100])
+      .range([height + margin.top, 0 + margin.top]);
+    
+    var yAxis = d3.svg.axis()
+      .scale(y)
+      .orient("right")
+      .ticks(4);
 
-          //draw boxplots  
-          svg.selectAll(".box")    
-            .data(data)
-            .enter().append("g")
-            .attr("transform", function(d) { return "translate(" +  x(d[0])  + "," + margin.top + ")"; } )
-            .call(chart.width(x.rangeBand()));
-
+    //draw boxplots  
+    svg.selectAll(".box")    
+      .data(data)
+      .enter().append("g")
+      .attr("transform", function(d) { return "translate(" +  x(d[0])  + "," + margin.top + ")"; } )
+      .call(chart.width(x.rangeBand()));
             
-
-            
-          // add a title
-          svg.append("text")
-            //.attr("y", (width / 2))             
-            //.attr("x", 0 + (margin.top / 2))
-            .attr("y", -20)             
-            .attr("x", (0 - width))
-            .attr("text-anchor", "start")  
-            .attr("transform", "rotate(-90)")
-            .style("font-size", "18px")  
-            .text(ytitle); 
-         
-           //draw y axis
-          svg.append("g")
-                .attr("class", "y axis")
-                .attr("transform", "translate(" + width + ", 0)")
-                .call(yAxis)
-            .append("text") 
-              .attr("y", 6)
-              .attr("dy", ".71em")
-              .style("text-anchor", "middle")
-              .style("font-size", "16px");
+    // add a title
+    svg.append("text")
+      //.attr("y", (width / 2))             
+      //.attr("x", 0 + (margin.top / 2))
+      .attr("y", -20)             
+      .attr("x", (0 - width))
+      .attr("text-anchor", "start")  
+      .attr("transform", "rotate(-90)")
+      .style("font-size", "18px")  
+      .text(ytitle); 
+   
+     //draw y axis
+    svg.append("g")
+          .attr("class", "y axis")
+          .attr("transform", "translate(" + width + ", 0)")
+          .call(yAxis)
+      .append("text") 
+        .attr("y", 6)
+        .attr("dy", ".71em")
+        .style("text-anchor", "middle")
+        .style("font-size", "16px");
 
           //text label for x axis
           svg.append("text")      
