@@ -148,11 +148,13 @@ function template_preprocess_displaymap_template(&$variables) {
   $variables['imagefilenamenop'] = $maparray['stage2filenamenop'];
   $variables['maptype'] = $maparray['maptype'];
  
-  $block = module_invoke('block', 'block_view', '8');
-  $variables['interpretivetext'] = render($block['content']);
+  if($maparray['datasetimagecode'] == '1' || $maparray['datasetimagecode'] == '2'){
+    $block = module_invoke('block', 'block_view', '8');
+    $variables['interpretivetext'] = render($block['content']);
+  }
   if($maparray['datasetimagecode'] == '3'){
     $block = module_invoke('block', 'block_view', '9');
-    $variables['interpretivetext'] .= render($block['content']);
+    $variables['interpretivetext'] = render($block['content']);
   }
   
   $form = drupal_get_form('toewhiskers_mapdetails_form');
