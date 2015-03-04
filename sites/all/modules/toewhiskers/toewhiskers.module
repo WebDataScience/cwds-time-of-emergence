@@ -63,28 +63,27 @@ function toewhiskers_menu() {
 
 
 function toewhiskers_theme(){
-    return array(
-      'explore_template' => array(
-         // file name will be page-explore.tpl.php
-         'template' => 'page-explore',
-      ),
-      'compare_template' => array(
-        'template' => 'page-toewhiskers',
-      ),
-      'map_template' => array(
-        'template' => 'page-toewhiskers',
-      ),
-      'mapdetails_template' => array(
-        'template' => 'page-toewhiskers',
-      ),
-      'displaymap_template' => array(
-        'template' => 'page-map',
-      ),
-      'timeline_template' => array(
-        // file name will be page-timeline.tpl.php
-        'template' => 'page-timeline',
-      ),
-    );
+  return array(
+    'explore_template' => array(
+       // file name will be page-explore.tpl.php
+       'template' => 'page-explore',
+    ),
+    'compare_template' => array(
+      'template' => 'page-toewhiskers',
+    ),
+    'map_template' => array(
+      'template' => 'page-toewhiskers',
+    ),
+    'mapdetails_template' => array(
+      'template' => 'page-toewhiskers',
+    ),
+    'displaymap_template' => array(
+      'template' => 'page-map',
+    ),
+    'timeline_template' => array(
+      'template' => 'page-timeline',
+    ),
+  );
 }
 
 
@@ -274,13 +273,13 @@ function toewhiskers_explore_form_submit($form, &$form_state) {
 
 
 function toewhiskers_page_function(){
-    drupal_add_js('https://www.google.com/jsapi');
-    drupal_add_js("https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['timeline']}]}");
-    drupal_add_js(drupal_get_path('module', 'toewhiskers') . '/js/chart.js');
-    drupal_add_css(drupal_get_path('module', 'toewhiskers') . '/css/toewhiskers.css');
-    // Set the value of the 'I want' to be 'compare' so that subsequent form submissions redirect to this page.
-    $_SESSION['compare']['compare'] = 0;
-    return theme('timeline_template');
+  drupal_add_js('https://www.google.com/jsapi');
+  drupal_add_js("https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['timeline']}]}");
+  drupal_add_js(drupal_get_path('module', 'toewhiskers') . '/js/chart.js');
+  drupal_add_css(drupal_get_path('module', 'toewhiskers') . '/css/toewhiskers.css');
+  // Set the value of the 'I want' to be 'compare' so that subsequent form submissions redirect to this page.
+  $_SESSION['compare']['compare'] = 0;
+  return theme('timeline_template');
 }
 
 function template_preprocess_timeline_template(&$variables) {
@@ -409,6 +408,7 @@ function toewhiskers_narrow_subform(&$form){
     '#value' => t('Filter'),
   );
 }
+
 /*
  * Helper function for forms that reuse the 'narrow variables' filters. Provides only the 'theme' options.
  */
@@ -557,7 +557,6 @@ function toewhiskers_mapdetails_form($form,&$form_submit) {
       'title' => t('Selecting “High” management sensitivity to changing conditions results in earlier emergence. Selecting “Low” results in later emergence.'),
     ),
   );
-  
   
   
   $form['parameter']['emissionscenario'] = array(
@@ -1012,7 +1011,7 @@ function variablesarray($themeindex = 4, $impactindex = 0, $typeindex = 2, $time
 
 
 /*
- *
+ * Used to validate input variable against actual variables in DB.
  */
 function safevariablesarray(){
   global $maindatatable;

@@ -169,21 +169,21 @@ jQuery( document ).ready(function( $ ) {
       .style("font-size", "18px")  
       .text(ytitle); 
    
-     //draw y axis
+    //draw y axis
     svg.append("g")
-          .attr("class", "y axis")
-          .attr("transform", "translate(" + width + ", 0)")
-          .call(yAxis)
+      .attr("class", "y axis")
+      .attr("transform", "translate(" + width + ", 0)")
+      .call(yAxis)
       .append("text") 
-        .attr("y", 6)
-        .attr("dy", ".71em")
-        .style("text-anchor", "middle")
-        .style("font-size", "16px");
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "middle")
+      .style("font-size", "16px");
 
-          //text label for x axis
-          svg.append("text")      
-            .attr("x", -150 )
-            .attr("y", -410 )
+    //text label for x axis
+    svg.append("text")      
+      .attr("x", -150 )
+      .attr("y", -410 )
 	    .attr("dx", "-2em")
 	    .attr("dy", ".81em")
             .style("text-anchor", "middle")
@@ -207,10 +207,10 @@ jQuery( document ).ready(function( $ ) {
     }  // end drawboxplot
     
     
-    /**
-     *http://bl.ocks.org/mbostock/7555321
-     */
-    function wrap(text, width) {
+/**
+ *http://bl.ocks.org/mbostock/7555321
+ */
+function wrap(text, width) {
   text.each(function() {
     var text = d3.select(this),
         words = text.text().split(/\s+/).reverse(),
@@ -243,39 +243,38 @@ jQuery( document ).ready(function( $ ) {
   });
 }
     
-    function parse4data(obj){
-      var data = [];
-          data[0] = [];
-          data[0][0] = "Faster";
-          data[0][1] = [];
-          data[0][2] = [];
-          $.each(obj.signalconfidence95.dots, function(i, obj) {
-            data[0][1].push(obj);
-          });
-          $.each(obj.signalconfidence95.box, function(i, obj) {
-            data[0][2].push(Math.min(obj,2100));
-          });
-          data[1] = [];
-          data[1][0] = "Central";
-          data[1][1] = [];
-          data[1][2] = [];
-          $.each(obj.signalconfidence50.dots, function(i, obj) {
-            data[1][1].push(obj);
-          });
-          $.each(obj.signalconfidence50.box, function(i, obj) {
-            data[1][2].push(Math.min(obj,2100));
-          });
-          data[2] = [];
-          data[2][0] = "Slower";
-          data[2][1] = [];
-          data[2][2] = [];
-          $.each(obj.signalconfidence5.dots, function(i, obj) {
-            data[2][1].push(obj);
-          });
-          $.each(obj.signalconfidence5.box, function(i, obj) {
-            data[2][2].push(Math.min(obj,2100));
-          });
-  
+  function parse4data(obj){
+    var data = [];
+    data[0] = [];
+    data[0][0] = "Faster";
+    data[0][1] = [];
+    data[0][2] = [];
+    $.each(obj.signalconfidence95.dots, function(i, obj) {
+      data[0][1].push(obj);
+    });
+    $.each(obj.signalconfidence95.box, function(i, obj) {
+      data[0][2].push(Math.min(obj,2100));
+    });
+    data[1] = [];
+    data[1][0] = "Central";
+    data[1][1] = [];
+    data[1][2] = [];
+    $.each(obj.signalconfidence50.dots, function(i, obj) {
+      data[1][1].push(obj);
+    });
+    $.each(obj.signalconfidence50.box, function(i, obj) {
+      data[1][2].push(Math.min(obj,2100));
+    });
+    data[2] = [];
+    data[2][0] = "Slower";
+    data[2][1] = [];
+    data[2][2] = [];
+    $.each(obj.signalconfidence5.dots, function(i, obj) {
+      data[2][1].push(obj);
+    });
+    $.each(obj.signalconfidence5.box, function(i, obj) {
+      data[2][2].push(Math.min(obj,2100));
+    });
     return data;
   }  // end parse4data()    
     
