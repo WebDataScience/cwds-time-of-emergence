@@ -65,8 +65,8 @@ function toewhiskers_menu() {
 function toewhiskers_theme(){
   return array(
     'explore_template' => array(
-       // file name will be page-explore.tpl.php
-       'template' => 'page-explore',
+      // file name will be page-explore.tpl.php
+      'template' => 'page-explore',
     ),
     'compare_template' => array(
       'template' => 'page-toewhiskers',
@@ -139,23 +139,32 @@ function template_preprocess_mapdetails_template(&$variables) {
 }
 function template_preprocess_displaymap_template(&$variables) {
   $maparray = isset($_SESSION['map'])?$_SESSION['map']:array();
-    
   $variables['pathtomap'] = drupal_get_path('module', 'toewhiskers');
   $variables['pathtoimage'] = $variables['pathtomap'] . "/images/maps/" . $maparray['stage2filename'];
   $variables['imagefilename'] = $maparray['stage2filename'];
   $variables['stage2path'] = $variables['pathtomap'] . "/images/maps/";
   $variables['imagefilenamenop'] = $maparray['stage2filenamenop'];
   $variables['maptype'] = $maparray['maptype'];
- 
-  if($maparray['datasetimagecode'] == '1' || $maparray['datasetimagecode'] == '2'){
-    $block = module_invoke('block', 'block_view', '8');
-    $variables['interpretivetext'] = render($block['content']);
+  if($maparray['maptype'] == '1'){
+    if($maparray['datasetimagecode'] == '1' || $maparray['datasetimagecode'] == '2'){
+      $block = module_invoke('block', 'block_view', '8');
+      $variables['interpretivetext'] = render($block['content']);
+    }
+    if($maparray['datasetimagecode'] == '3'){
+      $block = module_invoke('block', 'block_view', '9');
+      $variables['interpretivetext'] = render($block['content']);
+    }
   }
-  if($maparray['datasetimagecode'] == '3'){
-    $block = module_invoke('block', 'block_view', '9');
-    $variables['interpretivetext'] = render($block['content']);
-  }
-  
+  if($maparray['maptype'] == '2'){
+    if($maparray['datasetimagecode'] == '1' || $maparray['datasetimagecode'] == '2'){
+      $block = module_invoke('block', 'block_view', '13');
+      $variables['interpretivetext'] = render($block['content']);
+    }
+    if($maparray['datasetimagecode'] == '3'){
+      $block = module_invoke('block', 'block_view', '14');
+      $variables['interpretivetext'] = render($block['content']);
+    }
+  } 
   $form = drupal_get_form('toewhiskers_mapdetails_form');
   $variables['map_detail_form'] = drupal_render($form);
 }
@@ -516,6 +525,8 @@ function toewhiskers_map_form_submit($form, &$form_state) {
   $maparray['impact'] = check_plain($form_state['values']['impact']);
   $maparray['variable'] = check_plain($form_state['values']['variable']);
   $maparray['maptype'] = check_plain($form_state['values']['maptype']);
+  if($maparray['maptype'] == 1){$maparray['maptypeimagecode'] = 1;}
+  if($maparray['maptype'] == 2){$maparray['maptypeimagecode'] = 2;}
   $maparray['extent'] = check_plain($form_state['values']['extent']);
   // Set session variable.
   $_SESSION['map'] = $maparray;
@@ -557,8 +568,6 @@ function toewhiskers_mapdetails_form($form,&$form_submit) {
       'title' => t('Selecting “High” management sensitivity to changing conditions results in earlier emergence. Selecting “Low” results in later emergence.'),
     ),
   );
-  
-  
   $form['parameter']['emissionscenario'] = array(
     '#type' => 'radios',
     '#title' => t('Emission Scenario'),

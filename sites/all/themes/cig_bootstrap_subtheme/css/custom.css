@@ -123,7 +123,7 @@ width: 100%;
   border: 1px solid #444;
 }
 .graphics-sprite, .graphics-uwt_logo_patch, .graphics-uwt_logo_patch_narrow, .graphics-uwt_w_and_wordmark_horiz_white, .graphics-uwt_wordmark_front, .graphics-uwt_wordmark_narrow, .graphics-uwt_wordmark_not_front {
-    background: url('../images/graphics-s135d404cce.png') no-repeat scroll 0% 0% transparent;
+  background: url('../images/graphics-s135d404cce.png') no-repeat scroll 0% 0% transparent;
 }
 .graphics-uwt_w_and_wordmark_horiz_white {
     background-position: 0px -147px;
