@@ -6,12 +6,13 @@ d3.box = function() {
   duration = 0,
   domain = null,
   value = Number,
-    whiskers = boxWhiskers,
-    quartiles = boxQuartiles,
-    showLabels = false, // whether or not to show text labels
-    numBars = 3,
-    curBar = 1,
-    tickFormat = null;
+  whiskers = boxWhiskers,
+  quartiles = boxQuartiles,
+  showLabels = false, // whether or not to show text labels
+  numBars = 3,
+  curBar = 1,
+  tickFormat = null,
+  displaybox = false;
 
   // For each small multiple…
   function box(g) {
@@ -45,13 +46,13 @@ d3.box = function() {
 
       // Compute the new x-scale.
       var x1 = d3.scale.linear()
-          .domain(domain && domain.call(this, d, i) || [min, max])
-          .range([height, 0]);
+        .domain(domain && domain.call(this, d, i) || [min, max])
+        .range([height, 0]);
 
       // Retrieve the old x-scale, if this is an update.
       var x0 = this.__chart__ || d3.scale.linear()
-          .domain([0, Infinity])
-          .range(x1.range());
+        .domain([0, Infinity])
+        .range(x1.range());
 
       // Stash the new scale.
       this.__chart__ = x1;
@@ -63,7 +64,7 @@ d3.box = function() {
 
       // Update center line: the vertical line spanning the whiskers.
       var center = g.selectAll("line.center")
-          .data(whiskerData ? [whiskerData] : []);
+        .data(whiskerData ? [whiskerData] : []);
 
       center.enter().insert("line", "rect")
         .attr("class", "center")
@@ -75,62 +76,54 @@ d3.box = function() {
         ;
 
       center.transition()
-          .duration(duration)
-          .style("opacity", 1)
-          .attr("y1", function(d) { return x1(d[0]); })
-          .attr("y2", function(d) { return x1(d[1]); });
+        .duration(duration)
+        .style("opacity", 1)
+        .attr("y1", function(d) { return x1(d[0]); })
+        .attr("y2", function(d) { return x1(d[1]); });
 
       center.exit().transition()
-          .duration(duration)
-          .style("opacity", 1e-6)
-          .attr("y1", function(d) { return x1(d[0]); })
-          .attr("y2", function(d) { return x1(d[1]); })
-          .remove();
+        .duration(duration)
+        .style("opacity", 1e-6)
+        .attr("y1", function(d) { return x1(d[0]); })
+        .attr("y2", function(d) { return x1(d[1]); })
+        .remove();
 
-      // Update innerquartile box.
-      var box = g.selectAll("rect.box")
+      if(displaybox){
+        // Update innerquartile box.
+        var box = g.selectAll("rect.box")
           .data([quartileData]);
-
-      box.enter().append("rect")
+        box.enter().append("rect")
           .style("fill", rectcolors[i])
           .attr("class", "box")
           .attr("x", 0)
           .attr("y", function(d) { return x0(d[2]); })
           .attr("width", width)
           .attr("height", function(d) { return x0(d[0]) - x0(d[2]); })
-        //.attr("transform", "rotate(-90)")
-        //.transition()
-        //  .duration(duration)
-        //  .attr("y", function(d) { return x1(d[2]); })
-        //  .attr("height", function(d) { return x1(d[0]) - x1(d[2]); })
           ;
-
-      box.transition()
+        box.transition()
           .duration(duration)
           .attr("y", function(d) { return x1(d[2]); })
           .attr("height", function(d) { return x1(d[0]) - x1(d[2]); });
-
-      // Update median line.
-      var medianLine = g.selectAll("line.median")
+        // Update median line.
+        var medianLine = g.selectAll("line.median")
           .data([quartileData[1]]);
-
-      medianLine.enter().append("line")
+        medianLine.enter().append("line")
           .attr("class", "median")
           .attr("x1", 0)
           .attr("y1", x0)
           .attr("x2", width)
           .attr("y2", x0)
-        .transition()
+          .transition()
           .duration(duration)
           .attr("y1", x1)
           .attr("y2", x1)
           ;
-
-      medianLine.transition()
+        medianLine.transition()
           .duration(duration)
           .attr("y1", x1)
           .attr("y2", x1);
-
+      } //end if(displaybox)
+      
       // Update whiskers.
       var whisker = g.selectAll("line.whisker")
           .data(whiskerData || []);
@@ -191,30 +184,30 @@ d3.box = function() {
 
       // Update box ticks.
       var boxTick = g.selectAll("text.box")
-          .data(quartileData);
+        .data(quartileData);
      
       boxTick.transition()
-          .duration(duration)
-          .text(format)
-          .attr("y", x1);
+        .duration(duration)
+        .text(format)
+        .attr("y", x1);
 
       // Update whisker ticks. These are handled separately from the box
       // ticks because they may or may not exist, and we want don't want
       // to join box ticks pre-transition with whisker ticks post-.
       var whiskerTick = g.selectAll("text.whisker")
-          .data(whiskerData || []);
+        .data(whiskerData || []);
 
       whiskerTick.transition()
-          .duration(duration)
-          .text(format)
-          .attr("y", x1)
-          .style("opacity", 1);
+        .duration(duration)
+        .text(format)
+        .attr("y", x1)
+        .style("opacity", 1);
 
       whiskerTick.exit().transition()
-          .duration(duration)
-          .attr("y", x1)
-          .style("opacity", 1e-6)
-          .remove();
+        .duration(duration)
+        .attr("y", x1)
+        .style("opacity", 1e-6)
+        .remove();
     });
     d3.timer.flush();
   }
