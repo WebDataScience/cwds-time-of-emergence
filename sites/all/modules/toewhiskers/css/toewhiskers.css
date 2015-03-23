@@ -48,3 +48,12 @@ div.form-type-radios.form-item-descriptor{
 #hiddenconsole{
   display:none;
 }
+
+
+#chartmessage{
+  text-align:center;
+  position:absolute;
+	width:100%;
+  top:200px;
+
+}

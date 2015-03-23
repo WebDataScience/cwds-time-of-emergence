@@ -481,7 +481,8 @@ function toewhiskers_map_form($form,&$form_submit) {
     '#options' =>  $options,
     '#description' => t('Select one hydroclimatic variable.'),
     '#required' => TRUE,
-    '#default_value' => '1',
+  
+    '#default_value' => NULL,
     '#cols' => 120,
     '#size' => 10,
   );
@@ -513,7 +514,15 @@ function toewhiskers_map_form($form,&$form_submit) {
   return $form;
 }
 
+function  toewhiskers_map_form_validate($form, &$form_state) {
+  $tmp = "";
+    if ($form_state['values']['variable'] == ('1' or null)) {
+      $form_state['values']['variable'] == null;
+    form_set_error('title', t('Please pick a variable before proceeding.'));
+    
+  }
 
+}
 /**
  * Submit handler for the 'map' form.
  */

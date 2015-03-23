@@ -2,9 +2,9 @@
 jQuery( document ).ready(function( $ ) {
   var websitetextarray = new Object();
   var confidence = new Object();
-  confidence['95'] = 'Faster';
-  confidence['50'] = 'Central';
-  confidence['5'] = 'Slower';
+  confidence['95'] = 'Fast';
+  confidence['50'] = 'Moderate';
+  confidence['5'] = 'Slow';
   websitetextarray['confidence'] = confidence;
   var tolerance = new Object;
   tolerance['95'] = 'Low (to extreme 10% of 1950-1999 conditions)';
@@ -48,11 +48,11 @@ jQuery( document ).ready(function( $ ) {
        /* val 0 at [5] represents default vertical height between the axis and variable label */ 
     }
 
-    var nochartmessage = "<p>No results are available for that configuration of parameters.</p>";
-    if(timelinedataarray.length ==  0){
+    var nochartmessage = "<h4>No emergence prior to 2100 for the variables and parameters selected.</h4>";
+    if(timelinedataarray[0][0] ==  0){
       $("#chartmessage" ).html( nochartmessage );
       $("#timeline-chart" ).empty();
-      return;
+     // return;
     } 
     //remove the loading gif
     $("#timeline-chart" ).empty();
@@ -61,14 +61,16 @@ jQuery( document ).ready(function( $ ) {
     drawD3Timeline(
       timelinedataarray, 
       jsonobj.maxtoeyear,
+       'Estimated Rate of Climate Change: ' + websitetextarray['confidence'][jsonobj.confidence],
+       'Management Sensitivity: ' +websitetextarray['tolerance'][jsonobj.tolerance],
+       'Multi-model median',
+       //'Climate Data: ' + websitetextarray['dataset'][jsonobj.dataset],
       'Time of Emergence in : ' + websitetextarray['region'],
-      'Multi-model median',
-      'Emissions Scenario: ' + websitetextarray['emission'][jsonobj.emission],
-      'Management Sensitivity: ' +websitetextarray['tolerance'][jsonobj.tolerance],
-      'Estimated Rate of Climate Change: ' + websitetextarray['confidence'][jsonobj.confidence],
-      'Climate Data: ' + websitetextarray['dataset'][jsonobj.dataset]
+      'Emissions Scenario: ' + websitetextarray['emission'][jsonobj.emission]
      // 'Region: ' + websitetextarray['region']
     );
+    
+    //drawD3Timeline(timelinedataarray,maxtoeyear,confidence,tolerance,dataset,region)
 
     $(".emission" ).html( websitetextarray['emission'][jsonobj.emission] );
     $(".confidence" ).html( websitetextarray['confidence'][jsonobj.confidence] );
@@ -79,10 +81,12 @@ jQuery( document ).ready(function( $ ) {
     tabledata = jsonobj.tabledata;
     for (var key in tabledata) {
       var onerow = tabledata[key];
-      $('#tabledata tr:last').after("<tr><td><a href='boxplots/"
-        + key + "'>" + onerow.VARIABLESHORTNAME
+      $('#tabledata tr:last').after("<tr>"
+	+ "<td>" + onerow.VARIABLESHORTNAME + "</td><td>"
+        + dateConversion(onerow) + "</td>"
+	+ "<td><a href='boxplots/"
+        + key + "'>" + "see details"
         + "</a></td><td>"
-        + dateConversion(onerow) + "</td><td>"
         + (onerow.CHANGEDIR == '1'?'Increasing':'Decreasing')  + "</td></tr>");  
     }
     // Display debug info into hidden div
@@ -107,8 +111,8 @@ function dateConversion(onerow) {
   return onerow.YEARA + " - " + onerow.YEARB;
 }
   
-//function drawD3Timeline(timelinedataarray, maxtoeyear,confidence,tolerance,dataset,region, emission)  
-function drawD3Timeline(timelinedataarray,maxtoeyear,confidence,tolerance,dataset,region){
+function drawD3Timeline(timelinedataarray, maxtoeyear,confidence,tolerance,model,region, emission){
+//function drawD3Timeline(timelinedataarray,maxtoeyear,confidence,tolerance,dataset,region){
   // js created timeline image styles
   var bgco = "white";
   var textco = "black";
@@ -154,32 +158,39 @@ function drawD3Timeline(timelinedataarray,maxtoeyear,confidence,tolerance,datase
     .attr("fill", bgco);
   chart.append("text")
     .attr("x", 15)             
-    .attr("y", 20)
+    .attr("y", 100)
     .style("stroke", textco)
     .style('font-size', '14px')
     .style('font-family', 'sans-serif')
     .text(confidence);
   chart.append("text")
     .attr("x", 15)             
-    .attr("y", 40)
+    .attr("y", 80)
     .style("stroke", textco)
     .style('font-size', '14px')
     .style('font-family', 'sans-serif')
     .text(tolerance); 
   chart.append("text")
     .attr("x", 15)             
-    .attr("y", 60)
+    .attr("y", 40)
     .style("stroke", textco)
     .style('font-size', '14px')
     .style('font-family', 'sans-serif')
-    .text(dataset);
+    .text(model);
   chart.append("text")
     .attr("x", 15)             
-    .attr("y", 80)
+    .attr("y", 20)
     .style("stroke", textco)
     .style('font-size', '14px')
     .style('font-family', 'sans-serif')
     .text(region);
+  chart.append("text")
+    .attr("x", 15)             
+    .attr("y", 60)
+    .style("stroke", textco)
+    .style('font-size', '14px')
+    .style('font-family', 'sans-serif')
+    .text(emission);
   var main = chart.append('g')
     .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
     .attr('width', width)
