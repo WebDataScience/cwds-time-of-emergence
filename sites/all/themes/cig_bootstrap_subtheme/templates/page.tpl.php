@@ -131,7 +131,7 @@
                         </div>
                     <div class="columns large-8 medium-10 show-for-medium-up">
                         <div id="unit-college-uw" class="centered">
-                            <h1 class="left"><a href="<?php print $front_page; ?>" rel="home" title="Time of Emergence">Time of Emergence</a></h1>
+                            <h1 class="left"><a href="<?php print $front_page; ?>" rel="home" title="<?php print $site_name; ?>"><?php print $site_name; ?></a></h1>
                             <div class="units show-for-large-up right">
                                 <a href="http://coenv.uw.edu" title="UW College of the Environment"><img src="<?php print base_path() . path_to_theme();?>/assets/img/College-of-the-Environment.png" class="college-name" alt="College of the Environment"></a><br />
                                 <a href="http://uw.edu" title="University of Washington"><img src="<?php print base_path() . path_to_theme();?>/assets/img/UW-Tagline.png" class="uw-name" alt="University of Washington"></a>
@@ -166,21 +166,7 @@
                 </nav>
             </div>
             <section class="container" role="document">
-                <div class="page-row mini section-wrapper">
-                    <div class="section-title-wrapper">
-                        <div class="section-row row">
-                            <div class="columns large-8 section-title">
 
-   
-
-                                        <?php if (!empty($site_name)): ?>
-                                        <a class="name navbar-brand" href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>"><?php print $site_name; ?></a>
-                                        <?php endif; ?>
-   
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <div class="row">
 
                     <div class="entry-content">
@@ -269,10 +255,14 @@
                     </div><!-- main -->
                 </div>
             </section>
-
+      <div class="content-footer-row">
+                     <?php print render($page['footer']); ?>
+                </div>
 
             <footer id="footer" role="contentinfo" class="site-footer">
+          
                 <div class="footer-row">
+                    
                     <div class="row">
                         <div class="medium-6 columns">
                             <div class="footer-logo left">

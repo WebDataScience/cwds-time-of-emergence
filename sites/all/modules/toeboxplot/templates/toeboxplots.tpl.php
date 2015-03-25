@@ -8,7 +8,7 @@
     drupal_add_js($path . '/js/boxplots.js');
     drupal_add_css($path . '/cs/boxplot.css');
     
-    drupal_set_title("Boxplot");
+    drupal_set_title("All Results");
     
     $comparearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
     $variableid = $comparearray['variableid']
@@ -30,29 +30,29 @@
   </div>
     <div id="lowerbound-key">
             <div id="lowerbound-key-swatch"></div>
-            <div id="lowerbound-key-text">Faster</div>
+            <div id="lowerbound-key-text">Fast</div>
     </div>
     <div id="central-key">
             <div id="central-key-swatch"></div>
-            <div id="central-key-text">Central</div>
+            <div id="central-key-text">Moderate</div>
     </div>
     <div id="upperbound-key">
             <div id="upperbound-key-swatch"></div>
-            <div id="upperbound-key-text">Slower</div>
+            <div id="upperbound-key-text">Slow</div>
     </div>
   </div>
-  
+   <div id="chart-area-3">
+    </div>
+    
+    <div id="chart-area-4">
+  </div>
     <div id="chart-area-1">
     </div>
     
     <div id="chart-area-2">
     </div>
     
-    <div id="chart-area-3">
-    </div>
-    
-    <div id="chart-area-4">
-  </div>
+   
   
 </div>
 
@@ -93,15 +93,15 @@ jQuery( document ).ready(function( $ ) {
   $.post( url, function( jsonobj ) {  
     
     var charttitle = "Time of Emergence for " + jsonobj.variablename ;
-    charttitle += "<br/>Multi-Model Projections (21 global climate models)";
-    charttitle = charttitle + "<br/>Region: " + jsonobj.regionname ;
-    charttitle += "<br/>Climate Data: " + jsonobj.dataname;    
+    charttitle = charttitle + "<br/>Location: " + jsonobj.regionname ;
+    charttitle += "<br/>Climate Data Set: " + jsonobj.dataname;    
     $("#top-x-title").html(charttitle);
-    
+
+    drawBoxplot("chart-area-3", "High Emissions (RCP 8.5 or A1B)",parse4data(jsonobj.emergencethreshold80.emissionscenariohigh),"Past Sensitivity High (to extreme 40% of 1950-1999 conditions)");
+    drawBoxplot("chart-area-4", "Low Emissions (RCP 4.5 or B1)", parse4data(jsonobj.emergencethreshold80.emissionscenariolow),"");     
     drawBoxplot("chart-area-1", "High Emissions (RCP 8.5 or A1B)", parse4data(jsonobj.emergencethreshold95.emissionscenariohigh),"Past Sensitivity Low (to extreme 10% of 1950-1999 conditions)");
     drawBoxplot("chart-area-2", "Low Emissions (RCP 4.5 or B1)", parse4data(jsonobj.emergencethreshold95.emissionscenariolow),"");
-    drawBoxplot("chart-area-3", "High Emissions (RCP 8.5 or A1B)",parse4data(jsonobj.emergencethreshold80.emissionscenariohigh),"Past Sensitivity High (to extreme 40% of 1950-1999 conditions)");
-    drawBoxplot("chart-area-4", "Low Emissions (RCP 4.5 or B1)", parse4data(jsonobj.emergencethreshold80.emissionscenariolow),"");    
+   
   });
   
 

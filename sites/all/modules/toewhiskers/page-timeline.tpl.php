@@ -98,7 +98,12 @@ ini_set('display_startup_errors', TRUE);
     <input id="print-button" name="op" value="Export Timeline Image" class="form-submit" type="submit">
     <img style="display:none" id="svg-img"></img>
   </a>  
-  <a id="downloadtextanchor" href="timelinedata/text" download="timelinedata.txt">
+<?php
+  /*<a id="downloadtextanchor" href="timelinedata/text" download="timelinedata.txt">
+    <input id="print-text-button" name="op" value="Export Timeline Data" class="form-submit" type="submit">
+  </a>*/ 
+?>
+  <a id="downloadtimelinetextanchor" href="exporttimelinedata" download="timelinedata.txt">
     <input id="print-text-button" name="op" value="Export Timeline Data" class="form-submit" type="submit">
   </a>
   
@@ -124,11 +129,13 @@ The timeline shows the date by which half of the global climate models projectin
     
   <p>
     <table id="tabledata">
-    <th>Hydro-climatic Variable</th><th>ToE Range</th><th>Direction of Change</th>
+		<tr><th colspan="4"><center>Time of Emergence Range</center></th></tr>
+     <th>Hydro-climatic Variable</th><th>For your selection</th><th>For all choices</th><th>Direction of Change</th> 
     <!--<tr><td>Variable Shortname (Column G)</td><td>{Year A} – {Year B}</td><td>ChangeDir (Column C)</td></tr>
     <tr><td>Tmax>90degF(32.2degC)</td><td>2045 - 2065</td><td>Negative</td></tr>-->
-    <span class="tablerows"></span>
-    <th rowspan=3> Click on any variable for more information about how time of emergence differs for different global climate models, emissions scenarios, levels of management sensitivity, and estimated rates of climate change.</th>
+    <!-- <span class="tablerows"></span> -->
+   <!-- <tr><th rowspan=4> Click on any variable for more information about how time of emergence differs for different global climate models, emissions scenarios, levels of management sensitivity, and estimated rates of climate change.</th></tr>
+    -->
     </table>
     <p>
     <h4>Understanding the “ToE Range”</h4>
