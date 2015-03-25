@@ -9,8 +9,6 @@ global $maindatatable;
 $maindatatable = "variablev6";
 global $lookupdatatable;
 $lookupdatatable = "lookupv2";
-global $toleranceoptions;
-$toleranceoptions = array(  1 => 'Low (to extreme 10% of 1950-1999 conditions)',  2 => 'High (to extreme 40% of 1950-1999 conditions)',);
 
 function toewhiskers_menu() {
   $items['explore'] = array(
@@ -46,6 +44,10 @@ function toewhiskers_menu() {
   $items['timelinedata'] = array(
     'page callback' => 'toewhiskers_json_query_function',
     'page arguments' => array(1, 'mode'),
+    'access callback' => TRUE,
+  );
+  $items['exporttimelinedata'] = array(
+    'page callback' => 'toewhiskers_exporttimelinedata_function',
     'access callback' => TRUE,
   );
   $items['boxplotdata'] = array(
@@ -1080,4 +1082,102 @@ function toewhiskers_variablelist_function($themeindex,$impactindex,$typeindex,$
     $variableoptions = array( 'No variables available for that set of parameters' );
   }
   drupal_json_output($variableoptions);
+}
+
+
+/*
+ * Ajax/JSON data retriever.
+ */
+function toewhiskers_exporttimelinedata_function(){
+  //drupal_set_message('formstate:<pre>'. print_r($_SESSION['compare'], TRUE) .'</pre>');
+  global $maindatatable;
+  global $lookupdatatable;
+  
+  $max_TOE_year = 2100;
+  $compare = $_SESSION['compare'];
+  // Multiple variables allowed.
+  $variables = implode("','",$compare['variable']);
+  $variables = str_replace(" ", "", $variables);
+  // Radios
+  $emission = trim($compare['emission']);
+  // Checkboxes
+  $tolerance = trim($compare['tolerance']);
+  $confidence = trim($compare['confidence']);
+  $region = trim($compare['region']);
+  
+  //Query for the timeline chart portion of /timeline page. This should mimic the query in function toewhiskers_json_query_function
+  $query = "SELECT 
+  {". $maindatatable."}.TOE,{". $maindatatable."}.VARIABLEID,{". $maindatatable."}.CHANGEDIR,{" . $lookupdatatable . "}.VARIABLENAME,{" . $lookupdatatable . "}.VARIABLESHORTNAME,{". $maindatatable."}.EMISSCENARIO,{" . $maindatatable . "}.DATASET 
+  FROM {". $maindatatable."} LEFT JOIN {" . $lookupdatatable . "} on (" . $lookupdatatable . ".VARIABLEID = ". $maindatatable.".VARIABLEID) WHERE 
+  ". $maindatatable.".VARIABLEID in ('" . $variables . "') 
+  AND ". $maindatatable.".REGION = '" . $region .   "' 
+  AND ". $maindatatable.".EMERGTHRES = " . $tolerance . "
+  AND ". $maindatatable.".SIGNALCONFIDENCE = " . $confidence . "
+  AND ". $maindatatable.".TOE <= " . $max_TOE_year . "
+  AND ". $maindatatable.".MODELAGREEMENT = '50' 
+  AND ". $maindatatable.".GCM = 'GCM_ensemble' ";
+  if($compare['emission'] == "high"){
+    $query .= "AND (". $maindatatable.".EMISSCENARIO = 'rcp85' OR " . $maindatatable.".EMISSCENARIO = 'a1b') ";
+  }
+  if($compare['emission'] == "low"){
+    $query .= "AND (". $maindatatable.".EMISSCENARIO = 'rcp45' OR " . $maindatatable.".EMISSCENARIO = 'b1') ";
+  }
+  $query .= "  AND ( ( ( " . $lookupdatatable . ".THEME = 'Air temperature' OR " . $lookupdatatable . ".THEME = 'Precipitation' OR " . $lookupdatatable . ".THEME = 'Streamflow') AND ". $maindatatable.".DATASET = 'BCSD5') OR (" . $lookupdatatable . ".THEME = 'Hydrologic' AND ". $maindatatable.".DATASET = 'BCSD3') )";
+  $query .= " ORDER BY {". $maindatatable."}.TOE LIMIT 20";
+  
+  $timelinequery = $query;
+  $timelinequery = str_replace("{", "", $timelinequery);
+  $timelinequery = str_replace("}", "", $timelinequery); 
+    
+  // Setup to query non Drupal database.
+  db_set_active('cig_toe');
+  
+  $result = db_query($query);
+  $csv = "Variable,Dataset,TOE\n";
+  // Result is returned as a iterable object that returns a stdClass object on each iteration
+  foreach ($result as $record) {
+    // Rename one poorly coded variable shortname.
+    if($record->VARIABLESHORTNAME == "#Tmax>90degF(32.2deg"){$record->VARIABLESHORTNAME = "#Tmax>90°F(32.2°C)";}
+    $csv .= "\"" . $record->VARIABLESHORTNAME . "\",\"" . $record->DATASET . "\"," . ceil($record->TOE/5)*5 . "\n";
+  }  
+  
+  db_set_active();
+  
+  // Create code to text translations for data export.
+  $prettynames['emission'] = array(
+    'rcp45'	=>	'RCP4.5',
+    'rcp85'	=>	'RCP8.5',
+    'A1B'	=>	'SRES A1B',
+    'B1'	=>	'SRES B1',
+    'low'	=>	'Low (RCP4.5 or B1)',
+    'high'	=>	'High (RCP8.5 or A1B)',
+  );
+  $prettynames['confidence'] = array(
+    '5'	=>	'Slow',
+    '50'	=>	'Moderate',
+    '95'	=>	'Fast',
+  );
+  $prettynames['tolerance'] = array(
+    '95'	=>	'Low (to extreme 5% high or 5% low of 1950-1999 conditions)',
+    '80'	=>	'High (to extreme 20% high or 20% low of 1950-1999 conditions)',
+  );
+    
+  $o = "Time of Emergence in: " . $_SESSION['compare']['regionname'] . "
+Multi-model median
+Emissions Scenario: " . $prettynames['emission'][$emission] . "
+Management Sensitivity: " . $prettynames['tolerance'][$tolerance] . "
+Estimated Rate of Climate Change: " . $prettynames['confidence'][$confidence] . "\n\n\n";
+  $o .= $csv;
+      
+  $tesmode = FALSE;
+  if($tesmode){
+    print("<pre>" . $timelinequery . "\n" . $o . "</pre>");
+  }
+  else{
+    drupal_add_http_header('Content-Type', 'text/csv; utf-8');
+    drupal_add_http_header('Content-Disposition', 'attachment; filename = dataexport.csv');
+    print($o);
+  }
+    
+
 }

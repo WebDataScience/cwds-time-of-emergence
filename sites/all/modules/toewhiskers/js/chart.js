@@ -48,12 +48,20 @@ jQuery( document ).ready(function( $ ) {
        /* val 0 at [5] represents default vertical height between the axis and variable label */ 
     }
 
+    // Set 'no result' message if every result TOE is zero.
+    var index, varcount, toecount;
+    toecount = 0;
+    for (index = 0, varcount = timelinedataarray.length; index < varcount; ++index) {
+      if(timelinedataarray[index][0] > 0){ 
+        toecount = 1;
+        break;
+      }
+    }
     var nochartmessage = "<h4>No emergence prior to 2100 for the variables and parameters selected.</h4>";
-    if(timelinedataarray[0][0] ==  0){
+    if(toecount == 0){
       $("#chartmessage" ).html( nochartmessage );
-      $("#timeline-chart" ).empty();
-     // return;
     } 
+     
     //remove the loading gif
     $("#timeline-chart" ).empty();
     // D3.js based timeline chart
