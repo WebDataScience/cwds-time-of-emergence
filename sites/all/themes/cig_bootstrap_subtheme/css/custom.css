@@ -1,10 +1,5 @@
 * Custom CSS for Density Maps Nivo Slider */
 
-.page-node-7 .nivoSlider img {
-  //height: 400px;
-  //width: 300px;
-}
-
 .page-node-7 .nivoSlider {
 }
 .page-node-7 #block-nivo_slider-nivo_slider .content {
@@ -37,31 +32,23 @@
  * Just add your customized style below then activate it in 
  * Colourise them settings (/admin/build/themes/settings/colourise).
  */
-
-
-
 /** header **/
 .not-front.colourise #header {
     height: 25px;
 }
-
 .colourise #header {
-    height: 350px;
+  height: 350px;
 }
-
-
 .colourise #site-name a {
-    top: 70px;
+  top: 70px;
 }
 .colourise #slogan {
   top: 150px;
   width: auto;
 }
-
 .not-front #site-name, .not-front #slogan{
   display: none; 
 }
-
 #welcome-acknowledgments,  #welcome-disclaimer {
   clear: both;
   font-size: 11px;
@@ -91,32 +78,23 @@
 }
 
 /** Front content **/
-
 .front #page {
- 
   position:relative;
 }
 #info-wrapper {
- 
-
   float:left;
-width: 100%;
-
+  width: 100%;
 }
 #info-explore,
 #info-read,
 #info-tour{
-    
   width: 15%;
   float:left;
   margin-right:15%;
-    
 }
-
 .front .title{ 
-    display: none;
+  display: none;
 }
-
 /* Append borders */
 #timeline-chart,
 .colourise table{
@@ -126,11 +104,10 @@ width: 100%;
   background: url('../images/graphics-s135d404cce.png') no-repeat scroll 0% 0% transparent;
 }
 .graphics-uwt_w_and_wordmark_horiz_white {
-    background-position: 0px -147px;
-    height: 25px;
-    width: 403px;
+  background-position: 0px -147px;
+  height: 25px;
+  width: 403px;
 }
-
 /** Add hover pointer to timeline */
 .point-label:hover{
   cursor:pointer;  
@@ -154,8 +131,8 @@ width: 100%;
   min-height:256px;
 }
 #chart{
-    width:50%;
-    float:left;
+  width:50%;
+  float:left;
 }
 #toewhiskers-explore-form{
  float:right;
@@ -164,27 +141,19 @@ width: 100%;
 .page-compare #toewhiskers-compare-form {
   position: relative;
 }
- .form-type-radios.form-item-emission{
-  width: 48%; 
+.form-type-radios.form-item-emission{
+  //width: 48%; 
 }
 .form-type-radios.form-item-dataset{
-   width: 48%;
+   //width: 48%;
    top: 3px;
    left: 280px;
 }
 .form-type-radios.form-item-tolerance{
-  width: 48%;
+  //width: 48%;
 }
-.form-type-radios.form-item-confidence{
-   /*
-   width: 48%;
-   position: absolute;
-   top: 85px;
-   left: 280px;
-   */
-}
- #edit-narrow,
- #edit-narrow{
+#edit-narrow,
+#edit-narrow{
   width:66%;
   margin-right: 10px;
 }
@@ -197,15 +166,10 @@ width: 100%;
 }
 .page-compare #main-content input.form-submit{
 }
-
-
 #footer{
   width:100%;
 }
-
-
 .btn-default.disabled, .btn-default[disabled]{
-    background-color: #dedede;
-    border-color: #ccc;
-
-    }
+  background-color: #dedede;
+  border-color: #ccc;
+}
