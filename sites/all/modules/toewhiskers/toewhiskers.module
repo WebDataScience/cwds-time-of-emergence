@@ -114,7 +114,7 @@ function toewhiskers_displaymap_page_function(){
   drupal_add_css(drupal_get_path('module', 'toewhiskers') . '/css/nivo-default-theme.css');
   drupal_add_css(drupal_get_path('module', 'toewhiskers') . '/css/nivo-slider.css');
   drupal_add_js(drupal_get_path('module', 'toewhiskers') . '/js/nivo_slider.js');
-  drupal_add_js(drupal_get_path('module', 'toewhiskers') . '/js/mapform.js');
+  drupal_add_js(drupal_get_path('module', 'toewhiskers') . '/js/mapdetailsform.js');
   drupal_add_js(drupal_get_path('module', 'toewhiskers') . '/js/displaymap.js');
   drupal_set_title('One Hydro-climatic Variable by Region'); 
   return theme('displaymap_template');  
