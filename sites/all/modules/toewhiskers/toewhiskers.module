@@ -483,7 +483,6 @@ function toewhiskers_map_form($form,&$form_submit) {
     '#options' =>  $options,
     '#description' => t('Select one hydroclimatic variable.'),
     '#required' => TRUE,
-    //'#default_value' => NULL,
     '#default_value' => current($options),
     '#cols' => 120,
     '#size' => 10,
@@ -716,7 +715,7 @@ function toewhiskers_json_query_function($mode){
       intval($record->TOE),
       $record->VARIABLENAME,
       $record->VARIABLEID,
-      ceil($record->TOE/5)*5,
+      round($record->TOE/5)*5,
       $record->VARIABLESHORTNAME,
       $record->EMISSCENARIO,
       $record->DATASET,
@@ -769,13 +768,13 @@ function toewhiskers_json_query_function($mode){
     $toe_array[$record->VARIABLEID]->VARIABLESHORTNAME = $record->VARIABLESHORTNAME;
     $toe = "Beyond " . $max_TOE_year;
     if ($record->TOE <= $max_TOE_year){
-      $toe = ceil($record->TOE/5)*5;
+      $toe = round($record->TOE/5)*5;
     }
     $year = explode(',', $record->TOERange);
     if($record->GCM == 'GCM_ensemble'){
       $toe_array[$record->VARIABLEID]->TOE = $toe;
-      $toe_array[$record->VARIABLEID]->YEARA = ($year[0] == 0? "Unknown":ceil($year[0]/5)*5);
-      $toe_array[$record->VARIABLEID]->YEARB = ($year[1] == 0? "Unknown":ceil($year[1]/5)*5);
+      $toe_array[$record->VARIABLEID]->YEARA = ($year[0] == 0? "Unknown":round($year[0]/5)*5);
+      $toe_array[$record->VARIABLEID]->YEARB = ($year[1] == 0? "Unknown":round($year[1]/5)*5);
     }
     if($record->GCM == 'GCM_ensemble_25'){
       $toe_array[$record->VARIABLEID]->YEARA = $toe;
@@ -1139,7 +1138,7 @@ function toewhiskers_exporttimelinedata_function(){
   foreach ($result as $record) {
     // Rename one poorly coded variable shortname.
     if($record->VARIABLESHORTNAME == "#Tmax>90degF(32.2deg"){$record->VARIABLESHORTNAME = "#Tmax>90°F(32.2°C)";}
-    $csv .= "\"" . $record->VARIABLESHORTNAME . "\",\"" . $record->DATASET . "\"," . ceil($record->TOE/5)*5 . "\n";
+    $csv .= "\"" . $record->VARIABLESHORTNAME . "\",\"" . $record->DATASET . "\"," . round($record->TOE/5)*5 . "\n";
   }  
   
   db_set_active();
