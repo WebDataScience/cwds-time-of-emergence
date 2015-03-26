@@ -106,7 +106,7 @@ function toewhiskers_map_page_function(){
   return theme('map_template');  
 }
 function toewhiskers_mapdetails_page_function(){ 
-  drupal_add_js(drupal_get_path('module', 'toewhiskers') . '/js/mapform.js');
+  drupal_add_js(drupal_get_path('module', 'toewhiskers') . '/js/mapdetailsform.js');
   drupal_set_title('Refine Map Query'); 
   return theme('mapdetails_template');  
 }
@@ -483,8 +483,8 @@ function toewhiskers_map_form($form,&$form_submit) {
     '#options' =>  $options,
     '#description' => t('Select one hydroclimatic variable.'),
     '#required' => TRUE,
-  
-    '#default_value' => NULL,
+    //'#default_value' => NULL,
+    '#default_value' => current($options),
     '#cols' => 120,
     '#size' => 10,
   );
@@ -516,15 +516,16 @@ function toewhiskers_map_form($form,&$form_submit) {
   return $form;
 }
 
+
 function  toewhiskers_map_form_validate($form, &$form_state) {
   $tmp = "";
-    if ($form_state['values']['variable'] == ('1' or null)) {
-      $form_state['values']['variable'] == null;
-    form_set_error('title', t('Please pick a variable before proceeding.'));
-    
+  if ($form_state['values']['variable'] == ('1' or null)) {
+    //$form_state['values']['variable'] == null;
+    //form_set_error('title', t('Please pick a variable before proceeding.'));
   }
-
 }
+
+
 /**
  * Submit handler for the 'map' form.
  */
@@ -557,9 +558,9 @@ function toewhiskers_mapdetails_form($form,&$form_submit) {
   $theme = db_query($query)->fetchField();
   db_set_active();
 
-  $datasetoptions = array( "BCSD5" => "BCSD5", "BCSD3-WRF" => "BCSD3-WRF");
-  if($theme == "Hydrologic"){ $datasetoptions = array( "BCSD3" => "BCSD3"); }
-  if($theme == "Streamflow"){ $datasetoptions = array( "BCSD5" => "BCSD5", "BCSD3" => "BCSD3"); }
+  $datasetoptions = array( "BCSD5" => "BCSD5", "BCSD3-WRF" => "BCSD3-WRF [results only available for High (A1B) emissions scenario]");
+  if($theme == "Hydrologic"){ $datasetoptions = array( "BCSD3" => "BCSD3 [results only available for High (A1B) emissions scenario]"); }
+  if($theme == "Streamflow"){ $datasetoptions = array( "BCSD5" => "BCSD5", "BCSD3" => "BCSD3 [results only available for High (A1B) emissions scenario]"); }
   
   db_set_active();
   $maparray = isset($_SESSION['map'])?$_SESSION['map']:array();
