@@ -70,7 +70,6 @@
  */
 ?>
 <!-- toewhiskers/page-map.tpl.php-->
-
   <?php if($maptype == '1'){ ?>
   <img src='<?php print  $pathtomap; ?>/images/maps/<?php print $imagefilename; ?>' alt='Missing image: <?php print $imagefilename; ?>'>
   <div>
@@ -83,7 +82,7 @@
   
   <?php if($maptype == '2'){ ?>
   <div class="slider-wrapper theme-default">
-    <div id="slider" style="width:480px" class="nivoSlider">
+    <div id="slider" class="nivoSlider">
       <img src="<?php print $stage2path . $imagefilenamenop; ?>_p1.png"  alt='Missing image: <?php print $imagefilenamenop; ?>_p1.png' />
       <img src="<?php print $stage2path . $imagefilenamenop; ?>_p2.png"  alt='Missing image: <?php print $imagefilenamenop; ?>_p2.png' />
       <img src="<?php print $stage2path . $imagefilenamenop; ?>_p3.png"  alt='Missing image: <?php print $imagefilenamenop; ?>_p3.png' />
