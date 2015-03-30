@@ -57,12 +57,6 @@
     <input id="print-text-button" name="op" value="Export Boxplot Data" class="form-submit" type="submit">
   </a>  
 </div>
-<div>
-  <p>&nbsp;</p>
-  <a href="/timeline"><input id="back" name="op2" value="Back to Timeline" class="form-submit" type="submit"></a>&nbsp;&nbsp;
-  <a href="/explore"><input id="restart" name="op3" value="Start new Query" class="form-submit" type="submit"></a>
-  
-</div>
 
 <script>
 jQuery( document ).ready(function( $ ) {
