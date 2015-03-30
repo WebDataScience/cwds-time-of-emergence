@@ -37,30 +37,33 @@
             <div id="central-key-text">Moderate</div>
     </div>
     <div id="upperbound-key">
-            <div id="upperbound-key-swatch"></div>
-            <div id="upperbound-key-text">Slow</div>
+      <div id="upperbound-key-swatch"></div>
+      <div id="upperbound-key-text">Slow</div>
     </div>
   </div>
-   <div id="chart-area-3">
-    </div>
-    
-    <div id="chart-area-4">
-  </div>
-    <div id="chart-area-1">
-    </div>
-    
-    <div id="chart-area-2">
-    </div>
-    
-   
   
+  <div id="chart-area-3">
+  </div>
+  <div id="chart-area-4">
+  </div>
+  <div id="chart-area-1">
+  </div>
+  <div id="chart-area-2">
+  </div>
+    
 </div>
-
 <div>
   <a id="downloadtextanchor" href="<?php print($GLOBALS['base_url'] ); ?>/boxplotdata/<?php print($variableid); ?>/text" download="boxplotdata.csv">
     <input id="print-text-button" name="op" value="Export Boxplot Data" class="form-submit" type="submit">
   </a>  
 </div>
+<div>
+  <p>&nbsp;</p>
+  <a href="/timeline"><input id="back" name="op2" value="Back to Timeline" class="form-submit" type="submit"></a>&nbsp;&nbsp;
+  <a href="/explore"><input id="restart" name="op3" value="Start new Query" class="form-submit" type="submit"></a>
+  
+</div>
+
 <script>
 jQuery( document ).ready(function( $ ) {
   var baseurl = "<?php print($GLOBALS['base_url'] ); ?>";
@@ -128,7 +131,8 @@ jQuery( document ).ready(function( $ ) {
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
       .attr("class", "box")  
-      .attr("width", "700")
+      //.attr("width", "700")
+      .attr("width", "465")
       .attr("height", "430")
       .attr("transform", "translate(" + (margin.left - 10) + "," + margin.top + ")");
     
