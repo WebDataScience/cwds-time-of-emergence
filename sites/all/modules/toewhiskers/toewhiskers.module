@@ -67,7 +67,6 @@ function toewhiskers_menu() {
 function toewhiskers_theme(){
   return array(
     'explore_template' => array(
-      // file name will be page-explore.tpl.php
       'template' => 'page-explore',
     ),
     'compare_template' => array(
@@ -172,7 +171,6 @@ function template_preprocess_displaymap_template(&$variables) {
 }
 function toewhiskers_explore_form($form, &$form_submit) {
   module_load_include('inc', 'toewhiskers', 'includes/toewhiskers.options');
-  // Session variable used to prepopulate if available.
   $previousvaluesearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
   $form['compare'] = array(
     '#type' => 'radios',
@@ -218,6 +216,7 @@ function toewhiskers_explore_form($form, &$form_submit) {
   $form_submit['redirect'] = 'compare';
   return $form;
 }
+
 
 /**
  * Validate handler for the '/explore' form.
@@ -357,7 +356,7 @@ function toewhiskers_compare_form($form,&$form_submit) {
     ),
 
   );
-  $options = array(    '95' => 'Low (to extreme 5% high or 5% low of 1950-1999 conditions)',    '80' => 'High (to extreme 20% high or 20% low of 1950-1999 conditions)',  );
+  $options = array('95' => 'Low (to extreme 5% high or 5% low of 1950-1999 conditions)', '80' => 'High (to extreme 20% high or 20% low of 1950-1999 conditions)',);
   $form['parameter']['tolerance'] = array(
     '#type' => 'radios',
     '#title' => t('Management Sensitivity'),
@@ -446,7 +445,6 @@ function toewhiskers_compare_form_submit($form, &$form_state) {
   $comparearray['emission'] = check_plain($form_state['values']['emission']);
   $comparearray['tolerance'] = check_plain($form_state['values']['tolerance']);
   $comparearray['confidence'] = check_plain($form_state['values']['confidence']);
-  // Set session variable.
   $_SESSION['compare'] = $comparearray;
   $compare = $_SESSION['compare'];
 
@@ -529,7 +527,6 @@ function  toewhiskers_map_form_validate($form, &$form_state) {
  * Submit handler for the 'map' form.
  */
 function toewhiskers_map_form_submit($form, &$form_state) {
-  // drupal_set_message('formstate:<pre>'. print_r($form_state, TRUE) .'</pre>');
   // Grab session values if present.
   $maparray = isset($_SESSION['map'])?$_SESSION['map']:array();
   $maparray['theme'] = check_plain($form_state['values']['theme']);
@@ -557,9 +554,9 @@ function toewhiskers_mapdetails_form($form,&$form_submit) {
   $theme = db_query($query)->fetchField();
   db_set_active();
 
-  $datasetoptions = array( "BCSD5" => "BCSD5", "BCSD3-WRF" => "BCSD3-WRF [results only available for High (A1B) emissions scenario]");
-  if($theme == "Hydrologic"){ $datasetoptions = array( "BCSD3" => "BCSD3 [results only available for High (A1B) emissions scenario]"); }
-  if($theme == "Streamflow"){ $datasetoptions = array( "BCSD5" => "BCSD5", "BCSD3" => "BCSD3 [results only available for High (A1B) emissions scenario]"); }
+  $datasetoptions = array( "d1" => "BCSD5", "d2"=>"BCSD3", "d3" => "ECHAM5-WRF [results only available for High (A1B) emissions scenario]");
+  if($theme == "Streamflow"){ $datasetoptions = array( "d1" => "BCSD5", "d2"=>"BCSD3"); }
+  if($theme == "Hydrologic"){ $datasetoptions = array( "d2"=>"BCSD3", "d3" => "ECHAM5-WRF [results only available for High (A1B) emissions scenario]"); }
   
   db_set_active();
   $maparray = isset($_SESSION['map'])?$_SESSION['map']:array();
@@ -572,7 +569,7 @@ function toewhiskers_mapdetails_form($form,&$form_submit) {
   $form['parameter']['emergthres'] = array(
     '#type' => 'radios',
     '#title' => t('Management Sensitivity'),
-    '#options' => array(  '1' => 'Low (to extreme 10% of 1950-1999 conditions)', '2' => 'High (to extreme 40% of 1950-1999 conditions)',  ),
+    '#options' => array('1' => 'Low (to extreme 10% of 1950-1999 conditions)', '2' => 'High (to extreme 40% of 1950-1999 conditions)',),
     '#default_value' => isset($maparray['emergthres'])?$maparray['emergthres']:'1',
     '#label_attributes' => array(
       'data-toggle'=> 'tooltip',
@@ -609,6 +606,7 @@ function toewhiskers_mapdetails_form($form,&$form_submit) {
   return $form;
 }
 
+
 /**
  * Submit handler for the 'mapdetails' form.
  */
@@ -621,9 +619,9 @@ function toewhiskers_mapdetails_form_submit($form, &$form_state) {
   $maparray['dataset'] = check_plain($form_state['values']['dataset']);
   $maparray['datasetimagecode'] = 1;
   $formsubmitdataset = check_plain($form_state['values']['dataset']);
-  if(strcasecmp ($formsubmitdataset, "BCSD5") == 0){$maparray['datasetimagecode'] = 1;}
-  if(strcasecmp ($formsubmitdataset, "BCSD3") == 0){$maparray['datasetimagecode'] = 2;}
-  if(strcasecmp ($formsubmitdataset, "BCSD3-WRF") == 0){$maparray['datasetimagecode'] = 3;}
+  if(strcasecmp ($formsubmitdataset, "d1") == 0){$maparray['datasetimagecode'] = 1;}
+  if(strcasecmp ($formsubmitdataset, "d2") == 0){$maparray['datasetimagecode'] = 2;}
+  if(strcasecmp ($formsubmitdataset, "d3") == 0){$maparray['datasetimagecode'] = 3;}
   $maparray['period'] = (array_key_exists('period', $form_state['values']))?check_plain($form_state['values']['period']):'';
   
   $_SESSION['map'] = $maparray;
