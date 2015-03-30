@@ -15,7 +15,6 @@ div.form-type-radios.form-item-descriptor{
   max-width: none;
 }
 .h-form  div.form-type-radios {
-  //float:left;
   margin-right: 20px;
 }
 .h-form  div.form-submit {
@@ -48,12 +47,9 @@ div.form-type-radios.form-item-descriptor{
 #hiddenconsole{
   display:none;
 }
-
-
 #chartmessage{
   text-align:center;
-  position:absolute;
+  position:relative;
 	width:100%;
   top:200px;
-
 }
