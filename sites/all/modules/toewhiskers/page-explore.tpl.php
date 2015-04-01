@@ -72,7 +72,7 @@
 <!-- toewhiskers/page-explore.tpl.php-->
 
     <div id="chart">
-      <img src="/sites/all/modules/toewhiskers/images/PugetSound.jpg" style="width:100%">
+      <img src="/sites/all/modules/toewhiskers/images/ToE-WebOverview.jpg" style="width:100%">
     </div>
     <?php print $explore_form; ?><br/>
 
