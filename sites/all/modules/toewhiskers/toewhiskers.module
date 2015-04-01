@@ -6,7 +6,7 @@ ini_set('display_errors', TRUE);
 ini_set('display_startup_errors', TRUE);
 
 global $maindatatable;
-$maindatatable = "variablev6";
+$maindatatable = "variablev7";
 global $lookupdatatable;
 $lookupdatatable = "lookupv2";
 
@@ -170,7 +170,7 @@ function template_preprocess_displaymap_template(&$variables) {
   $variables['map_detail_form'] = drupal_render($form);
 }
 function toewhiskers_explore_form($form, &$form_submit) {
-  module_load_include('inc', 'toewhiskers', 'includes/toewhiskers.options');
+  module_load_include('inc', 'toewhiskers', 'includes/toewhiskers.regionlookup');
   $previousvaluesearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
   $form['compare'] = array(
     '#type' => 'radios',
