@@ -7,4 +7,4 @@ sites/*/settings*.php
 sites/*/files
 sites/*/private
 
-sites/all/modules/toewhiskers/images/maps
+#sites/all/modules/toewhiskers/images/maps
