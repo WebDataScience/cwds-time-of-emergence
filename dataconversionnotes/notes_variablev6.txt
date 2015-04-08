@@ -1,0 +1,33 @@
+Data conversion
+
+
+1. Remove headers manually from the files that have them by editting in notepad++.
+2. Convert End of Line characters to 'Unix' style 'LF' with 'dos2unix inplacefilenameconvert.txt' if necessary. Use notepad to verify this conversion as the tool actually toggles the EOL between DOS and UNIX. 'dos2unix *.csv' 
+3. Run 'create_table.sql'. This drops an existing 'variablev6' table and recreates an empty version of same.
+/c/xampp/mysql/bin/mysql cig_toe -u root < create_table_only_variablev6.sql
+4. start mysql client using --local-infile options
+ (mysql -uroot -p --local-infile cig_toe)
+ /c/xampp/mysql/bin/mysql cig_toe -u root --local-infile
+4. From the mysql command line started above:
+   
+note: .txt files are tab delimited. .csv files are comma delimited.
+     
+load data local infile 'c:/vhosts/project/toe/variablev6_data_and_notes/HUC_BCSD3_v1-21.txt' into table cig_toe.variablev6 fields terminated by '\t';
+load data local infile 'c:/vhosts/project/toe/variablev6_data_and_notes/HUC_BCSD3_v23-41.txt' into table cig_toe.variablev6 fields terminated by '\t';
+load data local infile 'c:/vhosts/project/toe/variablev6_data_and_notes/HUC_BCSD5_ALL.txt' into table cig_toe.variablev6 fields terminated by '\t';
+load data local infile 'c:/vhosts/project/toe/variablev6_data_and_notes/HUC_WRF_v1-21.csv' into table cig_toe.variablev6 fields terminated by ',';
+load data local infile 'c:/vhosts/project/toe/variablev6_data_and_notes/HUC_WRF_v23-41.csv' into table cig_toe.variablev6 fields terminated by ',';
+load data local infile 'c:/vhosts/project/toe/variablev6_data_and_notes/BCSD3_streams.csv' into table cig_toe.variablev6 fields terminated by ',';
+load data local infile 'c:/vhosts/project/toe/variablev6_data_and_notes/BCSD5_streams.csv' into table cig_toe.variablev6 fields terminated by ',';
+load data local infile 'c:/vhosts/project/toe/variablev6_data_and_notes/USC_BCSD3_v1-21.txt' into table cig_toe.variablev6 fields terminated by '\t';
+load data local infile 'c:/vhosts/project/toe/variablev6_data_and_notes/USC_BCSD3_v23-41.txt' into table cig_toe.variablev6 fields terminated by '\t';
+load data local infile 'c:/vhosts/project/toe/variablev6_data_and_notes/USC_BCSD5_ALL.txt' into table cig_toe.variablev6 fields terminated by '\t';
+load data local infile 'c:/vhosts/project/toe/variablev6_data_and_notes/USC_WRF_v1-21.csv' into table cig_toe.variablev6 fields terminated by ',';
+load data local infile 'c:/vhosts/project/toe/variablev6_data_and_notes/USC_WRF_v23-41.csv' into table cig_toe.variablev6 fields terminated by ',';
+
+expect over ten minutes of run time on local and about 12M rows created.
+
+5. Write the table to a .sql file.
+ /c/xampp/mysql/bin/mysqldump cig_toe variablev6 -u root > variablev6.sql
+ 
+ 
