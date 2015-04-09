@@ -483,7 +483,7 @@ function toewhiskers_map_form($form,&$form_submit) {
     '#required' => TRUE,
     '#default_value' => current($options),
     '#cols' => 120,
-    '#size' => 10,
+    '#size' => 10,    
   );
   $form['parameter'] = array(
     '#type' => 'fieldset',
@@ -675,24 +675,18 @@ function toewhiskers_json_query_function($mode){
   $timelinedata = array();
   
   //Query for the timeline chart portion of /timeline page.
-  $query = "SELECT 
-  {". $maindatatable."}.TOE,{". $maindatatable."}.VARIABLEID,{". $maindatatable."}.CHANGEDIR,{" . $lookupdatatable . "}.VARIABLENAME,{" . $lookupdatatable . "}.VARIABLESHORTNAME,{". $maindatatable."}.EMISSCENARIO,{" . $maindatatable . "}.DATASET 
-  FROM {". $maindatatable."} LEFT JOIN {" . $lookupdatatable . "} on (" . $lookupdatatable . ".VARIABLEID = ". $maindatatable.".VARIABLEID) WHERE 
-  ". $maindatatable.".VARIABLEID in ('" . $variables . "') 
-  AND ". $maindatatable.".REGION = '" . $region .   "' 
-  AND ". $maindatatable.".EMERGTHRES = " . $tolerance . "
-  AND ". $maindatatable.".SIGNALCONFIDENCE = " . $confidence . "
-  AND ". $maindatatable.".TOE <= " . $max_TOE_year . "
-  AND ". $maindatatable.".MODELAGREEMENT = '50' 
-  AND ". $maindatatable.".GCM = 'GCM_ensemble' ";
-  if($compare['emission'] == "high"){
-    $query .= "AND (". $maindatatable.".EMISSCENARIO = 'rcp85' OR " . $maindatatable.".EMISSCENARIO = 'a1b') ";
-  }
-  if($compare['emission'] == "low"){
-    $query .= "AND (". $maindatatable.".EMISSCENARIO = 'rcp45' OR " . $maindatatable.".EMISSCENARIO = 'b1') ";
-  }
-  $query .= "  AND ( ( ( " . $lookupdatatable . ".THEME = 'Air temperature' OR " . $lookupdatatable . ".THEME = 'Precipitation' OR " . $lookupdatatable . ".THEME = 'Streamflow') AND ". $maindatatable.".DATASET = 'BCSD5') OR (" . $lookupdatatable . ".THEME = 'Hydrologic' AND ". $maindatatable.".DATASET = 'BCSD3') )";
-  $query .= " ORDER BY {". $maindatatable."}.TOE LIMIT 20";
+  $val = array(
+    'maindatatable' => $maindatatable,
+    'lookupdatatable' => $lookupdatatable,
+    'variables' => $variables,
+    'region' => $region,
+    'tolerance' => $tolerance,
+    'confidence' => $confidence,
+    'max_TOE_year' => $max_TOE_year,
+    'emission' => $emission,
+  );
+  $query = toewhiskers_timeline_query($val);
+  //drupal_set_message($query);
   
   $timelinequery = $query;
   $timelinequery = str_replace("{", "", $timelinequery);
@@ -844,6 +838,31 @@ Historical 'Noise' Range: " . $prettynames['tolerance'][$tolerance] . "
     // Cleaner output for testing only: drupal_json_output(print_r($toedata));
     drupal_json_output($toedata);  
   }
+}
+
+
+/* 
+ * Return the 'timeline' query for use by timeline page and 'export timeline data' function.
+ */
+function toewhiskers_timeline_query($val){
+  $query = "SELECT 
+  {". $val['maindatatable']."}.TOE,{". $val['maindatatable']."}.VARIABLEID,{". $val['maindatatable']."}.CHANGEDIR,{" . $val['lookupdatatable'] . "}.VARIABLENAME,{" . $val['lookupdatatable'] . "}.VARIABLESHORTNAME,{". $val['maindatatable']."}.EMISSCENARIO,{" . $val['maindatatable'] . "}.DATASET 
+  FROM {". $val['maindatatable']."} 
+  LEFT JOIN {" . $val['lookupdatatable'] . "} on (" . $val['lookupdatatable'] . ".VARIABLEID = ". $val['maindatatable'].".VARIABLEID) 
+  WHERE ". $val['maindatatable'].".VARIABLEID in ('" . $val['variables'] . "') 
+  AND ". $val['maindatatable'].".REGION = '" . $val['region'] .   "' 
+  AND ". $val['maindatatable'].".EMERGTHRES = " . $val['tolerance'] . "
+  AND ". $val['maindatatable'].".SIGNALCONFIDENCE = " . $val['confidence'] . "
+  AND ". $val['maindatatable'].".TOE <= " . $val['max_TOE_year'] . "
+  AND ". $val['maindatatable'].".MODELAGREEMENT = '50' 
+  AND ". $val['maindatatable'].".GCM = 'GCM_ensemble' ";
+  if($val['emission'] == "high"){    $query .= "AND (". $val['maindatatable'].".EMISSCENARIO = 'rcp85' OR " . $val['maindatatable'].".EMISSCENARIO = 'a1b') ";  }
+  if($val['emission'] == "low"){    $query .= "AND (". $val['maindatatable'].".EMISSCENARIO = 'rcp45' OR " . $val['maindatatable'].".EMISSCENARIO = 'b1') ";  }
+  $query .= "  AND (   ( ( " . $val['lookupdatatable'] . ".THEME = 'Air temperature' OR " . $val['lookupdatatable'] . ".THEME = 'Precipitation' ) AND ". $val['maindatatable'].".DATASET = 'BCSD5')   
+  OR   (" . $val['lookupdatatable'] . ".THEME = 'Hydrologic' AND ". $val['maindatatable'].".DATASET = 'BCSD3')   
+  OR   (" . $val['lookupdatatable'] . ".THEME = 'Streamflow' AND (". $val['maindatatable'].".DATASET = 'BCSD3'  OR ". $val['maindatatable'].".DATASET = 'BCSD5') )  )
+  ORDER BY {". $val['maindatatable']."}.TOE LIMIT 20";
+  return($query);
 }
 
 
@@ -1103,25 +1122,17 @@ function toewhiskers_exporttimelinedata_function(){
   $confidence = trim($compare['confidence']);
   $region = trim($compare['region']);
   
-  //Query for the timeline chart portion of /timeline page. This should mimic the query in function toewhiskers_json_query_function
-  $query = "SELECT 
-  {". $maindatatable."}.TOE,{". $maindatatable."}.VARIABLEID,{". $maindatatable."}.CHANGEDIR,{" . $lookupdatatable . "}.VARIABLENAME,{" . $lookupdatatable . "}.VARIABLESHORTNAME,{". $maindatatable."}.EMISSCENARIO,{" . $maindatatable . "}.DATASET 
-  FROM {". $maindatatable."} LEFT JOIN {" . $lookupdatatable . "} on (" . $lookupdatatable . ".VARIABLEID = ". $maindatatable.".VARIABLEID) WHERE 
-  ". $maindatatable.".VARIABLEID in ('" . $variables . "') 
-  AND ". $maindatatable.".REGION = '" . $region .   "' 
-  AND ". $maindatatable.".EMERGTHRES = " . $tolerance . "
-  AND ". $maindatatable.".SIGNALCONFIDENCE = " . $confidence . "
-  AND ". $maindatatable.".TOE <= " . $max_TOE_year . "
-  AND ". $maindatatable.".MODELAGREEMENT = '50' 
-  AND ". $maindatatable.".GCM = 'GCM_ensemble' ";
-  if($compare['emission'] == "high"){
-    $query .= "AND (". $maindatatable.".EMISSCENARIO = 'rcp85' OR " . $maindatatable.".EMISSCENARIO = 'a1b') ";
-  }
-  if($compare['emission'] == "low"){
-    $query .= "AND (". $maindatatable.".EMISSCENARIO = 'rcp45' OR " . $maindatatable.".EMISSCENARIO = 'b1') ";
-  }
-  $query .= "  AND ( ( ( " . $lookupdatatable . ".THEME = 'Air temperature' OR " . $lookupdatatable . ".THEME = 'Precipitation' OR " . $lookupdatatable . ".THEME = 'Streamflow') AND ". $maindatatable.".DATASET = 'BCSD5') OR (" . $lookupdatatable . ".THEME = 'Hydrologic' AND ". $maindatatable.".DATASET = 'BCSD3') )";
-  $query .= " ORDER BY {". $maindatatable."}.TOE LIMIT 20";
+  $val = array(
+    'maindatatable' => $maindatatable,
+    'lookupdatatable' => $lookupdatatable,
+    'variables' => $variables,
+    'region' => $region,
+    'tolerance' => $tolerance,
+    'confidence' => $confidence,
+    'max_TOE_year' => $max_TOE_year,
+    'emission' => $emission,
+  );
+  $query = toewhiskers_timeline_query($val);
   
   $timelinequery = $query;
   $timelinequery = str_replace("{", "", $timelinequery);
