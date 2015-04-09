@@ -844,6 +844,7 @@ Historical 'Noise' Range: " . $prettynames['tolerance'][$tolerance] . "
 
 function toewhiskers_utfencode($html){
   if($html == "#Tmax>=80degF(26.7dC"){  return("#Tmax&ge;80degF(26.7dC)");  }
+  if($html == "#Tmax>=80degF_Apr-Au"){  return("#Tmax&ge;80degF_Apr-Aug");  }
   if($html == "#24hP>=3"){return("#24hP&ge;3");}
   return($html);
 }
