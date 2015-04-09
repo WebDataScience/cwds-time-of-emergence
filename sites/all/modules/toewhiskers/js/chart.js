@@ -69,16 +69,12 @@ jQuery( document ).ready(function( $ ) {
     drawD3Timeline(
       timelinedataarray, 
       jsonobj.maxtoeyear,
-       'Estimated Rate of Climate Change: ' + websitetextarray['confidence'][jsonobj.confidence],
-       'Management Sensitivity: ' +websitetextarray['tolerance'][jsonobj.tolerance],
-       'Multi-model median',
-       //'Climate Data: ' + websitetextarray['dataset'][jsonobj.dataset],
+      'Estimated Rate of Climate Change: ' + websitetextarray['confidence'][jsonobj.confidence],
+      'Management Sensitivity: ' + websitetextarray['tolerance'][jsonobj.tolerance],
+      'Multi-model median',
       'Time of Emergence in : ' + websitetextarray['region'],
       'Emissions Scenario: ' + websitetextarray['emission'][jsonobj.emission]
-     // 'Region: ' + websitetextarray['region']
     );
-    
-    //drawD3Timeline(timelinedataarray,maxtoeyear,confidence,tolerance,dataset,region)
 
     $(".emission" ).html( websitetextarray['emission'][jsonobj.emission] );
     $(".confidence" ).html( websitetextarray['confidence'][jsonobj.confidence] );
@@ -119,6 +115,7 @@ function dateConversion(onerow) {
   return onerow.YEARA + " - " + onerow.YEARB;
 }
   
+  
 function drawD3Timeline(timelinedataarray, maxtoeyear,confidence,tolerance,model,region, emission){
 //function drawD3Timeline(timelinedataarray,maxtoeyear,confidence,tolerance,dataset,region){
   // js created timeline image styles
@@ -126,15 +123,9 @@ function drawD3Timeline(timelinedataarray, maxtoeyear,confidence,tolerance,model
   var textco = "black";
   var dotco = "green";
   var dotfillco = "#248F24";
-  var dotcircleco = "#99FF99";
- 
-  var data = [[2000,0,"tooltip1","label1","rcp45",50],
-	  [2020,0,"tooltip2","label2","rcp85",50],
-	  [2085,0,"tooltip3","label3","rcp45",50],
-	  [2040,0,"tooltip4","label4","rcp45",50]];
- 
+  var dotcircleco = "#99FF99"; 
   var chartheight = 280;
-  data = timelinedataarray;
+  var data = timelinedataarray;
 
   /* Code to (usually) prevent timeline marker label text overlapping */
   var rownumber = 0;
@@ -249,7 +240,7 @@ function drawD3Timeline(timelinedataarray, maxtoeyear,confidence,tolerance,model
     .attr("width", "10")
     //.attr("fill", "#070707");
     .attr("fill", bgco);
-  // Add variable short name - dataset
+  // Add 'variable short name - dataset'
   node.append("line:text")
     .attr("x", function (d,i) { return x(d[0]); } ) 
     .attr("y", function (d) { return d[5]; } )
@@ -258,7 +249,7 @@ function drawD3Timeline(timelinedataarray, maxtoeyear,confidence,tolerance,model
     .style('font-family', 'sans-serif')
     .attr("stroke-width", .3)
     .style("text-anchor", "middle")
-    .text(function(d) { return d[3]+' - '+d[6]; })
+    .text(function(d) { return html2utf(d[3])+' - '+d[6]; })
     .attr('title', function(d) {  return d[2]; })
     .attr('alt', function(d) { return d[2]; })
     //.on("click", function(d) { document.location.href="/boxplot" })
@@ -273,9 +264,6 @@ function drawD3Timeline(timelinedataarray, maxtoeyear,confidence,tolerance,model
 }
 
 
-function getParameterByName(name) {
-  name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-  var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-    results = regex.exec(location.search);
-  return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+function html2utf(htmlstring){
+ return htmlstring.replace("&ge;", "\u2265"); 
 }

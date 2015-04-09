@@ -701,6 +701,7 @@ function toewhiskers_json_query_function($mode){
     
     // Function to translate ugly short name value in DB to pretty names:
     if($record->VARIABLESHORTNAME == "#Tmax>90degF(32.2deg"){$record->VARIABLESHORTNAME = "#Tmax>90°F(32.2°C)";}
+    $record->VARIABLESHORTNAME = toewhiskers_utfencode($record->VARIABLESHORTNAME);
     
     $timelinedata[] = array(
       $record->CHANGEDIR,
@@ -757,7 +758,7 @@ function toewhiskers_json_query_function($mode){
     if(!isset($toe_array[$record->VARIABLEID])){
       $toe_array[$record->VARIABLEID] = new stdClass();
     }
-    $toe_array[$record->VARIABLEID]->VARIABLESHORTNAME = $record->VARIABLESHORTNAME;
+    $toe_array[$record->VARIABLEID]->VARIABLESHORTNAME = toewhiskers_utfencode($record->VARIABLESHORTNAME);
     $toe = "Beyond " . $max_TOE_year;
     if ($record->TOE <= $max_TOE_year){
       $toe = round($record->TOE/5)*5;
@@ -822,7 +823,7 @@ Historical 'Noise' Range: " . $prettynames['tolerance'][$tolerance] . "
 \n\n";
  
     foreach($toe_array as $toe_object){
-      $csv .= '"' . $toe_object->VARIABLESHORTNAME . '",' . $toe_object->TOE . ',"' . (($toe_object->YEARA == 'Unknown' && $toe_object->YEARB = 'Unknown')?'No emergence':$toe_object->YEARA . ' - ' . $toe_object->YEARB) . '",';
+      $csv .= '"' . toewhiskers_utfencode($toe_object->VARIABLESHORTNAME) . '",' . $toe_object->TOE . ',"' . (($toe_object->YEARA == 'Unknown' && $toe_object->YEARB = 'Unknown')?'No emergence':$toe_object->YEARA . ' - ' . $toe_object->YEARB) . '",';
       $csv .= ($toe_object->CHANGEDIR == 1)?'"Increasing",':'"Decreasing",';
       $csv .= $toe_object->DATASET;
       $csv .= "\n";
@@ -838,6 +839,13 @@ Historical 'Noise' Range: " . $prettynames['tolerance'][$tolerance] . "
     // Cleaner output for testing only: drupal_json_output(print_r($toedata));
     drupal_json_output($toedata);  
   }
+}
+
+
+function toewhiskers_utfencode($html){
+  if($html == "#Tmax>=80degF(26.7dC"){  return("#Tmax&ge;80degF(26.7dC)");  }
+  if($html == "#24hP>=3"){return("#24hP&ge;3");}
+  return($html);
 }
 
 
