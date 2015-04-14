@@ -127,6 +127,13 @@ function template_preprocess_compare_template(&$variables) {
   $o = drupal_render($form);
   $variables['explore_form'] = $o;
 }
+function template_preprocess_timeline_template(&$variables) {
+  $variables['parameterform'] = toewhiskers_renderwebformelement_function();
+  $block = module_invoke('block', 'block_view', '17');
+  $variables['timelineinterpretivetext'] = render($block['content']);
+  $block = module_invoke('block', 'block_view', '18');
+  $variables['toerangeinterpretivetext'] = render($block['content']);
+}
 function template_preprocess_map_template(&$variables) {
   $form = drupal_get_form('toewhiskers_map_form');
   $o = drupal_render($form);
@@ -291,9 +298,6 @@ function toewhiskers_page_function(){
   return theme('timeline_template');
 }
 
-function template_preprocess_timeline_template(&$variables) {
-  $variables['parameterform'] = toewhiskers_renderwebformelement_function();
-}
 
 function toewhiskers_renderwebformelement_function(){  
   //This works to build initial forms that have no selections made yet.

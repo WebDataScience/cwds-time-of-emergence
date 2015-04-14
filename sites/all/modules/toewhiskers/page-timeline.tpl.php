@@ -98,18 +98,12 @@ ini_set('display_startup_errors', TRUE);
     <input id="print-button" name="op" value="Export Timeline Image" class="form-submit" type="submit">
     <img style="display:none" id="svg-img"></img>
   </a>  
-<?php
-  /*<a id="downloadtextanchor" href="timelinedata/text" download="timelinedata.txt">
-    <input id="print-text-button" name="op" value="Export Timeline Data" class="form-submit" type="submit">
-  </a>*/ 
-?>
   <a id="downloadtimelinetextanchor" href="exporttimelinedata" download="timelinedata.txt">
     <input id="print-text-button" name="op" value="Export Timeline Data" class="form-submit" type="submit">
   </a>
   
-  <p><h4>Understanding the Timeline</h4>
-The timeline shows the date by which half of the global climate models projecting conditions to noticeably deviate from the baseline conditions (1950-1999) indicate emergence of change in this variable, based on your selections. 
-</p>
+  <?php print $timelineinterpretivetext; ?><br/>
+    
 </div>
   
 <div id="range-revise-wrapper">
@@ -131,26 +125,10 @@ The timeline shows the date by which half of the global climate models projectin
     <table id="tabledata">
 		<tr><th colspan="4"><center>Time of Emergence Range</center></th></tr>
      <th>Hydro-climatic Variable</th><th>For your selection</th><th>For all choices</th><th>Direction of Change</th> 
-    <!--<tr><td>Variable Shortname (Column G)</td><td>{Year A} – {Year B}</td><td>ChangeDir (Column C)</td></tr>
-    <tr><td>Tmax>90degF(32.2degC)</td><td>2045 - 2065</td><td>Negative</td></tr>-->
-    <!-- <span class="tablerows"></span> -->
-   <!-- <tr><th rowspan=4> Click on any variable for more information about how time of emergence differs for different global climate models, emissions scenarios, levels of management sensitivity, and estimated rates of climate change.</th></tr>
-    -->
     </table>
-    <p>
-    <h4>Understanding the “ToE Range”</h4>
-The “ToE Range” indicates the range of years for which the middle 50% of global climate models projecting conditions to noticeably deviate from the baseline conditions (1950–1999) indicate emergence of change in the variable noted, based on your selections,
-
-A variable may have “No emergence” for an individual global climate model or the spatial aggregate if:
-      <ul>
-        <li>Emergence occurs after 2100 </li>
-        <li>Conditions never exceeded the threshold of management sensitivity during the baseline period (1950-1999)</li>
-        <li>Less than 60% of the selected area shows emergence by 2100</li>
-        <li>Less than 60% of global climate models agree on the direction of climate change</li>
-      </ul>
-	
-    </p>
   </p>
+  
+  <?php print $toerangeinterpretivetext; ?><br/>
   
   </div> 
     <div id="toe-revise">  
