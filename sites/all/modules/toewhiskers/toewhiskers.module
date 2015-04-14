@@ -43,7 +43,6 @@ function toewhiskers_menu() {
   );
   $items['timelinedata'] = array(
     'page callback' => 'toewhiskers_json_query_function',
-    'page arguments' => array(1, 'mode'),
     'access callback' => TRUE,
   );
   $items['exporttimelinedata'] = array(
@@ -653,7 +652,7 @@ function toewhiskers_clean_array($array, $filter = 'check_plain') {
 /*
  * Ajax/JSON data retriever.
  */
-function toewhiskers_json_query_function($mode){
+function toewhiskers_json_query_function(){
   //drupal_set_message('formstate:<pre>'. print_r($_SESSION['compare'], TRUE) .'</pre>');
   global $maindatatable;
   global $lookupdatatable;
@@ -772,6 +771,9 @@ function toewhiskers_json_query_function($mode){
       $toe_array[$record->VARIABLEID]->YEARB = $toe;
     }
     $toe_array[$record->VARIABLEID]->CHANGEDIR = $record->CHANGEDIR;
+    if($record->CHANGEDIR == -1){$toe_array[$record->VARIABLEID]->CHANGEDIRTEXT = "Decreasing";}
+    if($record->CHANGEDIR == 0) {$toe_array[$record->VARIABLEID]->CHANGEDIRTEXT = "Indeterminate";}
+    if($record->CHANGEDIR == 1) {$toe_array[$record->VARIABLEID]->CHANGEDIRTEXT = "Increasing";}
     $toe_array[$record->VARIABLEID]->DATASET = $record->DATASET;
   }  // End tabledata query.
  
@@ -792,49 +794,9 @@ function toewhiskers_json_query_function($mode){
     "tablequery" => $tablequery,
   );  
   
-  if($mode == 'text'){
-    // Create text for data export.
-    $prettynames['emission'] = array(
-      'rcp45'	=>	'RCP4.5',
-      'rcp85'	=>	'RCP8.5',
-      'A1B'	=>	'SRES A1B',
-      'B1'	=>	'SRES B1',
-      'low'	=>	'Low (RCP4.5 or B1)',
-      'high'	=>	'High (RCP8.5 or A1B)',
-    );
-    $prettynames['confidence'] = array(
-      '5'	=>	'Slow',
-      '50'	=>	'Central',
-      '95'	=>	'Fast',
-    );
-    $prettynames['tolerance'] = array(
-      '95'	=>	'Low (to extreme 10% of 1950-1999 conditions))',
-      '80'	=>	'High (to extreme 40% of 1950-1999 conditions)',
-    );
-    
-    $o = "Region: " . $_SESSION['compare']['regionname'] . "
-Emission Scenario: " . $prettynames['emission'][$emission] . "
-Estimated Rate of Climate Change: " . $prettynames['confidence'][$confidence] . "
-Historical 'Noise' Range: " . $prettynames['tolerance'][$tolerance] . "
-\n\n";
- 
-    foreach($toe_array as $toe_object){
-      $csv .= '"' . toewhiskers_utfencode($toe_object->VARIABLESHORTNAME) . '",' . $toe_object->TOE . ',"' . (($toe_object->YEARA == 'Unknown' && $toe_object->YEARB = 'Unknown')?'No emergence':$toe_object->YEARA . ' - ' . $toe_object->YEARB) . '",';
-      $csv .= ($toe_object->CHANGEDIR == 1)?'"Increasing",':'"Decreasing",';
-      $csv .= $toe_object->DATASET;
-      $csv .= "\n";
-    }
-    $o .= $csv;
-        
-    drupal_add_http_header('Content-Type', 'text/csv; utf-8');
-    drupal_add_http_header('Content-Disposition', 'attachment; filename = dataexport.csv');
-    print($o);
-    
-  } else {
-    // Output JSON data for /timeline AJAX query.
-    // Cleaner output for testing only: drupal_json_output(print_r($toedata));
-    drupal_json_output($toedata);  
-  }
+  // Output JSON data for /timeline AJAX query.
+  // Cleaner output for testing only: drupal_json_output(print_r($toedata));
+  drupal_json_output($toedata);  
 }
 
 

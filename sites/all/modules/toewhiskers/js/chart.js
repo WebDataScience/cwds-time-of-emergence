@@ -23,8 +23,6 @@ jQuery( document ).ready(function( $ ) {
 
   dataarray = []; 
   jsondataarray = [];
-  // Some of Google charts default colors.
-  colorarray = ["#3366cc","#dc3912","#ff9900","#109618","#990099","#0099c6","#dd4477","#66aa00","#b82e2e","#316395","#994499","#22aa99","#aaaa11","#6633cc","#e67300","#8b0707","#651067","#329262","#5574a6","#3b3eac","#b77322","#16d620","#b91383","#f4359e","#9c5935","#a9c413","#2a778d","#668d1c","#bea413","#0c5922","#743411"];
   // Gradient colors from http://www.perbang.dk/rgbgradient/
   colorarray = ["#E59C00","#E39400","#E18C00","#DF8400","#DD7C00","#DB7400","#D96C00","#D76400","#D55C00","#D35400","#D14C01","#CF4401","#CD3C01","#CB3401","#C92C01","#C72401","#C51C01","#C31401","#C10C01","#C00402"];
 
@@ -86,12 +84,10 @@ jQuery( document ).ready(function( $ ) {
     for (var key in tabledata) {
       var onerow = tabledata[key];
       $('#tabledata tr:last').after("<tr>"
-	+ "<td>" + onerow.VARIABLESHORTNAME + "</td><td>"
+	      + "<td>" + onerow.VARIABLESHORTNAME + "</td><td>"
         + dateConversion(onerow) + "</td>"
-	+ "<td><a href='boxplots/"
-        + key + "'>" + "see details"
-        + "</a></td><td>"
-        + (onerow.CHANGEDIR == '1'?'Increasing':'Decreasing')  + "</td></tr>");  
+	      + "<td><a href='boxplots/" + key + "'>see details</a></td>" +
+        "<td>" + onerow.CHANGEDIRTEXT + "</td></tr>"); 
     }
     // Display debug info into hidden div
     $("#hiddenconsole" ).html( "timelinequery: " + jsonobj.timelinequery + "<br>tablequery: " + jsonobj.tablequery );
@@ -101,14 +97,13 @@ jQuery( document ).ready(function( $ ) {
 
 // Handle the multiple date conversion scenarios
 function dateConversion(onerow) {
-  //code
   if (onerow.YEARA >= '2100') {
     return 'Beyond 2100';
   }
   if (onerow.YEARB >= '2100') {
     return onerow.YEARA + " - " + 'Beyond 2100';
   }
-  //if Unkownn
+  //if Unknown
   if (onerow.YEARA == 'Unknown' || onerow.YEARB == 'Unknown') {
     return  (onerow.YEARA == 'Unknown' && onerow.YEARB == 'Unknown'?'No emergence':onerow.YEARA + " - " + onerow.YEARB);
   }
