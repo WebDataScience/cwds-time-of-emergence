@@ -8,7 +8,7 @@ ini_set('display_startup_errors', TRUE);
 global $maindatatable;
 $maindatatable = "variablev7";
 global $lookupdatatable;
-$lookupdatatable = "lookupv2";
+$lookupdatatable = "lookupv3";
 
 function toewhiskers_menu() {
   $items['explore'] = array(
@@ -729,7 +729,6 @@ function toewhiskers_json_query_function($mode){
   $variable_object = new stdClass();
   
   // Query for 'table' portion of /timeline page.
- 
   $query = "SELECT ". $maindatatable.".*," . $lookupdatatable
   . ".VARIABLESHORTNAME, GROUP_CONCAT(" . $maindatatable . ".toe order by " . $maindatatable . ".modelagreement SEPARATOR ', ') as TOERange
   FROM {". $maindatatable."}  LEFT JOIN {"
@@ -746,11 +745,10 @@ function toewhiskers_json_query_function($mode){
   if($compare['emission'] == "low"){
     $query .= "AND (". $maindatatable.".EMISSCENARIO = 'rcp45' OR " . $maindatatable.".EMISSCENARIO = 'b1') ";
   }
-  
-    $query .= "  AND ( ( ( " . $lookupdatatable . ".THEME = 'Air temperature' OR " . $lookupdatatable . ".THEME = 'Precipitation' OR " . $lookupdatatable . ".THEME = 'Streamflow') AND ". $maindatatable.".DATASET = 'BCSD5') OR (" . $lookupdatatable . ".THEME = 'Hydrologic' AND ". $maindatatable.".DATASET = 'BCSD3') )";
-  
-  
-  $query .= " group BY ". $maindatatable.".VARIABLEID ";
+  $query .= "  AND (   ( ( " . $lookupdatatable . ".THEME = 'Air temperature' OR " . $lookupdatatable . ".THEME = 'Precipitation' ) AND ". $maindatatable.".DATASET = 'BCSD5')   
+  OR   (" . $lookupdatatable . ".THEME = 'Hydrologic' AND ". $maindatatable.".DATASET = 'BCSD3')   
+  OR   (" . $lookupdatatable . ".THEME = 'Streamflow' AND (". $maindatatable.".DATASET = 'BCSD3'  OR ". $maindatatable.".DATASET = 'BCSD5') )  ) ";
+  $query .= " GROUP BY ". $maindatatable.".VARIABLEID ";
   $result = db_query($query);
   
   // Result is returned as a iterable object that returns a stdClass object on each iteration
@@ -843,9 +841,7 @@ Historical 'Noise' Range: " . $prettynames['tolerance'][$tolerance] . "
 
 
 function toewhiskers_utfencode($html){
-  if($html == "#Tmax>=80degF(26.7dC"){  return("#Tmax&ge;80degF(26.7dC)");  }
-  if($html == "#Tmax>=80degF_Apr-Au"){  return("#Tmax&ge;80degF_Apr-Aug");  }
-  if($html == "#24hP>=3"){return("#24hP&ge;3");}
+  $html = str_replace(">=", "&ge;", $html);
   return($html);
 }
 

@@ -1,0 +1,18 @@
+Data conversion for lookupv3 table
+
+
+1. Save .xls file as .csv file.
+2. Remove headers manually by editting in notepad++.
+3. Manually change malformed '>=' character to '>=' for variableID V9.23 and V20
+4. Convert End of Line characters to 'Unix' style 'LF' with 'dos2unix inplacefilenameconvert.txt' if necessary. Use notepad to verify this conversion as the tool actually toggles the EOL between DOS and UNIX. 'dos2unix *.csv' 
+5. Run 'create_table.sql'. This drops an existing 'lookupv3' table and recreates an empty version of same.
+/c/xampp/mysql/bin/mysql cig_toe -u root < create_table_only_lookupv3.sql
+6. start mysql client using --local-infile options
+ (mysql -uroot -p --local-infile cig_toe)
+ /c/xampp/mysql/bin/mysql cig_toe -u root --local-infile
+7. From the mysql command line started above:
+load data local infile 'c:/vhosts/projects/toe/dataconversion/Lookup_Variables_201501407.csv' into table cig_toe.lookupv3 fields TERMINATED BY ',' ENCLOSED BY '"';         
+8. Write the table to a .sql file.
+ /c/xampp/mysql/bin/mysqldump cig_toe lookupv3 -u root > lookupv3.sql
+ 
+ 
