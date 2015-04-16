@@ -702,6 +702,7 @@ function toewhiskers_json_query_function(){
     
     // Function to translate ugly short name value in DB to pretty names:
     if($record->VARIABLESHORTNAME == "#Tmax>90degF(32.2deg"){$record->VARIABLESHORTNAME = "#Tmax>90°F(32.2°C)";}
+    // Replace '>=' with a proper utf code.
     $record->VARIABLESHORTNAME = toewhiskers_utfencode($record->VARIABLESHORTNAME);
     
     $timelinedata[] = array(
@@ -866,13 +867,17 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
   $boxplotdata = array();
   
   // Dataset predicated on 'theme' of variable.
-  if($jasondata['theme'] == 'Air temperature' || $jasondata['theme'] == 'Precipitation' || $jasondata['theme'] == 'Streamflow' ){
+  if($jasondata['theme'] == 'Air temperature' || $jasondata['theme'] == 'Precipitation'){
     $themequery = " AND " . $maindatatable . ".DATASET = 'BCSD5'";
     $jasondata['dataname'] = 'BCSD5';
   }
   if($jasondata['theme'] == 'Hydrologic' ){
     $themequery = " AND ". $maindatatable . ".DATASET = 'BCSD3'";
     $jasondata['dataname'] = 'BCSD3';
+  }
+  if($jasondata['theme'] == 'Streamflow' ){
+    $themequery = " AND (". $maindatatable . ".DATASET = 'BCSD3' OR ". $maindatatable . ".DATASET = 'BCSD5') ";
+    $jasondata['dataname'] = 'BCSD3 AND BCSD5';
   }
   
   // Query for TOE values.
