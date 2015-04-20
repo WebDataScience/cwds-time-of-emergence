@@ -19,7 +19,7 @@ d3.box = function() {
     g.each(function(data, i) {
 
       var d = data[1].sort(d3.ascending);    
-      var colors = ['#4212af','#5ccccc','#ffb100'];
+      var colors = ['#a92a55','#5ccccc','#ffb100'];
       var rectcolors = ['#a92a55','#01939a','#ff6400'];
     
       var g = d3.select(this),

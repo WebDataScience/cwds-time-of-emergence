@@ -9,17 +9,26 @@ function toeboxplot_menu() {
   return $items;
 }
 
+
 function toeboxplots_page_function($variableid){
   $comparearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
   $comparearray['variableid'] = check_plain($variableid);
   $_SESSION['compare'] = $comparearray;
+  drupal_add_css(drupal_get_path('module', 'toeboxplot') . '/css/toeboxplot.css');
   return theme('toeboxplots_template');
 }
 
+
 function toeboxplot_theme(){
-    return array(
-        'toeboxplots_template' => array(
-            'template' => 'templates/toeboxplots',
-        ),
-    );
+  return array(
+    'toeboxplots_template' => array(
+      'template' => 'templates/toeboxplots',
+    ),
+  );
+}
+
+
+function template_preprocess_toeboxplots_template(&$variables) {
+  $block = module_invoke('block', 'block_view', '19');
+  $variables['fourpanelintro'] = render($block['content']);
 }

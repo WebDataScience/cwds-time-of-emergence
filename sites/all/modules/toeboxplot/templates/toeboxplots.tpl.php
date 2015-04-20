@@ -7,6 +7,7 @@
     drupal_add_js($path . '/js/StackBlur.js');
     drupal_add_js($path . '/js/boxplots.js');
     drupal_add_css($path . '/cs/boxplot.css');
+    drupal_add_css($path . '/cs/toeboxplot.css');
     
     drupal_set_title("All Results");
     
@@ -16,13 +17,18 @@
     
   ?>
 
+<?php
+  print($fourpanelintro);
+?>
+  
 <input id="module_path" type="hidden" value="<?php echo base_path() . $path ?>" />
 <div id="main-chart-area">
-
   <h1 id="top-y-title"></h1>
   
   <h1 id="top-x-title"></h1>
 
+  <h1 class="unbold">Climate dataset: <?php //print($dataset);?></h1>
+  
   <div id="boxplot-key">
   <div id="key-table">
   	  <div id="key-table-swatch">&nbsp;</div>
@@ -140,14 +146,8 @@ jQuery( document ).ready(function( $ ) {
       .orient("bottom");
 
     //y-axis
-    var y = d3.scale.linear()
-      .domain([2000, 2100])
-      .range([height + margin.top, 0 + margin.top]);
-    
-    var yAxis = d3.svg.axis()
-      .scale(y)
-      .orient("right")
-      .ticks(4);
+    var y = d3.scale.linear().domain([2000, 2100]).range([height + margin.top, 0 + margin.top]);
+    var yAxis = d3.svg.axis().scale(y).orient("right").ticks(4).tickFormat(d3.format("d"));
 
     //draw boxplots  
     svg.selectAll(".box")    
@@ -281,16 +281,15 @@ function wrap(text, width) {
 
 
 <style>
-      *, body, svg, h2 {
-        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-        color: black;
-        font-weight: normal;
+*, body, svg, h2 {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: black;
+  font-weight: normal;
 	overflow: visible;
-      }
-      body {
-       padding: 100px;
-      
-      }
+}
+body{
+  padding: 100px;
+}
       #top-x-title, #top-y-title {
 	font-size: 22px;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -420,27 +419,6 @@ stroke-width: 2px;
 .box g:nth-child(3) line.median { 
 stroke: #ff8b40;
 stroke-width: 2px;
-}
-
-.box g:nth-child(3) rect {
-        //fill:#ff6400;
-        }
-.box g:nth-child(3) circle {
-//fill:#ffb100;
-}
-
-	.box g:nth-child(1) rect {
-	//fill:#a92a55; 
-	}
-.box g:nth-child(1) circle {
-//fill: #4212af;
-}
-
-.box g:nth-child(2) rect {
-        //fill:#01939a;
-        }
-.box g:nth-child(2) circle {
-//fill: #5ccccc;
 }
       .box .center {
         stroke-dasharray: 3,3;
