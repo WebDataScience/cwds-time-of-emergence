@@ -1,4 +1,13 @@
-.unbold{
+h1 span.variablename{
+  font-weight:bold;
+}
+.article__content span.unbold{
   text-align:center;
-  //weight:normal;
+  font-weight:normal !important;
+}
+.article__content span.unbold span{
+  font-family:"encode-sans-condensed","open-sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+div#top-loading{
+  text-align:center;
 }

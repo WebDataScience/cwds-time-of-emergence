@@ -7,7 +7,6 @@
     drupal_add_js($path . '/js/StackBlur.js');
     drupal_add_js($path . '/js/boxplots.js');
     drupal_add_css($path . '/cs/boxplot.css');
-    drupal_add_css($path . '/cs/toeboxplot.css');
     
     drupal_set_title("All Results");
     
@@ -24,29 +23,33 @@
 <input id="module_path" type="hidden" value="<?php echo base_path() . $path ?>" />
 <div id="main-chart-area">
   <h1 id="top-y-title"></h1>
-  
-  <h1 id="top-x-title"></h1>
-
-  <h1 class="unbold">Climate dataset: <?php //print($dataset);?></h1>
-  
+  <h1 id="top-x-title">
+    Time of Emergence for <span id="variablename">N/A</span><br/>
+    <span id="unbold" class="unbold">
+      Location: <span id="location">N/A</span><br/>
+      Climate dataset: <span id="dataset">N/A</span>
+    </span>
+  </h1>
   <div id="boxplot-key">
-  <div id="key-table">
-  	  <div id="key-table-swatch">&nbsp;</div>
-	  <div id="key-table-text">Rate of Climate Change</div>
-  </div>
+    <div id="key-table">
+      <div id="key-table-swatch">&nbsp;</div>
+      <div id="key-table-text">Rate of Climate Change</div>
+    </div>
     <div id="lowerbound-key">
-            <div id="lowerbound-key-swatch"></div>
-            <div id="lowerbound-key-text">Fast</div>
+      <div id="lowerbound-key-swatch"></div>
+      <div id="lowerbound-key-text">Fast</div>
     </div>
     <div id="central-key">
-            <div id="central-key-swatch"></div>
-            <div id="central-key-text">Moderate</div>
+      <div id="central-key-swatch"></div>
+      <div id="central-key-text">Moderate</div>
     </div>
     <div id="upperbound-key">
       <div id="upperbound-key-swatch"></div>
       <div id="upperbound-key-text">Slow</div>
     </div>
   </div>
+  
+  <div id="top-loading"></div>
   
   <div id="chart-area-3">
   </div>
@@ -63,14 +66,15 @@
     <input id="print-text-button" name="op" value="Export Boxplot Data" class="form-submit" type="submit">
   </a>  
 </div>
+<br/>
 
 <script>
 jQuery( document ).ready(function( $ ) {
   var baseurl = "<?php print($GLOBALS['base_url'] ); ?>";
   //Show the loading progress bar
-  var loadingGif = $("#top-x-title");
+  var loadingGif = $("#top-loading");
   // timelineChart.progressbar({value:400});
-  loadingGif.html("<img src='/sites/all/modules/toewhiskers/images/ajax-loader.gif' alt='loading...' />");
+  loadingGif.html("<div style='padding:10px'><img src='/sites/all/modules/toewhiskers/images/ajax-loader.gif' alt='loading...' /></div>");
   
   $('#print-button').click(function(){
     // Find existing svg content.
@@ -95,15 +99,16 @@ jQuery( document ).ready(function( $ ) {
   
   $.post( url, function( jsonobj ) {  
     
-    var charttitle = "Time of Emergence for " + jsonobj.variablename ;
-    charttitle = charttitle + "<br/>Location: " + jsonobj.regionname ;
-    charttitle += "<br/>Climate Data Set: " + jsonobj.dataname;    
-    $("#top-x-title").html(charttitle);
+    $("#variablename").html(jsonobj.variablename);
+    $("#location").html(jsonobj.regionname);
+    $("#dataset").html(jsonobj.dataname);
 
     drawBoxplot("chart-area-3", "High Emissions (RCP 8.5 or A1B)",parse4data(jsonobj.emergencethreshold80.emissionscenariohigh),"Past Sensitivity High (to extreme 40% of 1950-1999 conditions)");
     drawBoxplot("chart-area-4", "Low Emissions (RCP 4.5 or B1)", parse4data(jsonobj.emergencethreshold80.emissionscenariolow),"");     
     drawBoxplot("chart-area-1", "High Emissions (RCP 8.5 or A1B)", parse4data(jsonobj.emergencethreshold95.emissionscenariohigh),"Past Sensitivity Low (to extreme 10% of 1950-1999 conditions)");
     drawBoxplot("chart-area-2", "Low Emissions (RCP 4.5 or B1)", parse4data(jsonobj.emergencethreshold95.emissionscenariolow),"");
+   
+    loadingGif.html("");
    
   });
   
@@ -281,7 +286,7 @@ function wrap(text, width) {
 
 
 <style>
-*, body, svg, h2 {
+body, svg, h2 {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: black;
   font-weight: normal;
@@ -290,14 +295,14 @@ function wrap(text, width) {
 body{
   padding: 100px;
 }
-      #top-x-title, #top-y-title {
+#top-x-title, #top-y-title {
 	font-size: 22px;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-	}
-      h2 {
-        padding: 0;
-        margin: 0;
-      }
+}
+h2 {
+  padding: 0;
+  margin: 0;
+}
 
       #top-x-title {
 	padding-top: 25px;
