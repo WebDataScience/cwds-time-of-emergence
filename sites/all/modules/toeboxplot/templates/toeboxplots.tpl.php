@@ -259,6 +259,7 @@ function wrap(text, width) {
     data[0][0] = "Faster";
     data[0][1] = [];
     data[0][2] = [];
+    data[0][3] = [obj.signalconfidence95.toema50.toe,obj.signalconfidence95.toema50.dir];
     $.each(obj.signalconfidence95.dots, function(i, obj) {
       data[0][1].push(obj);
     });
@@ -269,6 +270,7 @@ function wrap(text, width) {
     data[1][0] = "Central";
     data[1][1] = [];
     data[1][2] = [];
+    data[1][3] = [obj.signalconfidence50.toema50.toe,obj.signalconfidence50.toema50.dir];
     $.each(obj.signalconfidence50.dots, function(i, obj) {
       data[1][1].push(obj);
     });
@@ -279,6 +281,7 @@ function wrap(text, width) {
     data[2][0] = "Slower";
     data[2][1] = [];
     data[2][2] = [];
+    data[2][3] = [obj.signalconfidence5.toema50.toe,obj.signalconfidence5.toema50.dir];
     $.each(obj.signalconfidence5.dots, function(i, obj) {
       data[2][1].push(obj);
     });
@@ -383,18 +386,17 @@ margin: 10px;
 #chart-area-1, #chart-area-3 {
 	margin-left: 50px;
 }
-      #chart-area-1, #chart-area-2, #chart-area-3, #chart-area-4 {
-        background-color: white;
-        float: left;
-        width: 420px;
-        height: 400px;
-        -webkit-transform: rotate(90deg);
-        -moz-transform: rotate(90deg);
-        -o-transform: rotate(90deg);
-        -ms-transform: rotate(90deg);
-        transform: rotate(90deg);
-      }
-
+#chart-area-1, #chart-area-2, #chart-area-3, #chart-area-4 {
+  background-color: white;
+  float: left;
+  width: 420px;
+  height: 400px;
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
 #chart-area-1, #chart-area-2 {
 	margin-top:25px;
 }
@@ -437,6 +439,17 @@ stroke-width: 2px;
         stroke: #000;
         r: 2;
       }
+  
+.box .toechangedir{
+  fill: #4682B4;
+  stroke: #000;
+  font: 18px sans-serif;
+}  
+.box .toema50{
+  fill: #4682B4;
+  stroke: #000;
+  font: 32px sans-serif;
+}
       .axis {
         font: 12px sans-serif;
       }      

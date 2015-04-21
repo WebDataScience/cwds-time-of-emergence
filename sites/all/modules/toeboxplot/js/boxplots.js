@@ -18,6 +18,9 @@ d3.box = function() {
   function box(g) {
     g.each(function(data, i) {
 
+      // data[3] is array[toe,dir] for modelagreement50.
+      var ma50 = data[3];
+    
       var d = data[1].sort(d3.ascending);    
       var colors = ['#a92a55','#5ccccc','#ffb100'];
       var rectcolors = ['#a92a55','#01939a','#ff6400'];
@@ -152,7 +155,47 @@ d3.box = function() {
           .attr("y2", x1)
           .style("opacity", 1e-6)
           .remove();
-
+        
+      // Insert one larger dot for the TOE at modelagreement50.
+      if(ma50[0] > 0 && ma50[0] <= 2100){
+        var ma50dot = g.selectAll("circle.toema50").data(ma50[0], Number);
+        ma50dot.enter().insert("circle", "text")
+          .attr("r", 6)
+          .style("stroke", '#000000')
+          .style("fill", colors[i])
+          .attr("cx", width / 2)
+          .attr("cy", x1(ma50[0]))
+          .style("opacity", 1); 
+        /* 
+        //test to use + or - symbol
+        var changedirsymbol = "-";
+        if (ma50[1] > 0 ){changedirsymbol = "+";}
+        ma50dot.enter().insert("text").text(changedirsymbol)
+          .attr("class", "toema50")
+          .style("stroke", colors[i])
+          .style("fill", colors[i])
+          .attr("x", (width / 2) - 9)
+          .attr("y", x1(ma50[0]) + 10)
+          .style("opacity", 1); 
+        */          
+      }        
+          
+      /* 
+      // Try to add + or - to represent direction of change
+      var changedirdotsymbol = "-+";
+      var toedots = g.selectAll("circle.toechangedir").data(outlierIndices, Number);
+      toedots.enter().insert("text").text(changedirdotsymbol)
+          .attr("class", "toechangedir")
+          .style("stroke", colors[i])
+          .style("fill", colors[i])
+          .attr("x", (width / 2) - 5)
+          .attr("y", function(i) { return x1(d[i])+5 ; })
+          .style("opacity", 1); 
+      */    
+          
+          
+          
+          
       // Update outliers.
       var outlier = g.selectAll("circle.outlier")
           .data(outlierIndices, Number);
@@ -163,8 +206,8 @@ d3.box = function() {
         .style("fill", colors[i])
         .attr("cx", width / 2)
         .attr("cy", function(i) { return x0(d[i]); })
-        .style("opacity", 1e-6);
-
+        .style("opacity", 1e-6);      
+        
       outlier.transition()
           .duration(duration)
           .attr("cy", function(i) { return x1(d[i]); })
@@ -175,7 +218,8 @@ d3.box = function() {
           .attr("cy", function(i) { return x1(d[i]); })
           .style("opacity", 1e-6)
           .remove();   
-
+      
+      
       // Compute the tick format.
       var format = tickFormat || x1.tickFormat(22);
 
