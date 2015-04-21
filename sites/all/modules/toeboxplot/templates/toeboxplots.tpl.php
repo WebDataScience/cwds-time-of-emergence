@@ -114,6 +114,7 @@ jQuery( document ).ready(function( $ ) {
   
 
   function drawBoxplot(containingElementID, ytitle, data, xtitle) {
+  
     var labels = false; 
     var module_path = document.getElementById('module_path').value;
 
@@ -145,7 +146,6 @@ jQuery( document ).ready(function( $ ) {
     var x = d3.scale.ordinal()     
       .domain( data.map(function(d) { console.log(d); return d[0] } ) )     
       .rangeRoundBands([0 , width], 0.7, 0.3);    
-
     var xAxis = d3.svg.axis()
       .scale(x)
       .orient("bottom");
@@ -153,14 +153,26 @@ jQuery( document ).ready(function( $ ) {
     //y-axis
     var y = d3.scale.linear().domain([2000, 2100]).range([height + margin.top, 0 + margin.top]);
     var yAxis = d3.svg.axis().scale(y).orient("right").ticks(4).tickFormat(d3.format("d"));
-
-    //draw boxplots  
-    svg.selectAll(".box")    
-      .data(data)
-      .enter().append("g")
-      .attr("transform", function(d) { return "translate(" +  x(d[0])  + "," + margin.top + ")"; } )
-      .call(chart.width(x.rangeBand()));
-            
+    
+    // Count number of dots found for this boxplot. Then display 'No emergence prior to 2100' message if appropriate.
+    var dotcount = data[0][1].length + data[1][1].length + data[2][1].length;
+    if(dotcount > 0){
+      //draw boxplots  
+      svg.selectAll(".box")    
+        .data(data)
+        .enter().append("g")
+        .attr("transform", function(d) { return "translate(" +  x(d[0])  + "," + margin.top + ")"; } )
+        .call(chart.width(x.rangeBand()));
+    } else {
+      //Zero results text
+      svg.append("text")
+        .attr("y", 125)             
+        .attr("x", (0 - width))
+        .attr("text-anchor", "start")  
+        .attr("transform", "rotate(-90)")
+        .style("font-size", "18px")  
+        .text("No emergence prior to 2100"); 
+    }   
     // add a title
     svg.append("text")
       //.attr("y", (width / 2))             
@@ -170,8 +182,7 @@ jQuery( document ).ready(function( $ ) {
       .attr("text-anchor", "start")  
       .attr("transform", "rotate(-90)")
       .style("font-size", "18px")  
-      .text(ytitle); 
-   
+      .text(ytitle);   
     //draw y axis
     svg.append("g")
       .attr("class", "y axis")
@@ -182,32 +193,28 @@ jQuery( document ).ready(function( $ ) {
       .attr("dy", ".71em")
       .style("text-anchor", "middle")
       .style("font-size", "16px");
-
     //text label for x axis
     svg.append("text")      
       .attr("x", -150 )
       .attr("y", -410 )
 	    .attr("dx", "-2em")
 	    .attr("dy", ".81em")
-            .style("text-anchor", "middle")
-            .style("font-size", "18px")
-            .text(xtitle)
+      .style("text-anchor", "middle")
+      .style("font-size", "18px")
+      .text(xtitle)
 	    .call(wrap, 300)
-            .attr("transform", function(d) {
-              return "rotate(180)" 
-            });;
-            
-            
-          //draw x axis  
-          svg.append("g")
-              .attr("class", "x axis")
-              //.attr("transform", "translate(0," + (height  + margin.top + 10) + ") scale(1, -1)")
-              .append("text") 
-              .attr("transform", "translate(0," + (height  + margin.top) + ")")
-              .call(xAxis); 
-                     
-      
-    }  // end drawboxplot
+      .attr("transform", function(d) {
+        return "rotate(180)" 
+      });                 
+    //draw x axis  
+    svg.append("g")
+      .attr("class", "x axis")
+      //.attr("transform", "translate(0," + (height  + margin.top + 10) + ") scale(1, -1)")
+      .append("text") 
+      .attr("transform", "translate(0," + (height  + margin.top) + ")")
+      .call(xAxis); 
+                           
+  }  // end drawboxplot
     
     
 /**
@@ -216,13 +223,13 @@ jQuery( document ).ready(function( $ ) {
 function wrap(text, width) {
   text.each(function() {
     var text = d3.select(this),
-        words = text.text().split(/\s+/).reverse(),
-        word,
-        line = [],
-        lineNumber = 0,
-        lineHeight = 1.5, // ems
-        y = text.attr("y"),
-        dx = parseFloat(text.attr("dx")),
+      words = text.text().split(/\s+/).reverse(),
+      word,
+      line = [],
+      lineNumber = 0,
+      lineHeight = 1.5, // ems
+      y = text.attr("y"),
+      dx = parseFloat(text.attr("dx")),
 	dy = parseFloat(text.attr("dy")),
         tspan = text.text(null)
 	      .append("tspan")
@@ -388,20 +395,17 @@ margin: 10px;
         transform: rotate(90deg);
       }
 
-	#chart-area-1, #chart-area-2 {
-		margin-top:25px;
-	}
-
-	#chart-area-3 svg.box>text:first-of-type, #chart-area-4 svg.box>text:first-of-type {
-display: none;
-	}
-
-      .box {
-        font: 10px sans-serif;
-      }
-
-      svg.box{
-      }
+#chart-area-1, #chart-area-2 {
+	margin-top:25px;
+}
+#chart-area-3 svg.box>text:first-of-type, #chart-area-4 svg.box>text:first-of-type {
+  //display: none;
+}
+.box {
+  font: 10px sans-serif;
+}
+svg.box{
+}
       
       .box line,
       .box rect,

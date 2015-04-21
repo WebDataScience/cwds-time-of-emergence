@@ -72,8 +72,7 @@ d3.box = function() {
         .attr("y1", function(d) { return x0(d[0]); })
         .attr("x2", width / 2)
         .attr("y2", function(d) { return x0(d[1]); })
-        .style("opacity", 1e-6)
-        ;
+        .style("opacity", 1e-6);
 
       center.transition()
         .duration(duration)
@@ -126,7 +125,7 @@ d3.box = function() {
       
       // Update whiskers.
       var whisker = g.selectAll("line.whisker")
-          .data(whiskerData || []);
+        .data(whiskerData || []);
 
       whisker.enter().insert("line", "circle, text")
         .attr("class", "whisker")
@@ -139,8 +138,7 @@ d3.box = function() {
         .duration(duration)
         .attr("y1", x1)
         .attr("y2", x1)
-        .style("opacity", 1)
-        ;
+        .style("opacity", 1);
 
       whisker.transition()
           .duration(duration)
@@ -165,8 +163,7 @@ d3.box = function() {
         .style("fill", colors[i])
         .attr("cx", width / 2)
         .attr("cy", function(i) { return x0(d[i]); })
-        .style("opacity", 1e-6)
-        ;
+        .style("opacity", 1e-6);
 
       outlier.transition()
           .duration(duration)

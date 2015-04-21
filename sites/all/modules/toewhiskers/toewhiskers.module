@@ -903,7 +903,8 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
         foreach ($result as $record) {
           $pos = strpos($record->GCM, 'ensemble');
           if ($pos === false) {
-            if($record->TOE <= 2100){
+            // Exclude dots where TOE is zero or after year 2100.
+            if($record->TOE <= 2100 && $record->TOE >0){
               $dots[$record->GCM] = $record->TOE;
             }
           } else {
