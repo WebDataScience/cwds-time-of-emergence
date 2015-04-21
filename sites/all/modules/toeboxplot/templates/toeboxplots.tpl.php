@@ -30,6 +30,7 @@
       Climate dataset: <span id="dataset">N/A</span>
     </span>
   </h1>
+  <!--
   <div id="boxplot-key">
     <div id="key-table">
       <div id="key-table-swatch">&nbsp;</div>
@@ -47,6 +48,34 @@
       <div id="upperbound-key-swatch"></div>
       <div id="upperbound-key-text">Slow</div>
     </div>
+  </div>-->
+  
+  <div id="boxplot-key">
+    <table>
+      <tr>
+        <td><span id="key-table-text">Rate of Climate Change&nbsp;&nbsp;&nbsp;&nbsp;</div></td>
+        <td><span class="smallsymbol">O</span> Model, emergence in the negative (decreasing) direction</td>
+      </tr>
+      <tr>
+        <td><div id="lowerbound-key">
+        <span id="lowerbound-key-swatch"></span>
+        <span class="key-text">Fast</span>
+        </div></td>
+        <td><span class="largesymbol">O</span> Ensemble median, emergence in the negative (decreasing) direction</td>
+      </tr>
+      <tr>
+        <td><div id="central-key">
+        <span id="central-key-swatch"></span>
+        <span class="key-text">Moderate</span>
+        </div></td>
+        <td><span class="smallsymbolplus">+</span> Model, emergence in the positive (increasing) direction</td>
+      </tr>
+      <tr>
+        <td><div id="upperbound-key"><span id="upperbound-key-swatch"></span>
+          <span class="key-text">Slow</span></div></td>
+        <td><span class="largesymbolplus">+</span> Ensemble median, emergence in the positive (increasing) direction</td>
+      </tr>
+    </table>
   </div>
   
   <div id="top-loading"></div>
@@ -209,7 +238,6 @@ jQuery( document ).ready(function( $ ) {
     //draw x axis  
     svg.append("g")
       .attr("class", "x axis")
-      //.attr("transform", "translate(0," + (height  + margin.top + 10) + ") scale(1, -1)")
       .append("text") 
       .attr("transform", "translate(0," + (height  + margin.top) + ")")
       .call(xAxis); 
@@ -266,6 +294,8 @@ function wrap(text, width) {
     $.each(obj.signalconfidence95.box, function(i, obj) {
       data[0][2].push(Math.min(obj,2100));
     });
+    data[0][4] = obj.signalconfidence95.toeandchangedir;
+  
     data[1] = [];
     data[1][0] = "Central";
     data[1][1] = [];
@@ -277,6 +307,8 @@ function wrap(text, width) {
     $.each(obj.signalconfidence50.box, function(i, obj) {
       data[1][2].push(Math.min(obj,2100));
     });
+    data[1][4] = obj.signalconfidence50.toeandchangedir;
+        
     data[2] = [];
     data[2][0] = "Slower";
     data[2][1] = [];
@@ -288,6 +320,8 @@ function wrap(text, width) {
     $.each(obj.signalconfidence5.box, function(i, obj) {
       data[2][2].push(Math.min(obj,2100));
     });
+    data[2][4] = obj.signalconfidence5.toeandchangedir;
+        
     return data;
   }  // end parse4data()    
     
@@ -331,35 +365,46 @@ h2 {
         -ms-transform: rotate(-90deg);
         transform: rotate(-90deg);
       }
-	#boxplot-key {
-float: left;
-width: 100%;
-clear: both;
-margin-left: 250px;
-margin-right: auto;
-margin-top: 0px;
-margin-bottom: 30px;
+#boxplot-key{
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10px;
+  margin-bottom: 50px;
 }
-
+#boxplot-key table {
+  margin-left: auto;
+  margin-right: auto;
+  background: none repeat scroll 0 0 white;
+  border: 1px solid black; 
+  table-layout: auto;
+  width: auto;
+}
+#boxplot-key table tr.even, table tr.alt, table tr:nth-of-type(2n) {
+  background: none;
+}
+#boxplot-key table td{
+  height: 40px;
+}
+.key-text{
+  float: left;
+  margin-top: 8px;
+}
 #key-table, #lowerbound-key, #central-key, #upperbound-key {
-float: left;
-margin-right: 30px;
+  float: left;
+  margin-right: 30px;
 }
 #key-table-swatch{
-height: 15px;
-width: 15px;
-
-
-
-margin: 10px;
+  height: 15px;
+  width: 15px;
+  margin: 10px;
 }
-#lowerbound-key-swatch {
-height: 15px;
-width: 15px;
-border: 1px solid black;
-background-color: #a92a55;
-float: left;
-margin: 10px;
+#lowerbound-key-swatch{
+  height: 15px;
+  width: 15px;
+  border: 1px solid black;
+  background-color: #a92a55;
+  float: left;
+  margin: 10px;
 }
 #central-key-swatch {
   height: 15px;
@@ -377,6 +422,24 @@ margin: 10px;
   float: left;
   margin: 10px;
 }
+
+.smallsymbol{
+  font-size: 14px;
+}
+.largesymbol{
+  vertical-align: middle;
+  font-size: 22px;
+}
+.smallsymbolplus{
+  font-size: 20px;
+}
+.largesymbolplus{
+  vertical-align: middle;
+  font-size: 30px;
+}
+
+
+
 #main-chart-area {
   background-color: white;
   width: 1000px;
@@ -399,9 +462,6 @@ margin: 10px;
 }
 #chart-area-1, #chart-area-2 {
 	margin-top:25px;
-}
-#chart-area-3 svg.box>text:first-of-type, #chart-area-4 svg.box>text:first-of-type {
-  //display: none;
 }
 .box {
   font: 10px sans-serif;

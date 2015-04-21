@@ -887,6 +887,7 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
         $dots = array();
         $box = array('25' => 0, '50' => 0, '75' => 0);
         $toema50 = array();
+        $toeandchangedir = array();
         
         $query="select * from " . $maindatatable . " WHERE variableid='" . $variable . "' and emergthres=" . $emergencethreshold . " and signalconfidence=" . $signalconfidence . " AND REGION = '" . $_SESSION['compare']['region'] . "'";
         
@@ -907,6 +908,7 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
             // Exclude dots where TOE is zero or after year 2100.
             if($record->TOE <= 2100 && $record->TOE > 0){
               $dots[$record->GCM] = $record->TOE;
+              $toeandchangedir[] = array('toe' => $record->TOE, 'dir' => $record->CHANGEDIR);
             }
           } else {
             $box[$record->MODELAGREEMENT] = $record->TOE;
@@ -924,6 +926,7 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
           "box" => $oneboxarray,
           "dots" => $dots,
           "toema50" => $toema50,
+          "toeandchangedir" => $toeandchangedir,
           "query" => $query,
         );  
         $boxplotdata['emergencethreshold' . $emergencethreshold]['emissionscenario' . $emissionscenario]['signalconfidence' . $signalconfidence] = $oneboxplot;
