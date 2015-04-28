@@ -969,7 +969,6 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
             $csv .= $emergencekey . "," . $emissionkey . "," . $signalconfidencekey. ",\"" . $boxdata ."\",\"" . rtrim($toeandchangedirdata,",") . "\"\n";
       } } } 
       $o .= $csv;
-    
       drupal_add_http_header('Content-Type', 'text/csv; utf-8');
       drupal_add_http_header('Content-Disposition', 'attachment; filename = dataexport.csv');
       print($o);

@@ -327,8 +327,6 @@ function wrap(text, width) {
     
 }); //end jquery
 </script>
-
-
 <style>
 body, svg, h2 {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -347,7 +345,6 @@ h2 {
   padding: 0;
   margin: 0;
 }
-
       #top-x-title {
 	padding-top: 25px;
         text-align: center;
@@ -422,7 +419,6 @@ h2 {
   float: left;
   margin: 10px;
 }
-
 .smallsymbol{
   font-size: 14px;
 }
@@ -437,13 +433,10 @@ h2 {
   vertical-align: middle;
   font-size: 30px;
 }
-
-
-
 #main-chart-area {
   background-color: white;
   width: 1000px;
-  height: 1125px;
+  height: 1260px;
   padding-left: 50px;
 }
 #chart-area-1, #chart-area-3 {
@@ -466,40 +459,33 @@ h2 {
 .box {
   font: 10px sans-serif;
 }
-svg.box{
+svg.box{}
+.box line,
+.box rect,
+.box circle {
+  stroke: #000;
+  stroke-width: 1px;
 }
-      
-      .box line,
-      .box rect,
-      .box circle {
-        //fill: steelblue;
-        stroke: #000;
-        stroke-width: 1px;
-      }
-
 .box g:nth-child(1) line.median {     
-stroke: #d45d85;
-stroke-width: 2px;
+  stroke: #d45d85;
+  stroke-width: 2px;
 }
-
 .box g:nth-child(2) line.median {     
 stroke: #5dc8cd;
 stroke-width: 2px;
 }
-
 .box g:nth-child(3) line.median { 
 stroke: #ff8b40;
 stroke-width: 2px;
 }
-      .box .center {
-        stroke-dasharray: 3,3;
-      }
-      .box .outlier {
-        fill: #4682B4;
-        stroke: #000;
-        r: 2;
-      }
-  
+.box .center {
+  stroke-dasharray: 3,3;
+}
+.box .outlier {
+  fill: #4682B4;
+  stroke: #000;
+  r: 2;
+}
 .box .toechangedir{
   fill: #4682B4;
   stroke: #000;
@@ -519,13 +505,11 @@ stroke-width: 2px;
         stroke: #000;
         shape-rendering: crispEdges;
       }
-       
       .x.axis path { 
         fill: none;
         stroke: #000;
         shape-rendering: crispEdges;
       }
-
       #boxplot-chart-header {
         position: absolute;
         top: 395px;
@@ -534,25 +518,22 @@ stroke-width: 2px;
         font-weight: normal;
         color: black;
       }
-
       svg, g, rect, line, circle, text {
         transform-origin: -10px -5px -5px;
       }
-
 	/*show or hide y axis labels and ticks*/
-      .x g.tick, .x g text, .x g line {
-        display: none;
-      }
-
-      .x g.tick text {
-        display: none;
-        -webkit-transform: rotate(-90deg);
-      -moz-transform: rotate(-90deg);
-      -ms-transform: rotate(-90deg);
-      -o-transform: rotate(-90deg);
-      filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
-      }
-      
-  </style>
-
-
+.x g.tick, .x g text, .x g line {
+  display: none;
+}
+.x g.tick text {
+  display: none;
+  -webkit-transform: rotate(-90deg);
+-moz-transform: rotate(-90deg);
+-ms-transform: rotate(-90deg);
+-o-transform: rotate(-90deg);
+filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+}
+#downloadtextanchor{
+  margin:5px;
+}
+</style>
