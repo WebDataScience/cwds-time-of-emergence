@@ -167,16 +167,16 @@ d3.box = function() {
         if (ma50[1] > 0){ 
           // use 'rect's to draw a scaled '+' symbol.        
           g.insert("rect")
-            .style("stroke", colors[i])
-            .style("fill", colors[i])
+            .style("stroke", rectcolors[i])
+            .style("fill", rectcolors[i])
             .attr("height", 2)
             .attr("width",largesymbolsize)
             .attr("x", width / 2 - largesymbolsize/2 )
             .attr("y", x1(ma50[0]) - 1)
             .style("opacity", 1);          
           g.insert("rect")
-            .style("stroke", colors[i])
-            .style("fill", colors[i])
+            .style("stroke", rectcolors[i])
+            .style("fill", rectcolors[i])
             .attr("height", largesymbolsize)
             .attr("width",2)
             .attr("x", width / 2 - 1 )
@@ -186,7 +186,7 @@ d3.box = function() {
           // draw a circle.
           g.insert("circle", "text")
             .attr("r", largesymbolsize/2)
-            .style("stroke", colors[i])
+            .style("stroke", rectcolors[i])
             .style("fill", "none")
             .attr("cx", width / 2)
             .attr("cy", x1(ma50[0]))
@@ -201,16 +201,16 @@ d3.box = function() {
         if(toeandchangedir[dotcount].dir > 0 ){
           // draw a '+' symbol if changedir > 0
           g.insert("rect")
-            .style("stroke", colors[i])
-            .style("fill", colors[i])
+            .style("stroke", rectcolors[i])
+            .style("fill", rectcolors[i])
             .attr("height", smallsymbolsize)
             .attr("width",1)
             .attr("x", width / 2 - .5 )
             .attr("y", x1(toeandchangedir[dotcount].toe) - smallsymbolsize/2)
             .style("opacity", 1);
           g.insert("rect")
-            .style("stroke", colors[i])
-            .style("fill", colors[i])
+            .style("stroke", rectcolors[i])
+            .style("fill", rectcolors[i])
             .attr("height", 1)
             .attr("width",smallsymbolsize)
             .attr("x", width / 2 - smallsymbolsize/2 )
@@ -220,7 +220,7 @@ d3.box = function() {
           // draw a circle.
           g.insert("circle", "text")
             .attr("r", smallsymbolsize/2)
-            .style("stroke", colors[i])
+            .style("stroke", rectcolors[i])
             .style("fill", "none")
             .attr("cx", width / 2)
             .attr("cy", x1(toeandchangedir[dotcount].toe))
