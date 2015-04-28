@@ -13,7 +13,6 @@
     $comparearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
     $variableid = $comparearray['variableid']
     
-    
   ?>
 
 <?php
@@ -30,25 +29,6 @@
       Climate dataset: <span id="dataset">N/A</span>
     </span>
   </h1>
-  <!--
-  <div id="boxplot-key">
-    <div id="key-table">
-      <div id="key-table-swatch">&nbsp;</div>
-      <div id="key-table-text">Rate of Climate Change</div>
-    </div>
-    <div id="lowerbound-key">
-      <div id="lowerbound-key-swatch"></div>
-      <div id="lowerbound-key-text">Fast</div>
-    </div>
-    <div id="central-key">
-      <div id="central-key-swatch"></div>
-      <div id="central-key-text">Moderate</div>
-    </div>
-    <div id="upperbound-key">
-      <div id="upperbound-key-swatch"></div>
-      <div id="upperbound-key-text">Slow</div>
-    </div>
-  </div>-->
   
   <div id="boxplot-key">
     <table>
@@ -258,13 +238,13 @@ function wrap(text, width) {
       lineHeight = 1.5, // ems
       y = text.attr("y"),
       dx = parseFloat(text.attr("dx")),
-	dy = parseFloat(text.attr("dy")),
-        tspan = text.text(null)
-	      .append("tspan")
-	      .attr("x", -100)
-	      .attr("y", y)
-	      .attr("dx", dx + "em")
-	      .attr("dy", dy + "em");
+	  dy = parseFloat(text.attr("dy")),
+      tspan = text.text(null)
+	    .append("tspan")
+	    .attr("x", -100)
+	    .attr("y", y)
+	    .attr("dx", dx + "em")
+	    .attr("dy", dy + "em");
     while (word = words.pop()) {
       line.push(word);
       tspan.text(line.join(" "));
