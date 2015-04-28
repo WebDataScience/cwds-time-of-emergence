@@ -31,6 +31,7 @@
   </h1>
   
   <div id="boxplot-key">
+  <!--
     <table>
       <tr>
         <td><span id="key-table-text">Rate of Climate Change&nbsp;&nbsp;&nbsp;&nbsp;</div></td>
@@ -56,6 +57,29 @@
         <td><span class="largesymbolplus">+</span> Ensemble median, emergence in the positive (increasing) direction</td>
       </tr>
     </table>
+    -->
+    <div class="legend">
+      <div class="legend-left">
+        <div id="key-table-text">Rate of Climate Change</div>
+        <div id="lowerbound-key">
+          <span class="key-text"><span class="swatch" id="lowerbound-key-swatch"></span>Fast</span>
+        </div>      
+        <div id="central-key">
+          <span class="key-text"><span class="swatch" id="central-key-swatch"></span>Moderate</span>
+        </div>
+        <div id="upperbound-key">
+          <span class="key-text"><span class="swatch" id="upperbound-key-swatch"></span>Slow</span>
+        </div>
+      </div>
+      <div class="legend-right">
+        <div class="symbol-title">Time of Emergence</div>
+        <div class="symbol"><span class="smallsymbol">O</span> Model, emergence in the negative (decreasing) direction</div>
+        <div class="symbol"><span class="largesymbol">O</span> Ensemble median, emergence in the negative (decreasing) direction</div>
+        <div class="symbol"><span class="smallsymbolplus">+</span> Model, emergence in the positive (increasing) direction</div>
+        <div class="symbol"><span class="largesymbolplus">+</span> Ensemble median, emergence in the positive (increasing) direction</div>
+      </div>
+    </div>
+      
   </div>
   
   <div id="top-loading"></div>
@@ -325,79 +349,75 @@ h2 {
   padding: 0;
   margin: 0;
 }
-      #top-x-title {
-	padding-top: 25px;
-        text-align: center;
-        color: black;
-      }
-      #top-y-title {
-        color: black;
-        position: absolute;
-        top: 600px;
-        left: 60px;
-        z-index: 1000;
-        -webkit-transform: rotate(-90deg);
-        -moz-transform: rotate(-90deg);
-        -o-transform: rotate(-90deg);
-        -ms-transform: rotate(-90deg);
-        transform: rotate(-90deg);
-      }
+    #top-x-title {
+padding-top: 25px;
+      text-align: center;
+      color: black;
+    }
+    #top-y-title {
+      color: black;
+      position: absolute;
+      top: 600px;
+      left: 60px;
+      z-index: 1000;
+      -webkit-transform: rotate(-90deg);
+      -moz-transform: rotate(-90deg);
+      -o-transform: rotate(-90deg);
+      -ms-transform: rotate(-90deg);
+      transform: rotate(-90deg);
+    }
 #boxplot-key{
   margin-left: auto;
   margin-right: auto;
   margin-top: 10px;
   margin-bottom: 50px;
+  border: 1px solid black;
+  width: 800px;  
 }
-#boxplot-key table {
-  margin-left: auto;
-  margin-right: auto;
-  background: none repeat scroll 0 0 white;
-  border: 1px solid black; 
-  table-layout: auto;
-  width: auto;
-}
-#boxplot-key table tr.even, table tr.alt, table tr:nth-of-type(2n) {
-  background: none;
-}
-#boxplot-key table td{
-  height: 40px;
+div.legend{
+  padding: 15px 15px 25px;
 }
 .key-text{
-  float: left;
   margin-top: 8px;
 }
-#key-table, #lowerbound-key, #central-key, #upperbound-key {
-  float: left;
+#key-table, #upperbound-key, #central-key{
   margin-right: 30px;
+  margin-top: 13px;
+}
+#lowerbound-key{
+  margin-top: 3px;
 }
 #key-table-swatch{
   height: 15px;
   width: 15px;
-  margin: 10px;
+  margin: 12px 10px 0;
+}
+.swatch{
+  display:inline-block;
+  height: 15px;
+  width: 15px;
+  margin: 10px 12px 0;
+  border: 1px solid black;
 }
 #lowerbound-key-swatch{
-  height: 15px;
-  width: 15px;
-  border: 1px solid black;
   background-color: #a92a55;
-  float: left;
-  margin: 10px;
 }
 #central-key-swatch {
-  height: 15px;
-  width: 15px;
-  border: 1px solid black;
   background-color: #01939a;
-  float: left;
-  margin: 10px;
 }
 #upperbound-key-swatch {
-  height: 15px;
-  width: 15px;
-  border: 1px solid black;
   background-color: #ff6400;
-  float: left;
-  margin: 10px;
+}
+.legend-left{
+  float:left;
+  margin-right: 40px;
+}
+.symbol-title{
+  margin-bottom: 10px;
+}
+.symbol{
+  height: 18px;
+  margin-top: 8px;
 }
 .smallsymbol{
   font-size: 14px;
