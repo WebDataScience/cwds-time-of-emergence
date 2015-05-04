@@ -1,3 +1,4 @@
+
 <?php
     # Template for basic page displaying boxplots
     $path = drupal_get_path('module', 'toeboxplot');
