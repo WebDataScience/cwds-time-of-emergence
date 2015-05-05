@@ -865,19 +865,17 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
   $jasondata['variablename'] = substr($row->variablename, 0, 70);
   $jasondata['theme'] = $row->theme;
   $boxplotdata = array();
+  $datasets = array();
   
-  // Dataset predicated on 'theme' of variable.
+  // Datasets queried predicated on 'theme' of variable.
   if($jasondata['theme'] == 'Air temperature' || $jasondata['theme'] == 'Precipitation'){
     $themequery = " AND " . $maindatatable . ".DATASET = 'BCSD5'";
-    $jasondata['dataname'] = 'BCSD5';
   }
   if($jasondata['theme'] == 'Hydrologic' ){
     $themequery = " AND ". $maindatatable . ".DATASET = 'BCSD3'";
-    $jasondata['dataname'] = 'BCSD3';
   }
   if($jasondata['theme'] == 'Streamflow' ){
     $themequery = " AND (". $maindatatable . ".DATASET = 'BCSD3' OR ". $maindatatable . ".DATASET = 'BCSD5') ";
-    $jasondata['dataname'] = 'BCSD3 AND BCSD5';
   }
   
   // Query for TOE values.
@@ -888,16 +886,14 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
         $box = array('25' => 0, '50' => 0, '75' => 0);
         $toema50 = array();
         $toeandchangedir = array();
-        
+
         $query="select * from " . $maindatatable . " WHERE variableid='" . $variable . "' and emergthres=" . $emergencethreshold . " and signalconfidence=" . $signalconfidence . " AND REGION = '" . $_SESSION['compare']['region'] . "'";
-        
         if($emissionscenario == "high"){
           $query .= " AND (". $maindatatable.".EMISSCENARIO = 'rcp85' OR " . $maindatatable.".EMISSCENARIO = 'a1b') ";
         }
         if($emissionscenario == "low"){
           $query .= " AND (". $maindatatable.".EMISSCENARIO = 'rcp45' OR " . $maindatatable.".EMISSCENARIO = 'b1') ";
         }
-        
         $query .= $themequery;
         
         $result = db_query($query);
@@ -916,6 +912,7 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
           if($record->MODELAGREEMENT == "50"){
             $toema50 = array('toe' => $record->TOE, 'dir' => $record->CHANGEDIR);
           }
+          $datasets[$record->DATASET] = $record->DATASET;
         }
         
         $oneboxarray = array(0,0,0);
@@ -933,6 +930,10 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
       }
     }
   }
+  
+  // Convert array of datasets into user appropriate text string.
+  $jasondata['dataname'] = implode(" AND ", $datasets);
+  
   $jasondata = array_merge( $jasondata,$boxplotdata);
   db_set_active();
 
@@ -957,9 +958,7 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
               if($boxordotskey == 'box'){
                 $boxdata = implode(',',$boxordots);
               }
-              //if($boxordotskey == 'dots'){
-              //  $dotsdata = implode(',',$boxordots);
-              //}
+              //if($boxordotskey == 'dots'){ $dotsdata = implode(',',$boxordots); }
               if($boxordotskey == 'toeandchangedir'){
                 foreach($boxordots as $key=>$value){
                  $toeandchangedirdata .= "toe:" . $value['toe'] . ",dir:" . $value['dir'] . "," ;

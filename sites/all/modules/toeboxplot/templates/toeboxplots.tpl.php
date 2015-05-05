@@ -31,33 +31,6 @@
   </h1>
   
   <div id="boxplot-key">
-  <!--
-    <table>
-      <tr>
-        <td><span id="key-table-text">Rate of Climate Change&nbsp;&nbsp;&nbsp;&nbsp;</div></td>
-        <td><span class="smallsymbol">O</span> Model, emergence in the negative (decreasing) direction</td>
-      </tr>
-      <tr>
-        <td><div id="lowerbound-key">
-        <span id="lowerbound-key-swatch"></span>
-        <span class="key-text">Fast</span>
-        </div></td>
-        <td><span class="largesymbol">O</span> Ensemble median, emergence in the negative (decreasing) direction</td>
-      </tr>
-      <tr>
-        <td><div id="central-key">
-        <span id="central-key-swatch"></span>
-        <span class="key-text">Moderate</span>
-        </div></td>
-        <td><span class="smallsymbolplus">+</span> Model, emergence in the positive (increasing) direction</td>
-      </tr>
-      <tr>
-        <td><div id="upperbound-key"><span id="upperbound-key-swatch"></span>
-          <span class="key-text">Slow</span></div></td>
-        <td><span class="largesymbolplus">+</span> Ensemble median, emergence in the positive (increasing) direction</td>
-      </tr>
-    </table>
-    -->
     <div class="legend">
       <div class="legend-left">
         <div id="key-table-text">Rate of Climate Change</div>
@@ -128,21 +101,16 @@ jQuery( document ).ready(function( $ ) {
     
   var variableid = location.pathname.match(/.*\/(V.*)/)[1];
   var url = baseurl + "/boxplotdata/" + variableid;
-  //$("#downloadtextanchor").prop(url + "/text");
   
   $.post( url, function( jsonobj ) {  
-    
     $("#variablename").html(jsonobj.variablename);
     $("#location").html(jsonobj.regionname);
     $("#dataset").html(jsonobj.dataname);
-
     drawBoxplot("chart-area-3", "High Emissions (RCP 8.5 or A1B)",parse4data(jsonobj.emergencethreshold80.emissionscenariohigh),"Past Sensitivity High (to extreme 40% of 1950-1999 conditions)");
     drawBoxplot("chart-area-4", "Low Emissions (RCP 4.5 or B1)", parse4data(jsonobj.emergencethreshold80.emissionscenariolow),"");     
     drawBoxplot("chart-area-1", "High Emissions (RCP 8.5 or A1B)", parse4data(jsonobj.emergencethreshold95.emissionscenariohigh),"Past Sensitivity Low (to extreme 10% of 1950-1999 conditions)");
     drawBoxplot("chart-area-2", "Low Emissions (RCP 4.5 or B1)", parse4data(jsonobj.emergencethreshold95.emissionscenariolow),"");
-   
     loadingGif.html("");
-   
   });
   
 
@@ -496,9 +464,9 @@ stroke-width: 2px;
   stroke: #000;
   font: 32px sans-serif;
 }
-      .axis {
-        font: 12px sans-serif;
-      }      
+.axis {
+  font: 12px sans-serif;
+}      
       .axis path,
       .axis line {
         fill: none;
