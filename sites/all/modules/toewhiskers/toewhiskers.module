@@ -851,7 +851,7 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
     $jasondata['variable'] = check_plain($variable);
   } 
   $jasondata['regionname'] = $_SESSION['compare']['regionname'];
-  $emergencethreshold_array = array('95','80');
+  $emergencethreshold_array = array('80','95');
   $emissionscenario_array = array('high','low');
   $signalconfidence_array = array('95','50','5');
   
@@ -859,25 +859,23 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
   db_set_active('cig_toe');
   
   // Query for variable name and theme.
-  $query = "SELECT variablename,theme FROM " . $lookupdatatable . " where variableid='" . $variable . "' LIMIT 1";
-  //drupal_set_message('comparearray:<pre>'. $query .'</pre>');
+  $query = "SELECT variablename,VARIABLESHORTNAME,theme FROM " . $lookupdatatable . " where variableid='" . $variable . "' LIMIT 1";
   $row = (object)db_query($query)->fetchAssoc();
   $jasondata['variablename'] = substr($row->variablename, 0, 70);
+  $jasondata['variableshortname'] = toewhiskers_utfencode($row->VARIABLESHORTNAME);
   $jasondata['theme'] = $row->theme;
   $boxplotdata = array();
+  $datasets = array();
   
-  // Dataset predicated on 'theme' of variable.
+  // Datasets queried predicated on 'theme' of variable.
   if($jasondata['theme'] == 'Air temperature' || $jasondata['theme'] == 'Precipitation'){
     $themequery = " AND " . $maindatatable . ".DATASET = 'BCSD5'";
-    $jasondata['dataname'] = 'BCSD5';
   }
   if($jasondata['theme'] == 'Hydrologic' ){
     $themequery = " AND ". $maindatatable . ".DATASET = 'BCSD3'";
-    $jasondata['dataname'] = 'BCSD3';
   }
   if($jasondata['theme'] == 'Streamflow' ){
     $themequery = " AND (". $maindatatable . ".DATASET = 'BCSD3' OR ". $maindatatable . ".DATASET = 'BCSD5') ";
-    $jasondata['dataname'] = 'BCSD3 AND BCSD5';
   }
   
   // Query for TOE values.
@@ -886,16 +884,16 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
       foreach ($signalconfidence_array as $key=>$signalconfidence){
         $dots = array();
         $box = array('25' => 0, '50' => 0, '75' => 0);
-        
+        $toema50 = array();
+        $toeandchangedir = array();
+
         $query="select * from " . $maindatatable . " WHERE variableid='" . $variable . "' and emergthres=" . $emergencethreshold . " and signalconfidence=" . $signalconfidence . " AND REGION = '" . $_SESSION['compare']['region'] . "'";
-        
         if($emissionscenario == "high"){
           $query .= " AND (". $maindatatable.".EMISSCENARIO = 'rcp85' OR " . $maindatatable.".EMISSCENARIO = 'a1b') ";
         }
         if($emissionscenario == "low"){
           $query .= " AND (". $maindatatable.".EMISSCENARIO = 'rcp45' OR " . $maindatatable.".EMISSCENARIO = 'b1') ";
         }
-        
         $query .= $themequery;
         
         $result = db_query($query);
@@ -903,12 +901,18 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
         foreach ($result as $record) {
           $pos = strpos($record->GCM, 'ensemble');
           if ($pos === false) {
-            if($record->TOE <= 2100){
+            // Exclude dots where TOE is zero or after year 2100.
+            if($record->TOE <= 2100 && $record->TOE > 0){
               $dots[$record->GCM] = $record->TOE;
+              $toeandchangedir[] = array('toe' => $record->TOE, 'dir' => $record->CHANGEDIR);
             }
           } else {
             $box[$record->MODELAGREEMENT] = $record->TOE;
           }
+          if($record->MODELAGREEMENT == "50"){
+            $toema50 = array('toe' => $record->TOE, 'dir' => $record->CHANGEDIR);
+          }
+          $datasets[$record->DATASET] = $record->DATASET;
         }
         
         $oneboxarray = array(0,0,0);
@@ -918,12 +922,18 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
         $oneboxplot = array(
           "box" => $oneboxarray,
           "dots" => $dots,
+          "toema50" => $toema50,
+          "toeandchangedir" => $toeandchangedir,
           "query" => $query,
         );  
         $boxplotdata['emergencethreshold' . $emergencethreshold]['emissionscenario' . $emissionscenario]['signalconfidence' . $signalconfidence] = $oneboxplot;
       }
     }
   }
+  
+  // Convert array of datasets into user appropriate text string.
+  $jasondata['dataname'] = implode(" AND ", $datasets);
+  
   $jasondata = array_merge( $jasondata,$boxplotdata);
   db_set_active();
 
@@ -934,27 +944,47 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
     if($mode != 'text'){
       drupal_json_output($jasondata);
     } else {
-      $o = "Variable: " . $variable . "\n";
-      $o .="Region: " . $jasondata['regionname'] . "\n";
-      $o .="Dataset: " . $jasondata['dataname'] . "\n\n";
-      $csv = "Tolerance,Emission Scenario,Confidence,GCM_Ensemble TOE(box),Model TOE(dots)\n";
+      $usertextconvert = array(
+        "emissionscenariohigh" => "High", 
+        "emissionscenariolow" => "Low", 
+        "emergencethreshold95" => "Low", 
+        "emergencethreshold80" => "High",
+        "signalconfidence95" => "Fast",
+        "signalconfidence50" => "Moderate",
+        "signalconfidence5" => "Slow",
+      );
+      $o = '"Variable: ' . $jasondata['variablename'] . '"' . "\n";
+      $o .= "Variable ID: " . $jasondata['variableshortname'] . "\n";
+      $o .= "Variable number: " . $variable . "\n";
+      $o .= "Region: " . $jasondata['regionname'] . "\n";
+      $o .= "Dataset: " . $jasondata['dataname'] . "\n\n";
+      $o .= "Change direction indicates direction of climate change trend associated with each ToE\n" .
+            "dir: 1 indicates positive trend (increasing values of the variable as a result of climate change)\n" .
+            "dir: -1 indicates negative trend (decreasing values of the variable as a result of climate change)\n\n";
+      $csv = "Management Sensitivity,Emission Scenario,Estimated Rate,ToE - median and Change Direction,ToE and Change Direction\n";
       foreach($boxplotdata as $emergencekey=>$emergence){
         foreach($emergence as $emissionkey=>$emission){
           foreach($emission as $signalconfidencekey=>$signalconfidence){
             $boxdata = "";
             $dotsdata = "";
+            $toeandchangedirdata = "";
             foreach($signalconfidence as $boxordotskey=>$boxordots){
               if($boxordotskey == 'box'){
                 $boxdata = implode(',',$boxordots);
               }
-              if($boxordotskey == 'dots'){
-                $dotsdata = implode(',',$boxordots);
+              if($boxordotskey == 'toema50'){
+                $toema50 = "toe:" . $boxordots['toe'] . ",dir:" . $boxordots['dir'];
+              }
+              //if($boxordotskey == 'dots'){ $dotsdata = implode(',',$boxordots); }
+              if($boxordotskey == 'toeandchangedir'){
+                foreach($boxordots as $key=>$value){
+                 $toeandchangedirdata .= "toe:" . $value['toe'] . ",dir:" . $value['dir'] . "," ;
+                }
               }
             }
-            $csv .= $emergencekey . "," . $emissionkey . "," . $signalconfidencekey. ",\"" . $boxdata ."\",\"" . $dotsdata . "\"\n";
+            $csv .= $usertextconvert[$emergencekey] . "," . $usertextconvert[$emissionkey] . "," . $usertextconvert[$signalconfidencekey] . ",\"" . $toema50 ."\",\"" . rtrim($toeandchangedirdata,",") . "\"\n";
       } } } 
       $o .= $csv;
-    
       drupal_add_http_header('Content-Type', 'text/csv; utf-8');
       drupal_add_http_header('Content-Disposition', 'attachment; filename = dataexport.csv');
       print($o);
