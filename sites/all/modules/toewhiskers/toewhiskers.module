@@ -731,8 +731,9 @@ function toewhiskers_json_query_function(){
   $variable_object = new stdClass();
   
   // Query for 'table' portion of /timeline page.
-  $query = "SELECT ". $maindatatable.".*," . $lookupdatatable
-  . ".VARIABLESHORTNAME, GROUP_CONCAT(" . $maindatatable . ".toe order by " . $maindatatable . ".modelagreement SEPARATOR ', ') as TOERange
+  $query = "SELECT ". $maindatatable.".*," . $lookupdatatable . ".VARIABLESHORTNAME, 
+  GROUP_CONCAT(" . $maindatatable . ".toe order by " . $maindatatable . ".modelagreement SEPARATOR ', ') as TOERange,
+  GROUP_CONCAT(" . $maindatatable . ".changedir order by " . $maindatatable . ".modelagreement SEPARATOR ', ') as DIRRange
   FROM {". $maindatatable."}  LEFT JOIN {"
   . $lookupdatatable . "} on (" . $lookupdatatable . ".VARIABLEID = ". $maindatatable.".VARIABLEID) WHERE
   ". $maindatatable.".VARIABLEID in ('" . $variables . "') 
@@ -769,16 +770,28 @@ function toewhiskers_json_query_function(){
       $toe_array[$record->VARIABLEID]->YEARA = ($year[0] == 0? "Unknown":round($year[0]/5)*5);
       $toe_array[$record->VARIABLEID]->YEARB = ($year[1] == 0? "Unknown":round($year[1]/5)*5);
     }
+
     if($record->GCM == 'GCM_ensemble_25'){
       $toe_array[$record->VARIABLEID]->YEARA = $toe;
     }
     if($record->GCM == 'GCM_ensemble_75'){
       $toe_array[$record->VARIABLEID]->YEARB = $toe;
     }
-    $toe_array[$record->VARIABLEID]->CHANGEDIR = $record->CHANGEDIR;
-    if($record->CHANGEDIR == -1){$toe_array[$record->VARIABLEID]->CHANGEDIRTEXT = "Decreasing";}
-    if($record->CHANGEDIR == 0) {$toe_array[$record->VARIABLEID]->CHANGEDIRTEXT = "Indeterminate";}
-    if($record->CHANGEDIR == 1) {$toe_array[$record->VARIABLEID]->CHANGEDIRTEXT = "Increasing";}
+    
+    // Find first non zero CHANGEDIR if available. 
+    $changedir = 0;
+    $changedirrange = explode(',', $record->DIRRange);
+    foreach($changedirrange as $dir) {
+      if($dir != 0){
+        $changedir = $dir;
+        break;        
+      }
+    }
+    //$toe_array[$record->VARIABLEID]->CHANGEDIR = $record->CHANGEDIR;
+    if($changedir == -1){$toe_array[$record->VARIABLEID]->CHANGEDIRTEXT = "Decreasing";}
+    if($changedir == 0) {$toe_array[$record->VARIABLEID]->CHANGEDIRTEXT = "Indeterminate";}
+    if($changedir == 1) {$toe_array[$record->VARIABLEID]->CHANGEDIRTEXT = "Increasing";}
+    
     $toe_array[$record->VARIABLEID]->DATASET = $record->DATASET;
   }  // End tabledata query.
  
@@ -1158,12 +1171,12 @@ function toewhiskers_exporttimelinedata_function(){
   
   // Create code to text translations for data export.
   $prettynames['emission'] = array(
-    'rcp45'	=>	'RCP4.5',
-    'rcp85'	=>	'RCP8.5',
+    'rcp45'	=> 'RCP4.5',
+    'rcp85'	=> 'RCP8.5',
     'A1B'	=>	'SRES A1B',
     'B1'	=>	'SRES B1',
     'low'	=>	'Low (RCP4.5 or B1)',
-    'high'	=>	'High (RCP8.5 or A1B)',
+    'high' =>	'High (RCP8.5 or A1B)',
   );
   $prettynames['confidence'] = array(
     '5'	=>	'Slow',
@@ -1191,6 +1204,5 @@ Estimated Rate of Climate Change: " . $prettynames['confidence'][$confidence] . 
     drupal_add_http_header('Content-Disposition', 'attachment; filename = dataexport.csv');
     print($o);
   }
-    
 
 }
