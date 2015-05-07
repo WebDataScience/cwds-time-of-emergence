@@ -1,20 +1,15 @@
-
 <?php
-    # Template for basic page displaying boxplots
-    $path = drupal_get_path('module', 'toeboxplot');
-    
-    drupal_add_js($path . '/js/canvg.js');
-    drupal_add_js($path . '/js/rgbcolor.js');
-    drupal_add_js($path . '/js/StackBlur.js');
-    drupal_add_js($path . '/js/boxplots.js');
-    drupal_add_css($path . '/cs/boxplot.css');
-    
-    drupal_set_title("All Results");
-    
-    $comparearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
-    $variableid = $comparearray['variableid']
-    
-  ?>
+  /* Template for basic page displaying boxplots */
+  $path = drupal_get_path('module', 'toeboxplot');
+  drupal_add_js($path . '/js/canvg.js');
+  drupal_add_js($path . '/js/rgbcolor.js');
+  drupal_add_js($path . '/js/StackBlur.js');
+  drupal_add_js($path . '/js/boxplots.js');
+  drupal_add_css($path . '/cs/boxplot.css');
+  drupal_set_title("All Results");
+  $comparearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
+  $variableid = $comparearray['variableid']
+?>
 
 <?php
   print($fourpanelintro);
@@ -146,7 +141,7 @@ jQuery( document ).ready(function( $ ) {
     
     //x-axis
     var x = d3.scale.ordinal()     
-      .domain( data.map(function(d) { console.log(d); return d[0] } ) )     
+      .domain( data.map(function(d) { return d[0] } ) )     
       .rangeRoundBands([0 , width], 0.7, 0.3);    
     var xAxis = d3.svg.axis()
       .scale(x)

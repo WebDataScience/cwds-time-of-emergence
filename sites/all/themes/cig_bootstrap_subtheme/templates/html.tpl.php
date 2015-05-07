@@ -47,7 +47,6 @@
   "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
 <html lang="<?php print $language->language; ?>" dir="<?php print $language->dir; ?>"<?php print $rdf_namespaces;?>>
 <head profile="<?php print $grddl_profile; ?>">
-  <meta http-equiv="X-UA-Compatible" content="IE=11; IE=10; IE=9; IE=8; IE=7; IE=EDGE" />
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <?php print $head; ?>
@@ -58,8 +57,6 @@
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
   <?php print $scripts; ?>
-
-
 <!--	<script src="http://www.washington.edu/static/alert.js" type="text/javascript"></script>
     -->    
         <link rel="icon" href="sites/all/themes/cig_bootstrap_subtheme/assets/img/icons/favicon.ico" type="image/x-icon">
@@ -71,7 +68,6 @@
         <link rel="stylesheet" href="<?php print base_path() . path_to_theme();?>/assets/foundation-icons/foundation-icons.css">
         <script type='text/javascript' src='<?php print base_path() . path_to_theme();?>/js/modernizr/modernizr.min.js?ver=1.0.0'></script>
         <script type='text/javascript' src='<?php print base_path() . path_to_theme();?>/js/jquery/dist/jquery.min.js?ver=1.0.0'></script>
-
 
 </head>
 <!-- <body class="<?php print $classes; ?>" <?php print $attributes;?>> -->
