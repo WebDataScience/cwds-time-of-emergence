@@ -662,7 +662,6 @@ function toewhiskers_json_query_function(){
   global $lookupdatatable;
   
   $max_TOE_year = 2100;
-  $verbose_test_mode = TRUE;
   $compare = $_SESSION['compare'];
   // Multiple variables allowed.
   $variables = implode("','",$compare['variable']);
@@ -727,21 +726,21 @@ function toewhiskers_json_query_function(){
   );
   $csv = implode(",", array_values($csvvariables)) . "\n";
   
+   
   $toe_array =  array();
   $variable_object = new stdClass();
+  $toe = "Beyond " . $max_TOE_year;
   
   // Query for 'table' portion of /timeline page.
-  $query = "SELECT ". $maindatatable.".*," . $lookupdatatable . ".VARIABLESHORTNAME, 
-  GROUP_CONCAT(" . $maindatatable . ".toe order by " . $maindatatable . ".modelagreement SEPARATOR ', ') as TOERange,
-  GROUP_CONCAT(" . $maindatatable . ".changedir order by " . $maindatatable . ".modelagreement SEPARATOR ', ') as DIRRange
+  $query = "SELECT ". $maindatatable.".*," . $lookupdatatable . ".VARIABLESHORTNAME 
   FROM {". $maindatatable."}  LEFT JOIN {"
   . $lookupdatatable . "} on (" . $lookupdatatable . ".VARIABLEID = ". $maindatatable.".VARIABLEID) WHERE
   ". $maindatatable.".VARIABLEID in ('" . $variables . "') 
-  AND ". $maindatatable.".REGION = '" . $region .   "' 
-  AND ". $maindatatable.".EMERGTHRES = " . $tolerance . "
-  AND ". $maindatatable.".SIGNALCONFIDENCE = " . $confidence . "
-  AND (" .$maindatatable.".MODELAGREEMENT = '25' or " .$maindatatable.".MODELAGREEMENT = '75') 
-  AND (". $maindatatable.".GCM = 'GCM_ensemble_25' OR ". $maindatatable.".GCM = 'GCM_ensemble' OR ". $maindatatable.".GCM = 'GCM_ensemble_75' ) ";
+  AND " . $maindatatable.".REGION = '" . $region .   "' 
+  AND " . $maindatatable.".EMERGTHRES = " . $tolerance . "
+  AND " . $maindatatable.".SIGNALCONFIDENCE = " . $confidence . "
+  AND (" . $maindatatable.".MODELAGREEMENT = '25' or " .$maindatatable.".MODELAGREEMENT = '50' or " .$maindatatable.".MODELAGREEMENT = '75') 
+  AND (" . $maindatatable.".GCM = 'GCM_ensemble_25' OR ". $maindatatable.".GCM = 'GCM_ensemble' OR ". $maindatatable.".GCM = 'GCM_ensemble_75' ) ";
   if($compare['emission'] == "high"){
     $query .= "AND (". $maindatatable.".EMISSCENARIO = 'rcp85' OR " . $maindatatable.".EMISSCENARIO = 'a1b') ";
   }
@@ -751,48 +750,43 @@ function toewhiskers_json_query_function(){
   $query .= "  AND (   ( ( " . $lookupdatatable . ".THEME = 'Air temperature' OR " . $lookupdatatable . ".THEME = 'Precipitation' ) AND ". $maindatatable.".DATASET = 'BCSD5')   
   OR   (" . $lookupdatatable . ".THEME = 'Hydrologic' AND ". $maindatatable.".DATASET = 'BCSD3')   
   OR   (" . $lookupdatatable . ".THEME = 'Streamflow' AND (". $maindatatable.".DATASET = 'BCSD3'  OR ". $maindatatable.".DATASET = 'BCSD5') )  ) ";
-  $query .= " GROUP BY ". $maindatatable.".VARIABLEID ";
+    
   $result = db_query($query);
   
   // Result is returned as a iterable object that returns a stdClass object on each iteration
   foreach ($result as $record) {
+    // On first iteration of loop create object.
     if(!isset($toe_array[$record->VARIABLEID])){
       $toe_array[$record->VARIABLEID] = new stdClass();
+      $toe_array[$record->VARIABLEID]->VARIABLESHORTNAME = toewhiskers_utfencode($record->VARIABLESHORTNAME);
+      $toe_array[$record->VARIABLEID]->CHANGEDIRTEXT = "Indeterminate";
+      //$toe_array[$record->VARIABLEID]->DATASET = $record->DATASET;
     }
-    $toe_array[$record->VARIABLEID]->VARIABLESHORTNAME = toewhiskers_utfencode($record->VARIABLESHORTNAME);
-    $toe = "Beyond " . $max_TOE_year;
+    // Create rounded TOE value.
+    $toe = 0;
     if ($record->TOE <= $max_TOE_year){
       $toe = round($record->TOE/5)*5;
-    }
-    $year = explode(',', $record->TOERange);
+    } 
+    // Assign TOE year ranges differently for different models.
     if($record->GCM == 'GCM_ensemble'){
-      $toe_array[$record->VARIABLEID]->TOE = $toe;
-      $toe_array[$record->VARIABLEID]->YEARA = ($year[0] == 0? "Unknown":round($year[0]/5)*5);
-      $toe_array[$record->VARIABLEID]->YEARB = ($year[1] == 0? "Unknown":round($year[1]/5)*5);
+      if($record->MODELAGREEMENT == "25"){
+        $toe_array[$record->VARIABLEID]->YEARA = ($toe == 0? "Unknown":$toe);
+      }
+      if($record->MODELAGREEMENT == "75"){
+        $toe_array[$record->VARIABLEID]->YEARB = ($toe == 0? "Unknown":$toe);
+      }
     }
-
     if($record->GCM == 'GCM_ensemble_25'){
       $toe_array[$record->VARIABLEID]->YEARA = $toe;
     }
     if($record->GCM == 'GCM_ensemble_75'){
       $toe_array[$record->VARIABLEID]->YEARB = $toe;
     }
-    
-    // Find first non zero CHANGEDIR if available. 
-    $changedir = 0;
-    $changedirrange = explode(',', $record->DIRRange);
-    foreach($changedirrange as $dir) {
-      if($dir != 0){
-        $changedir = $dir;
-        break;        
-      }
+    // CHANGEDIR for table is always at MODELAGREEMENT50
+    if($record->MODELAGREEMENT == "50"){
+      if($record->CHANGEDIR == "-1"){$toe_array[$record->VARIABLEID]->CHANGEDIRTEXT = "Decreasing";}
+      if($record->CHANGEDIR == "1") {$toe_array[$record->VARIABLEID]->CHANGEDIRTEXT = "Increasing";}
     }
-    //$toe_array[$record->VARIABLEID]->CHANGEDIR = $record->CHANGEDIR;
-    if($changedir == -1){$toe_array[$record->VARIABLEID]->CHANGEDIRTEXT = "Decreasing";}
-    if($changedir == 0) {$toe_array[$record->VARIABLEID]->CHANGEDIRTEXT = "Indeterminate";}
-    if($changedir == 1) {$toe_array[$record->VARIABLEID]->CHANGEDIRTEXT = "Increasing";}
-    
-    $toe_array[$record->VARIABLEID]->DATASET = $record->DATASET;
   }  // End tabledata query.
  
   $tablequery = $query;
@@ -853,8 +847,7 @@ function toewhiskers_timeline_query($val){
  * Ajax/JSON data retriever.
  * This function returns data for the boxplot page.
  */
-function toewhiskers_json_query_boxplot_function($variable,$mode){
-  $verbose_test_mode = FALSE;
+function toewhiskers_json_query_boxplot_function($variable, $mode = "json"){
   global $maindatatable;
   global $lookupdatatable;
   $compare = $_SESSION['compare'];
@@ -914,8 +907,8 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
         foreach ($result as $record) {
           $pos = strpos($record->GCM, 'ensemble');
           if ($pos === false) {
-            // Exclude dots where TOE is zero or after year 2100.
-            if($record->TOE <= 2100 && $record->TOE > 0){
+            // Exclude dots where TOE is zero.
+            if($record->TOE > 0){
               $dots[$record->GCM] = $record->TOE;
               $toeandchangedir[] = array('toe' => $record->TOE, 'dir' => $record->CHANGEDIR);
             }
@@ -923,7 +916,9 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
             $box[$record->MODELAGREEMENT] = $record->TOE;
           }
           if($record->MODELAGREEMENT == "50"){
-            $toema50 = array('toe' => $record->TOE, 'dir' => $record->CHANGEDIR);
+            if($record->TOE > 0){
+              $toema50 = array('toe' => $record->TOE, 'dir' => $record->CHANGEDIR);
+            }
           }
           $datasets[$record->DATASET] = $record->DATASET;
         }
@@ -950,58 +945,54 @@ function toewhiskers_json_query_boxplot_function($variable,$mode){
   $jasondata = array_merge( $jasondata,$boxplotdata);
   db_set_active();
 
-  if($verbose_test_mode){ 
-    drupal_json_output(print_r($jasondata));
-  }
-  else{
-    if($mode != 'text'){
-      drupal_json_output($jasondata);
-    } else {
-      $usertextconvert = array(
-        "emissionscenariohigh" => "High", 
-        "emissionscenariolow" => "Low", 
-        "emergencethreshold95" => "Low", 
-        "emergencethreshold80" => "High",
-        "signalconfidence95" => "Fast",
-        "signalconfidence50" => "Moderate",
-        "signalconfidence5" => "Slow",
-      );
-      $o = '"Variable: ' . $jasondata['variablename'] . '"' . "\n";
-      $o .= "Variable ID: " . $jasondata['variableshortname'] . "\n";
-      $o .= "Variable number: " . $variable . "\n";
-      $o .= "Region: " . $jasondata['regionname'] . "\n";
-      $o .= "Dataset: " . $jasondata['dataname'] . "\n\n";
-      $o .= "Change direction indicates direction of climate change trend associated with each ToE\n" .
-            "dir: 1 indicates positive trend (increasing values of the variable as a result of climate change)\n" .
-            "dir: -1 indicates negative trend (decreasing values of the variable as a result of climate change)\n\n";
-      $csv = "Management Sensitivity,Emission Scenario,Estimated Rate,ToE - median and Change Direction,ToE and Change Direction\n";
-      foreach($boxplotdata as $emergencekey=>$emergence){
-        foreach($emergence as $emissionkey=>$emission){
-          foreach($emission as $signalconfidencekey=>$signalconfidence){
-            $boxdata = "";
-            $dotsdata = "";
-            $toeandchangedirdata = "";
-            foreach($signalconfidence as $boxordotskey=>$boxordots){
-              if($boxordotskey == 'box'){
-                $boxdata = implode(',',$boxordots);
-              }
-              if($boxordotskey == 'toema50'){
-                $toema50 = "toe:" . $boxordots['toe'] . ",dir:" . $boxordots['dir'];
-              }
-              //if($boxordotskey == 'dots'){ $dotsdata = implode(',',$boxordots); }
-              if($boxordotskey == 'toeandchangedir'){
-                foreach($boxordots as $key=>$value){
-                 $toeandchangedirdata .= "toe:" . $value['toe'] . ",dir:" . $value['dir'] . "," ;
-                }
+  if($mode != 'text'){
+    drupal_json_output($jasondata);
+  } else {
+    $usertextconvert = array(
+      "emissionscenariohigh" => "High", 
+      "emissionscenariolow" => "Low", 
+      "emergencethreshold95" => "Low", 
+      "emergencethreshold80" => "High",
+      "signalconfidence95" => "Fast",
+      "signalconfidence50" => "Moderate",
+      "signalconfidence5" => "Slow",
+    );
+    $o = '"Variable: ' . $jasondata['variablename'] . '"' . "\n";
+    $o .= "Variable ID: " . $jasondata['variableshortname'] . "\n";
+    $o .= "Variable number: " . $variable . "\n";
+    $o .= "Region: " . $jasondata['regionname'] . "\n";
+    $o .= "Dataset: " . $jasondata['dataname'] . "\n\n";
+    $o .= "Change direction indicates direction of climate change trend associated with each ToE\n" .
+          "dir: 1 indicates positive trend (increasing values of the variable as a result of climate change)\n" .
+          "dir: -1 indicates negative trend (decreasing values of the variable as a result of climate change)\n\n";
+    $csv = "Management Sensitivity,Emission Scenario,Estimated Rate,ToE - median and Change Direction,ToE and Change Direction\n";
+    foreach($boxplotdata as $emergencekey=>$emergence){
+      foreach($emergence as $emissionkey=>$emission){
+        foreach($emission as $signalconfidencekey=>$signalconfidence){
+          $boxdata = "";
+          $dotsdata = "";
+          $toeandchangedirdata = "";
+          $toema50 = "";
+          if(isset($signalconfidence['toema50']['toe'])){
+            $toema50 = "toe:" . $signalconfidence['toema50']['toe'] . ",dir:" . $signalconfidence['toema50']['dir'];
+          }
+          foreach($signalconfidence as $boxordotskey=>$boxordots){
+            if($boxordotskey == 'box'){
+              $boxdata = implode(',',$boxordots);
+            }
+            if($boxordotskey == 'toeandchangedir'){
+              foreach($boxordots as $key=>$value){
+               $toeandchangedirdata .= "toe:" . $value['toe'] . ",dir:" . $value['dir'] . "," ;
               }
             }
-            $csv .= $usertextconvert[$emergencekey] . "," . $usertextconvert[$emissionkey] . "," . $usertextconvert[$signalconfidencekey] . ",\"" . $toema50 ."\",\"" . rtrim($toeandchangedirdata,",") . "\"\n";
-      } } } 
-      $o .= $csv;
-      drupal_add_http_header('Content-Type', 'text/csv; utf-8');
-      drupal_add_http_header('Content-Disposition', 'attachment; filename = dataexport.csv');
-      print($o);
-    }
+          }
+          $csv .= $usertextconvert[$emergencekey] . "," . $usertextconvert[$emissionkey] . "," . $usertextconvert[$signalconfidencekey] . ",\"" . $toema50 ."\",\"" . rtrim($toeandchangedirdata,",") . "\"\n";
+    } } } 
+    $o .= $csv;
+    drupal_add_http_header('Content-Type', 'text/csv; utf-8');
+    drupal_add_http_header('Content-Disposition', 'attachment; filename = dataexport.csv');
+    print($o);
+    
   }
 }
 

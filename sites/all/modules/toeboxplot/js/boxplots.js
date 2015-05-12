@@ -198,33 +198,35 @@ d3.box = function() {
       // Write toeandchangedir data points.
       for (var dotcount = 0; dotcount < toeandchangedir.length; dotcount++) {
         var smallsymbolsize = 10;
-        if(toeandchangedir[dotcount].dir > 0 ){
-          // draw a '+' symbol if changedir > 0
-          g.insert("rect")
-            .style("stroke", rectcolors[i])
-            .style("fill", rectcolors[i])
-            .attr("height", smallsymbolsize)
-            .attr("width",1)
-            .attr("x", width / 2 - .5 )
-            .attr("y", x1(toeandchangedir[dotcount].toe) - smallsymbolsize/2)
-            .style("opacity", 1);
-          g.insert("rect")
-            .style("stroke", rectcolors[i])
-            .style("fill", rectcolors[i])
-            .attr("height", 1)
-            .attr("width",smallsymbolsize)
-            .attr("x", width / 2 - smallsymbolsize/2 )
-            .attr("y", x1(toeandchangedir[dotcount].toe) - .5)
-            .style("opacity", 1);
-        } else {
-          // draw a circle.
-          g.insert("circle", "text")
-            .attr("r", smallsymbolsize/2)
-            .style("stroke", rectcolors[i])
-            .style("fill", "none")
-            .attr("cx", width / 2)
-            .attr("cy", x1(toeandchangedir[dotcount].toe))
-            .style("opacity", 1); 
+        if(toeandchangedir[dotcount].toe <= 2100){
+          if(toeandchangedir[dotcount].dir > 0 ){
+            // draw a '+' symbol if changedir > 0
+            g.insert("rect")
+              .style("stroke", rectcolors[i])
+              .style("fill", rectcolors[i])
+              .attr("height", smallsymbolsize)
+              .attr("width",1)
+              .attr("x", width / 2 - .5 )
+              .attr("y", x1(toeandchangedir[dotcount].toe) - smallsymbolsize/2)
+              .style("opacity", 1);
+            g.insert("rect")
+              .style("stroke", rectcolors[i])
+              .style("fill", rectcolors[i])
+              .attr("height", 1)
+              .attr("width",smallsymbolsize)
+              .attr("x", width / 2 - smallsymbolsize/2 )
+              .attr("y", x1(toeandchangedir[dotcount].toe) - .5)
+              .style("opacity", 1);
+          } else {
+            // draw a circle.
+            g.insert("circle", "text")
+              .attr("r", smallsymbolsize/2)
+              .style("stroke", rectcolors[i])
+              .style("fill", "none")
+              .attr("cx", width / 2)
+              .attr("cy", x1(toeandchangedir[dotcount].toe))
+              .style("opacity", 1); 
+          }
         }
       }
        
@@ -232,8 +234,7 @@ d3.box = function() {
       // The original 'dots'
       if(displaydots){
         // Update outliers.
-        var outlier = g.selectAll("circle.outlier")
-            .data(outlierIndices, Number);
+        var outlier = g.selectAll("circle.outlier").data(outlierIndices, Number);
         outlier.enter().insert("circle", "text")
           .attr("r", 3)
           .style("stroke", '#000000')
@@ -242,14 +243,14 @@ d3.box = function() {
           .attr("cy", function(i) { return x0(d[i]); })
           .style("opacity", 1e-6);      
         outlier.transition()
-            .duration(duration)
-            .attr("cy", function(i) { return x1(d[i]); })
-            .style("opacity", 1);
+          .duration(duration)
+          .attr("cy", function(i) { return x1(d[i]); })
+          .style("opacity", 1);
         outlier.exit().transition()
-            .duration(duration)
-            .attr("cy", function(i) { return x1(d[i]); })
-            .style("opacity", 1e-6)
-            .remove();   
+          .duration(duration)
+          .attr("cy", function(i) { return x1(d[i]); })
+          .style("opacity", 1e-6)
+          .remove();   
       }
       
       
