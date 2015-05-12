@@ -812,10 +812,7 @@ function toewhiskers_json_query_function(){
 }
 
 
-function toewhiskers_utfencode($html){
-  $html = str_replace(">=", "&ge;", $html);
-  return($html);
-}
+
 
 
 /* 
@@ -1114,7 +1111,6 @@ function toewhiskers_variablelist_function($themeindex,$impactindex,$typeindex,$
  * Ajax/JSON data retriever.
  */
 function toewhiskers_exporttimelinedata_function(){
-  //drupal_set_message('formstate:<pre>'. print_r($_SESSION['compare'], TRUE) .'</pre>');
   global $maindatatable;
   global $lookupdatatable;
   
@@ -1148,16 +1144,14 @@ function toewhiskers_exporttimelinedata_function(){
     
   // Setup to query non Drupal database.
   db_set_active('cig_toe');
-  
   $result = db_query($query);
   $csv = "Variable,Dataset,TOE\n";
   // Result is returned as a iterable object that returns a stdClass object on each iteration
   foreach ($result as $record) {
     // Rename one poorly coded variable shortname.
     if($record->VARIABLESHORTNAME == "#Tmax>90degF(32.2deg"){$record->VARIABLESHORTNAME = "#Tmax>90°F(32.2°C)";}
-    $csv .= "\"" . $record->VARIABLESHORTNAME . "\",\"" . $record->DATASET . "\"," . round($record->TOE/5)*5 . "\n";
+    $csv .= "\"" . toewhiskers_csvencode($record->VARIABLESHORTNAME) . "\",\"" . $record->DATASET . "\"," . round($record->TOE/5)*5 . "\n";
   }  
-  
   db_set_active();
   
   // Create code to text translations for data export.
@@ -1195,5 +1189,13 @@ Estimated Rate of Climate Change: " . $prettynames['confidence'][$confidence] . 
     drupal_add_http_header('Content-Disposition', 'attachment; filename = dataexport.csv');
     print($o);
   }
+}
 
+function toewhiskers_utfencode($html){
+  $html = str_replace(">=", "&ge;", $html);
+  return($html);
+}
+function toewhiskers_csvencode($csv){
+  $csv = str_replace('"', '""', $csv);
+  return($csv);
 }
