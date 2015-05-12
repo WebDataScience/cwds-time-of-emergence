@@ -1145,12 +1145,12 @@ function toewhiskers_exporttimelinedata_function(){
   // Setup to query non Drupal database.
   db_set_active('cig_toe');
   $result = db_query($query);
-  $csv = "Variable,Dataset,TOE\n";
+  $csv = "Variable ID,Variable,Dataset,TOE(multi-model median),Change Direction\n";
   // Result is returned as a iterable object that returns a stdClass object on each iteration
   foreach ($result as $record) {
     // Rename one poorly coded variable shortname.
     if($record->VARIABLESHORTNAME == "#Tmax>90degF(32.2deg"){$record->VARIABLESHORTNAME = "#Tmax>90°F(32.2°C)";}
-    $csv .= "\"" . toewhiskers_csvencode($record->VARIABLESHORTNAME) . "\",\"" . $record->DATASET . "\"," . round($record->TOE/5)*5 . "\n";
+    $csv .= "\"" . toewhiskers_csvencode($record->VARIABLESHORTNAME) . "\",\"" . $record->VARIABLENAME . "\",\"" . $record->DATASET . "\"," . round($record->TOE/5)*5 . "," . $record->CHANGEDIR . "\n";
   }  
   db_set_active();
   
@@ -1177,7 +1177,12 @@ function toewhiskers_exporttimelinedata_function(){
 Multi-model median
 Emissions Scenario: " . $prettynames['emission'][$emission] . "
 Management Sensitivity: " . $prettynames['tolerance'][$tolerance] . "
-Estimated Rate of Climate Change: " . $prettynames['confidence'][$confidence] . "\n\n\n";
+Estimated Rate of Climate Change: " . $prettynames['confidence'][$confidence] . "\n\n" .
+"ToE = 0 indicates no emergence\n\n" .
+"Change direction indicates direction of climate change trend associated with each ToE\n" .
+"Change Direction = 1 indicates positive trend (increasing values of the variable as a result of climate change)\n" .
+"Change Direction = -1 indicates negative trend (decreasing values of the variable as a result of climate change)\n" .
+"Change Direction = 0 indicates indeterminant trend\n\n";
   $o .= $csv;
       
   $tesmode = FALSE;
