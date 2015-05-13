@@ -835,7 +835,7 @@ function toewhiskers_timeline_query($val){
   $query .= "  AND (   ( ( " . $val['lookupdatatable'] . ".THEME = 'Air temperature' OR " . $val['lookupdatatable'] . ".THEME = 'Precipitation' ) AND ". $val['maindatatable'].".DATASET = 'BCSD5')   
   OR   (" . $val['lookupdatatable'] . ".THEME = 'Hydrologic' AND ". $val['maindatatable'].".DATASET = 'BCSD3')   
   OR   (" . $val['lookupdatatable'] . ".THEME = 'Streamflow' AND (". $val['maindatatable'].".DATASET = 'BCSD3'  OR ". $val['maindatatable'].".DATASET = 'BCSD5') )  )
-  ORDER BY {". $val['maindatatable']."}.TOE LIMIT 20";
+  ORDER BY {". $val['maindatatable']."}.TOE";
   return($query);
 }
 
