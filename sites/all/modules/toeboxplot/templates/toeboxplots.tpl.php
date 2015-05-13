@@ -191,7 +191,7 @@ jQuery( document ).ready(function( $ ) {
       .attr("dy", ".71em")
       .style("text-anchor", "middle")
       .style("font-size", "16px");
-    //text label for x axis
+    //text label for x axis (Past sensitivity)
     svg.append("text")      
       .attr("x", -150 )
       .attr("y", -410 )
@@ -200,7 +200,7 @@ jQuery( document ).ready(function( $ ) {
       .style("text-anchor", "middle")
       .style("font-size", "18px")
       .text(xtitle)
-	    .call(wrap, 300)
+	    .call(wrap, 290)
       .attr("transform", function(d) {
         return "rotate(180)" 
       });                 
