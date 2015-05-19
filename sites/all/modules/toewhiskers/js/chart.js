@@ -6,6 +6,11 @@ jQuery( document ).ready(function( $ ) {
   confidence['50'] = 'Moderate';
   confidence['5'] = 'Slow';
   websitetextarray['confidence'] = confidence;
+  var rateofchange = new Object();
+  rateofchange['fast'] = 'Fast';
+  rateofchange['moderate'] = 'Moderate';
+  rateofchange['slow'] = 'Slow';
+  websitetextarray['rateofchange'] = rateofchange;
   var tolerance = new Object;
   tolerance['95'] = 'Low (to extreme 10% of 1950-1999 conditions)';
   tolerance['80'] = 'High (to extreme 40% of 1950-1999 conditions)';
@@ -67,17 +72,12 @@ jQuery( document ).ready(function( $ ) {
     drawD3Timeline(
       timelinedataarray, 
       jsonobj.maxtoeyear,
-      'Estimated Rate of Climate Change: ' + websitetextarray['confidence'][jsonobj.confidence],
+      'Estimated Rate of Climate Change: ' + websitetextarray['rateofchange'][jsonobj.rateofchange],
       'Management Sensitivity: ' + websitetextarray['tolerance'][jsonobj.tolerance],
       'Multi-model median',
       'Time of Emergence in : ' + websitetextarray['region'],
       'Emissions Scenario: ' + websitetextarray['emission'][jsonobj.emission]
     );
-
-    $(".emission" ).html( websitetextarray['emission'][jsonobj.emission] );
-    $(".confidence" ).html( websitetextarray['confidence'][jsonobj.confidence] );
-    $(".tolerance" ).html( websitetextarray['tolerance'][jsonobj.tolerance] );
-    $(".dataset" ).html( websitetextarray['dataset'][jsonobj.dataset] );
     
     // Table modification via jQuery.
     tabledata = jsonobj.tabledata;

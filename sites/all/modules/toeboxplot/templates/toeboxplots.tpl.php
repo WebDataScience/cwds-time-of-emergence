@@ -3,7 +3,6 @@
   $path = drupal_get_path('module', 'toeboxplot');
   drupal_add_js($path . '/js/canvg.js');
   drupal_add_js($path . '/js/rgbcolor.js');
-  drupal_add_js($path . '/js/StackBlur.js');
   drupal_add_js($path . '/js/boxplots.js');
   drupal_add_css($path . '/cs/boxplot.css');
   drupal_set_title("All Results");
@@ -256,40 +255,40 @@ function wrap(text, width) {
     data[0][0] = "Faster";
     data[0][1] = [];
     data[0][2] = [];
-    data[0][3] = [obj.signalconfidence95.toema50.toe,obj.signalconfidence95.toema50.dir];
-    $.each(obj.signalconfidence95.dots, function(i, obj) {
+    data[0][3] = [obj.rateofchangefast.toema50.toe,obj.rateofchangefast.toema50.dir];
+    $.each(obj.rateofchangefast.dots, function(i, obj) {
       data[0][1].push(obj);
     });
-    $.each(obj.signalconfidence95.box, function(i, obj) {
+    $.each(obj.rateofchangefast.box, function(i, obj) {
       data[0][2].push(Math.min(obj,2100));
     });
-    data[0][4] = obj.signalconfidence95.toeandchangedir;
+    data[0][4] = obj.rateofchangefast.toeandchangedir;
   
     data[1] = [];
     data[1][0] = "Central";
     data[1][1] = [];
     data[1][2] = [];
-    data[1][3] = [obj.signalconfidence50.toema50.toe,obj.signalconfidence50.toema50.dir];
-    $.each(obj.signalconfidence50.dots, function(i, obj) {
+    data[1][3] = [obj.rateofchangemoderate.toema50.toe,obj.rateofchangemoderate.toema50.dir];
+    $.each(obj.rateofchangemoderate.dots, function(i, obj) {
       data[1][1].push(obj);
     });
-    $.each(obj.signalconfidence50.box, function(i, obj) {
+    $.each(obj.rateofchangemoderate.box, function(i, obj) {
       data[1][2].push(Math.min(obj,2100));
     });
-    data[1][4] = obj.signalconfidence50.toeandchangedir;
+    data[1][4] = obj.rateofchangemoderate.toeandchangedir;
         
     data[2] = [];
     data[2][0] = "Slower";
     data[2][1] = [];
     data[2][2] = [];
-    data[2][3] = [obj.signalconfidence5.toema50.toe,obj.signalconfidence5.toema50.dir];
-    $.each(obj.signalconfidence5.dots, function(i, obj) {
+    data[2][3] = [obj.rateofchangeslow.toema50.toe,obj.rateofchangeslow.toema50.dir];
+    $.each(obj.rateofchangeslow.dots, function(i, obj) {
       data[2][1].push(obj);
     });
-    $.each(obj.signalconfidence5.box, function(i, obj) {
+    $.each(obj.rateofchangeslow.box, function(i, obj) {
       data[2][2].push(Math.min(obj,2100));
     });
-    data[2][4] = obj.signalconfidence5.toeandchangedir;
+    data[2][4] = obj.rateofchangeslow.toeandchangedir;
         
     return data;
   }  // end parse4data()    

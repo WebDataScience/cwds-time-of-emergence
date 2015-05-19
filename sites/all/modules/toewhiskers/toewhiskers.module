@@ -371,7 +371,7 @@ function toewhiskers_compare_form($form,&$form_submit) {
       'title' => t('Selecting “High” management sensitivity to changing conditions results in earlier emergence. Selecting “Low” results in later emergence.'),
     ),
   );
-  $options = array('95' => 'Fast', '50' => 'Moderate', '5' => 'Slow',);
+  /*$options = array('95' => 'Fast', '50' => 'Moderate', '5' => 'Slow',);
   $form['parameter']['confidence'] = array(
     '#type' => 'radios',
     '#title' => t('Estimated Rate of Climate Change'),
@@ -379,6 +379,18 @@ function toewhiskers_compare_form($form,&$form_submit) {
     '#required' => TRUE,
     '#default_value' => isset($comparearray['confidence'])?$comparearray['confidence']:50,//key($options),
         '#label_attributes' => array(
+      'data-toggle'=> 'tooltip',
+      'title' => t('Selecting “Fast” results in earlier emergence. Selecting “Slow” results in later emergence. And selecting “Central” results in emergence roughly centered between “Fast” and “Slow”.'),
+    ),
+  );*/
+  $options = array('fast' => 'Fast', 'moderate' => 'Moderate', 'slow' => 'Slow',);
+  $form['parameter']['rateofchange'] = array(
+    '#type' => 'radios',
+    '#title' => t('Estimated Rate of Climate Change'),
+    '#options' => $options,
+    '#required' => TRUE,
+    '#default_value' => isset($comparearray['rateofchange'])?$comparearray['rateofchange']:'moderate',
+    '#label_attributes' => array(
       'data-toggle'=> 'tooltip',
       'title' => t('Selecting “Fast” results in earlier emergence. Selecting “Slow” results in later emergence. And selecting “Central” results in emergence roughly centered between “Fast” and “Slow”.'),
     ),
@@ -447,7 +459,8 @@ function toewhiskers_compare_form_submit($form, &$form_state) {
   $comparearray['variable'] = toewhiskers_clean_array($form_state['values']['variable']);
   $comparearray['emission'] = check_plain($form_state['values']['emission']);
   $comparearray['tolerance'] = check_plain($form_state['values']['tolerance']);
-  $comparearray['confidence'] = check_plain($form_state['values']['confidence']);
+  /*$comparearray['confidence'] = check_plain($form_state['values']['confidence']);*/
+  $comparearray['rateofchange'] = check_plain($form_state['values']['rateofchange']);
   $_SESSION['compare'] = $comparearray;
   $compare = $_SESSION['compare'];
 
@@ -517,7 +530,7 @@ function toewhiskers_map_form($form,&$form_submit) {
 }
 
 
-function  toewhiskers_map_form_validate($form, &$form_state) {
+function toewhiskers_map_form_validate($form, &$form_state) {
   if ($form_state['values']['variable'] == null){
     form_set_error('title', t('Please pick one variable before proceeding.'));
   }
@@ -671,6 +684,7 @@ function toewhiskers_json_query_function(){
   // Checkboxes
   $tolerance = trim($compare['tolerance']);
   $confidence = trim($compare['confidence']);
+  $rateofchange = trim($compare['rateofchange']);
   $region = trim($compare['region']);
   $timelinedata = array();
   
@@ -682,6 +696,7 @@ function toewhiskers_json_query_function(){
     'region' => $region,
     'tolerance' => $tolerance,
     'confidence' => $confidence,
+    'rateofchange' => $rateofchange,
     'max_TOE_year' => $max_TOE_year,
     'emission' => $emission,
   );
@@ -737,9 +752,18 @@ function toewhiskers_json_query_function(){
   . $lookupdatatable . "} on (" . $lookupdatatable . ".VARIABLEID = ". $maindatatable.".VARIABLEID) WHERE
   ". $maindatatable.".VARIABLEID in ('" . $variables . "') 
   AND " . $maindatatable.".REGION = '" . $region .   "' 
-  AND " . $maindatatable.".EMERGTHRES = " . $tolerance . "
-  AND " . $maindatatable.".SIGNALCONFIDENCE = " . $confidence . "
-  AND (" . $maindatatable.".MODELAGREEMENT = '25' or " .$maindatatable.".MODELAGREEMENT = '50' or " .$maindatatable.".MODELAGREEMENT = '75') 
+  AND " . $maindatatable.".EMERGTHRES = " . $tolerance ;
+  //AND " . $maindatatable.".SIGNALCONFIDENCE = " . $confidence . "
+  if($rateofchange == 'fast'){ 
+    $query .= " AND ((" . $maindatatable.".SIGNALCONFIDENCE = 95 AND " . $maindatatable.".CHANGEDIR = 1) OR (" . $maindatatable.".SIGNALCONFIDENCE = 5 AND " . $maindatatable . ".CHANGEDIR = -1)) ";
+  }
+  if($rateofchange == 'moderate'){ 
+    $query .= " AND " . $maindatatable.".SIGNALCONFIDENCE = 50 ";
+  }
+  if($rateofchange == 'slow'){ 
+    $query .= " AND ((" . $maindatatable.".SIGNALCONFIDENCE = 5 AND " . $maindatatable.".CHANGEDIR = 1) OR (" . $maindatatable.".SIGNALCONFIDENCE = 95 AND " . $maindatatable . ".CHANGEDIR = -1)) ";
+  }
+  $query .= " AND (" . $maindatatable.".MODELAGREEMENT = '25' or " .$maindatatable.".MODELAGREEMENT = '50' or " .$maindatatable.".MODELAGREEMENT = '75') 
   AND (" . $maindatatable.".GCM = 'GCM_ensemble_25' OR ". $maindatatable.".GCM = 'GCM_ensemble' OR ". $maindatatable.".GCM = 'GCM_ensemble_75' ) ";
   if($compare['emission'] == "high"){
     $query .= "AND (". $maindatatable.".EMISSCENARIO = 'rcp85' OR " . $maindatatable.".EMISSCENARIO = 'a1b') ";
@@ -760,7 +784,6 @@ function toewhiskers_json_query_function(){
       $toe_array[$record->VARIABLEID] = new stdClass();
       $toe_array[$record->VARIABLEID]->VARIABLESHORTNAME = toewhiskers_utfencode($record->VARIABLESHORTNAME);
       $toe_array[$record->VARIABLEID]->CHANGEDIRTEXT = "Indeterminate";
-      //$toe_array[$record->VARIABLEID]->DATASET = $record->DATASET;
     }
     // Create rounded TOE value.
     $toe = 0;
@@ -799,6 +822,7 @@ function toewhiskers_json_query_function(){
     "maxtoeyear" => $max_TOE_year,
     "emission" => $emission,
     "confidence" => $confidence,
+    "rateofchange" => $rateofchange,
     "tolerance" => $tolerance,
     "timelinedata" => $timelinedata,
     "tabledata" => $toe_array,
@@ -825,9 +849,18 @@ function toewhiskers_timeline_query($val){
   LEFT JOIN {" . $val['lookupdatatable'] . "} on (" . $val['lookupdatatable'] . ".VARIABLEID = ". $val['maindatatable'].".VARIABLEID) 
   WHERE ". $val['maindatatable'].".VARIABLEID in ('" . $val['variables'] . "') 
   AND ". $val['maindatatable'].".REGION = '" . $val['region'] .   "' 
-  AND ". $val['maindatatable'].".EMERGTHRES = " . $val['tolerance'] . "
-  AND ". $val['maindatatable'].".SIGNALCONFIDENCE = " . $val['confidence'] . "
-  AND ". $val['maindatatable'].".TOE <= " . $val['max_TOE_year'] . "
+  AND ". $val['maindatatable'].".EMERGTHRES = " . $val['tolerance'] ;
+  //AND ". $val['maindatatable'].".SIGNALCONFIDENCE = " . $val['confidence'] ;
+  if($val['rateofchange'] == 'fast'){ 
+    $query .= " AND ((" . $val['maindatatable'].".SIGNALCONFIDENCE = 95 AND " . $val['maindatatable'].".CHANGEDIR = 1) OR (" . $val['maindatatable'].".SIGNALCONFIDENCE = 5 AND " . $val['maindatatable'] . ".CHANGEDIR = -1)) ";
+  }
+  if($val['rateofchange'] == 'moderate'){ 
+    $query .= " AND " . $val['maindatatable'].".SIGNALCONFIDENCE = 50 ";
+  }
+  if($val['rateofchange'] == 'slow'){ 
+    $query .= " AND ((" . $val['maindatatable'].".SIGNALCONFIDENCE = 5 AND " . $val['maindatatable'].".CHANGEDIR = 1) OR (" . $val['maindatatable'] . ".SIGNALCONFIDENCE = 95 AND " . $val['maindatatable'] . ".CHANGEDIR = -1)) ";
+  }
+  $query .= " AND ". $val['maindatatable'].".TOE <= " . $val['max_TOE_year'] . "
   AND ". $val['maindatatable'].".MODELAGREEMENT = '50' 
   AND ". $val['maindatatable'].".GCM = 'GCM_ensemble' ";
   if($val['emission'] == "high"){    $query .= "AND (". $val['maindatatable'].".EMISSCENARIO = 'rcp85' OR " . $val['maindatatable'].".EMISSCENARIO = 'a1b') ";  }
@@ -856,7 +889,8 @@ function toewhiskers_json_query_boxplot_function($variable, $mode = "json"){
   $jasondata['regionname'] = $_SESSION['compare']['regionname'];
   $emergencethreshold_array = array('80','95');
   $emissionscenario_array = array('high','low');
-  $signalconfidence_array = array('95','50','5');
+  //$signalconfidence_array = array('95','50','5');
+  $rateofchange_array = array('fast','moderate','slow');
   
   // Setup to query non Drupal database.
   db_set_active('cig_toe');
@@ -884,13 +918,27 @@ function toewhiskers_json_query_boxplot_function($variable, $mode = "json"){
   // Query for TOE values.
   foreach ($emergencethreshold_array as $key=>$emergencethreshold){
     foreach ($emissionscenario_array as $key=>$emissionscenario){    
-      foreach ($signalconfidence_array as $key=>$signalconfidence){
+      //foreach ($signalconfidence_array as $key=>$signalconfidence){
+      foreach ($rateofchange_array as $key=>$rateofchange){
         $dots = array();
         $box = array('25' => 0, '50' => 0, '75' => 0);
         $toema50 = array();
         $toeandchangedir = array();
 
-        $query="select * from " . $maindatatable . " WHERE variableid='" . $variable . "' and emergthres=" . $emergencethreshold . " and signalconfidence=" . $signalconfidence . " AND REGION = '" . $_SESSION['compare']['region'] . "'";
+        $query="select * from " . $maindatatable . " WHERE variableid='" . $variable . "' and emergthres=" . $emergencethreshold;
+        //signalconfidence=" . $signalconfidence . 
+        
+        if($rateofchange == 'fast'){ 
+          $query .= " AND ((" . $maindatatable . ".SIGNALCONFIDENCE = 95 AND " . $maindatatable . ".CHANGEDIR = 1) OR (" . $maindatatable . ".SIGNALCONFIDENCE = 5 AND " . $maindatatable . ".CHANGEDIR = -1)) ";
+        }
+        if($rateofchange == 'moderate'){ 
+          $query .= " AND " . $maindatatable.".SIGNALCONFIDENCE = 50 ";
+        }
+        if($rateofchange == 'slow'){ 
+          $query .= " AND ((" . $maindatatable.".SIGNALCONFIDENCE = 5 AND " . $maindatatable . ".CHANGEDIR = 1) OR (" . $maindatatable . ".SIGNALCONFIDENCE = 95 AND " . $maindatatable . ".CHANGEDIR = -1)) ";
+        }
+              
+        $query .= " AND REGION = '" . $_SESSION['compare']['region'] . "'";
         if($emissionscenario == "high"){
           $query .= " AND (". $maindatatable.".EMISSCENARIO = 'rcp85' OR " . $maindatatable.".EMISSCENARIO = 'a1b') ";
         }
@@ -931,7 +979,7 @@ function toewhiskers_json_query_boxplot_function($variable, $mode = "json"){
           "toeandchangedir" => $toeandchangedir,
           "query" => $query,
         );  
-        $boxplotdata['emergencethreshold' . $emergencethreshold]['emissionscenario' . $emissionscenario]['signalconfidence' . $signalconfidence] = $oneboxplot;
+        $boxplotdata['emergencethreshold' . $emergencethreshold]['emissionscenario' . $emissionscenario]['rateofchange' . $rateofchange] = $oneboxplot;
       }
     }
   }
@@ -953,6 +1001,9 @@ function toewhiskers_json_query_boxplot_function($variable, $mode = "json"){
       "signalconfidence95" => "Fast",
       "signalconfidence50" => "Moderate",
       "signalconfidence5" => "Slow",
+      "rateofchangefast" => "Fast",
+      "rateofchangemoderate" => "Moderate",
+      "rateofchangeslow" => "Slow",
     );
     $o = '"Variable: ' . $jasondata['variablename'] . '"' . "\n";
     $o .= "Variable ID: " . $jasondata['variableshortname'] . "\n";
