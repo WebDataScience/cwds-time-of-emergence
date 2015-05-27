@@ -1334,6 +1334,7 @@ function toewhiskers_json_query_dotplot_function($variable, $mode = "json"){
   $jasondata['theme'] = $row->theme;
   $boxplotdata = array();
   $datasets = array();
+  $lastquery = "";
   
   // Datasets queried predicated on 'theme' of variable.
   if($jasondata['theme'] == 'Air temperature' || $jasondata['theme'] == 'Precipitation'){
@@ -1364,6 +1365,7 @@ function toewhiskers_json_query_dotplot_function($variable, $mode = "json"){
         $query .= " FROM " . $maindatatable;
         $query .= " WHERE variableid='" . $variable . "' and emergthres=" . $emergencethreshold;                  
         $query .= " AND REGION = '" . $_SESSION['compare']['region'] . "'";
+        //$query .= " AND REGION = '" . $_SESSION['compare']['region'] . "'";
         if($emissionscenario == "high"){
           $query .= " AND (". $maindatatable . ".EMISSCENARIO = 'rcp85' OR " . $maindatatable.".EMISSCENARIO = 'a1b') ";
         }
@@ -1372,86 +1374,64 @@ function toewhiskers_json_query_dotplot_function($variable, $mode = "json"){
         }
         $query .= $themequery;
         $query .= " GROUP BY ". $maindatatable . ".GCM";
-        
-        print($query . "\n\n");
-        
-        
-        
+           
         $result = db_query($query);
         
-        
-        //$fastboxplot = array(
-        //  "toema50" => $toema50,
-        //  "toeandchangedir" => $toeandchangedir,
-        //);  
-        $fastboxplot = array();
-        $moderateboxplot = array();
-        $slowboxplot = array();
-        
+       
+        $fastboxplot = array('toeandchangedir' => array() );      
+        $moderateboxplot = array('toeandchangedir' => array() ); 
+        $slowboxplot = array('toeandchangedir' => array() ); 
+      
         // Result is returned as a iterable object that returns a stdClass object on each iteration
         foreach ($result as $record) {
-        
-
           
-          // If GCM is not ensemble than it is MODEL_X and this datapoint is a dot.
+          // If GCM is not ensemble than it is MODEL_X and this datapoint is a small dot. Only report dots where TOE is not zero.
           $pos = strpos($record->GCM, 'ensemble');
-          if ($pos === false) {
-            // Exclude dots where TOE is zero.
-            //if($record->TOE > 0){
-              
+          if ($pos === false) {          
             // Split concats into arrays with 'signalconfidence' as key.
             $signalconfidencearray = explode(',',$record->SIGNALCONFIDENCERANGE);   
             $changedirrange = array_combine($signalconfidencearray,explode(',',$record->CHANGEDIRRANGE));
             $toerange = array_combine($signalconfidencearray,explode(',',$record->TOERANGE));
-            $modelagreeementrange = array_combine($signalconfidencearray,explode(',',$record->MODELAGREEMENTRANGE));
               
-              print_r($toerange, 'TRUE');
-              
-              if($changedirrange['50'] == '1'){
-                $fastboxplot['toeandchangedir'][] = array('toe' => $toerange['95'], 'dir' => 1);
-                $slowboxplot['toeandchangedir'][] = array('toe' => $toerange['5'], 'dir' => 1);
-              }
-              if($changedirrange['50'] == '-1'){
-                $fastboxplot['toeandchangedir'][] = array('toe' => $toerange['5'], 'dir' => 1);
-                $slowboxplot['toeandchangedir'][] = array('toe' => $toerange['95'], 'dir' => 1);
-              }
-              $moderateboxplot['toeandchangedir'][] = array('toe' => $toerange['50'], 'dir' => $changedirrange['50']);
-              
-              //$toeandchangedir[] = array('toe' => $record->TOE, 'dir' => $record->CHANGEDIR);
-            //}
-          } else {
-            //$box[$record->MODELAGREEMENT] = $record->TOE;
-            
-          }
-                   
-          /*
-          $pos = strpos($record->GCM, 'ensemble');
-          if ($pos === false) {
-            // Exclude dots where TOE is zero.
-            if($record->TOE > 0){
-              $dots[$record->GCM] = $record->TOE;
-              $toeandchangedir[] = array('toe' => $record->TOE, 'dir' => $record->CHANGEDIR);
+            if($changedirrange['50'] == '1'){
+              if($toerange['95'] > 0){$fastboxplot['toeandchangedir'][] = array('toe' => $toerange['95'], 'dir' => 1);}
+              if($toerange['5'] > 0){$slowboxplot['toeandchangedir'][] = array('toe' => $toerange['5'], 'dir' => 1);}
             }
-          } else {
-            $box[$record->MODELAGREEMENT] = $record->TOE;
-          }
-          if($record->MODELAGREEMENT == "50"){
-            if($record->TOE > 0){
-              $toema50 = array('toe' => $record->TOE, 'dir' => $record->CHANGEDIR);
+            if($changedirrange['50'] == '-1'){
+              if($toerange['5'] > 0){$fastboxplot['toeandchangedir'][] = array('toe' => $toerange['5'], 'dir' => -1);}
+              if($toerange['95'] > 0){$slowboxplot['toeandchangedir'][] = array('toe' => $toerange['95'], 'dir' => -1);}
             }
+            if($toerange['50'] > 0){$moderateboxplot['toeandchangedir'][] = array('toe' => $toerange['50'], 'dir' => $changedirrange['50']);}
+          } else { // 'ensemble' found in 'GCM' so this is the LARGE datapoint.
+            // Parse concat lists into arrays.
+            $modelagreementrantearray = explode(',',$record->MODELAGREEMENTRANGE);
+            $signalconfidencearray = explode(',',$record->SIGNALCONFIDENCERANGE);
+            $toearray = explode(',',$record->TOERANGE);
+            $changedirarray = explode(',',$record->CHANGEDIRRANGE);
+            // Look at concat lists but utilize only MODELAGREEMENT = 50.
+            foreach ($modelagreementrantearray as $key=>$value) {
+              if($modelagreementrantearray[$key] == '50'){
+                $changedirrange[$signalconfidencearray[$key]] = $changedirarray[$key];
+                $toerange[$signalconfidencearray[$key]] = $toearray[$key];
+              }
+            }
+            if($changedirrange['50'] == '1'){
+              if($toerange['95'] > 0){$fastboxplot['toema50'] = array('toe' => $toerange['95'], 'dir' => 1);}
+              if($toerange['5'] > 0){$slowboxplot['toema50'] = array('toe' => $toerange['5'], 'dir' => 1);}
+            }
+            if($changedirrange['50'] == '-1'){
+              if($toerange['5'] > 0){$fastboxplot['toema50'] = array('toe' => $toerange['5'], 'dir' => -1);}
+              if($toerange['95'] > 0){$slowboxplot['toema50'] = array('toe' => $toerange['95'], 'dir' => -1);}
+            }
+            if($toerange['50'] > 0){$moderateboxplot['toema50'] = array('toe' => $toerange['50'], 'dir' => $changedirrange['50']); }
           }
-          */
+                         
           
           $datasets[$record->DATASET] = $record->DATASET;
           
         } 
-        
-
-        $oneboxplot = array(
-          "toema50" => $toema50,
-          "toeandchangedir" => $toeandchangedir,
-        );  
-        
+         
+        $boxplotdata['emergencethreshold' . $emergencethreshold]['emissionscenario' . $emissionscenario]['query'] = $query;
         $boxplotdata['emergencethreshold' . $emergencethreshold]['emissionscenario' . $emissionscenario]['rateofchangefast'] = $fastboxplot;
         $boxplotdata['emergencethreshold' . $emergencethreshold]['emissionscenario' . $emissionscenario]['rateofchangemoderate'] = $moderateboxplot;
         $boxplotdata['emergencethreshold' . $emergencethreshold]['emissionscenario' . $emissionscenario]['rateofchangeslow'] = $slowboxplot;

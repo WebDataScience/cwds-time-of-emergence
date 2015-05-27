@@ -95,7 +95,8 @@ jQuery( document ).ready(function( $ ) {
   });
     
   var variableid = location.pathname.match(/.*\/(V.*)/)[1];
-  var url = baseurl + "/boxplotdata/" + variableid;
+  //var url = baseurl + "/boxplotdata/" + variableid;
+  var url = baseurl + "/dotplotdata/" + variableid;
   
   $.post( url, function( jsonobj ) {  
     $("#variablename").html(jsonobj.variablename);
@@ -149,9 +150,8 @@ jQuery( document ).ready(function( $ ) {
     //y-axis
     var y = d3.scale.linear().domain([2000, 2100]).range([height + margin.top, 0 + margin.top]);
     var yAxis = d3.svg.axis().scale(y).orient("right").ticks(4).tickFormat(d3.format("d"));
-    
     // Count number of dots found for this boxplot. Then display 'No emergence prior to 2100' message if appropriate.
-    var dotcount = data[0][1].length + data[1][1].length + data[2][1].length;
+    var dotcount = data[0][3].length + data[0][4].length;
     if(dotcount > 0){
       //draw boxplots  
       svg.selectAll(".box")    
@@ -255,39 +255,30 @@ function wrap(text, width) {
     data[0][0] = "Faster";
     data[0][1] = [];
     data[0][2] = [];
-    data[0][3] = [obj.rateofchangefast.toema50.toe,obj.rateofchangefast.toema50.dir];
-    $.each(obj.rateofchangefast.dots, function(i, obj) {
-      data[0][1].push(obj);
-    });
-    $.each(obj.rateofchangefast.box, function(i, obj) {
-      data[0][2].push(Math.min(obj,2100));
-    });
+    data[0][3] = [];
+    if ("toema50" in obj.rateofchangefast){
+      data[0][3] = [obj.rateofchangefast.toema50.toe,obj.rateofchangefast.toema50.dir];
+    }
     data[0][4] = obj.rateofchangefast.toeandchangedir;
   
     data[1] = [];
     data[1][0] = "Central";
     data[1][1] = [];
     data[1][2] = [];
-    data[1][3] = [obj.rateofchangemoderate.toema50.toe,obj.rateofchangemoderate.toema50.dir];
-    $.each(obj.rateofchangemoderate.dots, function(i, obj) {
-      data[1][1].push(obj);
-    });
-    $.each(obj.rateofchangemoderate.box, function(i, obj) {
-      data[1][2].push(Math.min(obj,2100));
-    });
+    data[1][3] = [];
+    if ("toema50" in obj.rateofchangemoderate){
+      data[1][3] = [obj.rateofchangemoderate.toema50.toe,obj.rateofchangemoderate.toema50.dir];
+    }
     data[1][4] = obj.rateofchangemoderate.toeandchangedir;
         
     data[2] = [];
     data[2][0] = "Slower";
     data[2][1] = [];
     data[2][2] = [];
-    data[2][3] = [obj.rateofchangeslow.toema50.toe,obj.rateofchangeslow.toema50.dir];
-    $.each(obj.rateofchangeslow.dots, function(i, obj) {
-      data[2][1].push(obj);
-    });
-    $.each(obj.rateofchangeslow.box, function(i, obj) {
-      data[2][2].push(Math.min(obj,2100));
-    });
+    data[2][3] = [];
+    if ("toema50" in obj.rateofchangeslow){
+      data[2][3] = [obj.rateofchangeslow.toema50.toe,obj.rateofchangeslow.toema50.dir];
+    }
     data[2][4] = obj.rateofchangeslow.toeandchangedir;
         
     return data;
