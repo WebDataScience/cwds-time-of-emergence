@@ -707,8 +707,6 @@ function toewhiskers_json_query_function(){
     'emission' => $emission,
   );
   $query = toewhiskers_timeline_query($val);
-  //drupal_set_message($query);
-  
   $timelinequery = $query;
   $timelinequery = str_replace("{", "", $timelinequery);
   $timelinequery = str_replace("}", "", $timelinequery); 
@@ -717,14 +715,11 @@ function toewhiskers_json_query_function(){
   db_set_active('cig_toe');
   
   $result = db_query($query);
-  // Result is returned as a iterable object that returns a stdClass object on each iteration
   foreach ($result as $record) {
-    
     // Function to translate ugly short name value in DB to pretty names:
     if($record->VARIABLESHORTNAME == "#Tmax>90degF(32.2deg"){$record->VARIABLESHORTNAME = "#Tmax>90°F(32.2°C)";}
     // Replace '>=' with a proper utf code.
     $record->VARIABLESHORTNAME = toewhiskers_utfencode($record->VARIABLESHORTNAME);
-    
     $timelinedata[] = array(
       $record->CHANGEDIR,
       intval($record->TOE),
@@ -735,7 +730,6 @@ function toewhiskers_json_query_function(){
       $record->EMISSCENARIO,
       $record->DATASET,
     );
-    
   }  // End timeline data query.
   
   $csvvariables = array(
@@ -752,20 +746,19 @@ function toewhiskers_json_query_function(){
   $variable_object = new stdClass();
   $toe = "Beyond " . $max_TOE_year;
   
-  // Query for 'table' portion of /timeline page.
+  // Query for 'table' portion of /timeline page. This is V2 of this query. 
   $query = "SELECT ". $maindatatable.".*," . $lookupdatatable . ".VARIABLESHORTNAME 
   FROM {". $maindatatable."}  LEFT JOIN {"
   . $lookupdatatable . "} on (" . $lookupdatatable . ".VARIABLEID = ". $maindatatable.".VARIABLEID) WHERE
   ". $maindatatable.".VARIABLEID in ('" . $variables . "') 
   AND " . $maindatatable.".REGION = '" . $region .   "' 
   AND " . $maindatatable.".EMERGTHRES = " . $tolerance ;
-  //AND " . $maindatatable.".SIGNALCONFIDENCE = " . $confidence . "
+  // This line of code removed from V1 version of query: AND " . $maindatatable.".SIGNALCONFIDENCE = " . $confidence . "
+  // And replaced with following few lines.
   if($rateofchange == 'fast'){ 
     $query .= " AND ((" . $maindatatable.".SIGNALCONFIDENCE = 95 AND " . $maindatatable.".CHANGEDIR = 1) OR (" . $maindatatable.".SIGNALCONFIDENCE = 5 AND " . $maindatatable . ".CHANGEDIR = -1)) ";
   }
-  if($rateofchange == 'moderate'){ 
-    $query .= " AND " . $maindatatable.".SIGNALCONFIDENCE = 50 ";
-  }
+  if($rateofchange == 'moderate'){     $query .= " AND " . $maindatatable.".SIGNALCONFIDENCE = 50 ";  }
   if($rateofchange == 'slow'){ 
     $query .= " AND ((" . $maindatatable.".SIGNALCONFIDENCE = 5 AND " . $maindatatable.".CHANGEDIR = 1) OR (" . $maindatatable.".SIGNALCONFIDENCE = 95 AND " . $maindatatable . ".CHANGEDIR = -1)) ";
   }
@@ -824,22 +817,13 @@ function toewhiskers_json_query_function(){
   
   db_set_active();
   
-  $toedata = array(
-    "maxtoeyear" => $max_TOE_year,
-    "emission" => $emission,
-    "confidence" => $confidence,
-    "rateofchange" => $rateofchange,
-    "tolerance" => $tolerance,
-    "timelinedata" => $timelinedata,
-    "tabledata" => $toe_array,
-    "timelinequery" => $timelinequery,
-    "tablequery" => $tablequery,
-  );  
+  $toedata = array(    "maxtoeyear" => $max_TOE_year,    "emission" => $emission,    "confidence" => $confidence,    "rateofchange" => $rateofchange,    "tolerance" => $tolerance,    "timelinedata" => $timelinedata,    "tabledata" => $toe_array,    "timelinequery" => $timelinequery,    "tablequery" => $tablequery,  );  
   
   // Output JSON data for /timeline AJAX query.
   // Cleaner output for testing only: drupal_json_output(print_r($toedata));
   drupal_json_output($toedata);  
 }
+
 
 /*
  * Ajax/JSON data retriever.
@@ -958,13 +942,11 @@ function toewhiskers_json_query_function_v3(){
   ". $maindatatable.".VARIABLEID in ('" . $variables . "') 
   AND " . $maindatatable.".REGION = '" . $region .   "' 
   AND " . $maindatatable.".EMERGTHRES = " . $tolerance ;
-  //AND " . $maindatatable.".SIGNALCONFIDENCE = " . $confidence . "
+  // This line out and following 11 in to update from V1 to V2 query.   AND " . $maindatatable.".SIGNALCONFIDENCE = " . $confidence . "
   if($rateofchange == 'fast'){ 
     $query .= " AND ((" . $maindatatable.".SIGNALCONFIDENCE = 95 AND " . $maindatatable.".CHANGEDIR = 1) OR (" . $maindatatable.".SIGNALCONFIDENCE = 5 AND " . $maindatatable . ".CHANGEDIR = -1)) ";
   }
-  if($rateofchange == 'moderate'){ 
-    $query .= " AND " . $maindatatable.".SIGNALCONFIDENCE = 50 ";
-  }
+  if($rateofchange == 'moderate'){ $query .= " AND " . $maindatatable.".SIGNALCONFIDENCE = 50 "; }
   if($rateofchange == 'slow'){ 
     $query .= " AND ((" . $maindatatable.".SIGNALCONFIDENCE = 5 AND " . $maindatatable.".CHANGEDIR = 1) OR (" . $maindatatable.".SIGNALCONFIDENCE = 95 AND " . $maindatatable . ".CHANGEDIR = -1)) ";
   }
@@ -1034,13 +1016,10 @@ function toewhiskers_json_query_function_v3(){
     "timelinequery" => $timelinequery,
     "tablequery" => $tablequery,
   );  
-  
   // Output JSON data for /timeline AJAX query.
   // Cleaner output for testing only: drupal_json_output(print_r($toedata));
   drupal_json_output($toedata);  
 }
-
-
 
 
 /* 
@@ -1094,18 +1073,6 @@ function toewhiskers_timeline_query_v3($val){
   WHERE ". $val['maindatatable'].".VARIABLEID in ('" . $val['variables'] . "') 
   AND ". $val['maindatatable'].".REGION = '" . $val['region'] .   "' 
   AND ". $val['maindatatable'].".EMERGTHRES = " . $val['tolerance'] ;
-  //AND ". $val['maindatatable'].".SIGNALCONFIDENCE = " . $val['confidence'] ;
-  /*
-  if($val['rateofchange'] == 'fast'){ 
-    $query .= " AND ((" . $val['maindatatable'].".SIGNALCONFIDENCE = 95 AND " . $val['maindatatable'].".CHANGEDIR = 1) OR (" . $val['maindatatable'].".SIGNALCONFIDENCE = 5 AND " . $val['maindatatable'] . ".CHANGEDIR = -1)) ";
-  }
-  if($val['rateofchange'] == 'moderate'){ 
-    $query .= " AND " . $val['maindatatable'].".SIGNALCONFIDENCE = 50 ";
-  }
-  if($val['rateofchange'] == 'slow'){ 
-    $query .= " AND ((" . $val['maindatatable'].".SIGNALCONFIDENCE = 5 AND " . $val['maindatatable'].".CHANGEDIR = 1) OR (" . $val['maindatatable'] . ".SIGNALCONFIDENCE = 95 AND " . $val['maindatatable'] . ".CHANGEDIR = -1)) ";
-  }
-  */
   $query .= " AND ". $val['maindatatable'].".TOE <= " . $val['max_TOE_year'] . "
   AND ". $val['maindatatable'].".MODELAGREEMENT = '50' 
   AND ". $val['maindatatable'].".GCM = 'GCM_ensemble' ";
@@ -1423,7 +1390,8 @@ function toewhiskers_exporttimelinedata_function(){
   $emission = trim($compare['emission']);
   // Checkboxes
   $tolerance = trim($compare['tolerance']);
-  $confidence = trim($compare['confidence']);
+  // This variable used by V1 version of query logic:  $confidence = trim($compare['confidence']);
+  $rateofchange = trim($compare['rateofchange']);
   $region = trim($compare['region']);
   
   $val = array(
@@ -1431,8 +1399,8 @@ function toewhiskers_exporttimelinedata_function(){
     'lookupdatatable' => $lookupdatatable,
     'variables' => $variables,
     'region' => $region,
-    'tolerance' => $tolerance,
-    'confidence' => $confidence,
+    'tolerance' => $tolerance,    //'confidence' => $confidence,
+    'rateofchange' => $rateofchange,
     'max_TOE_year' => $max_TOE_year,
     'emission' => $emission,
   );
@@ -1455,29 +1423,16 @@ function toewhiskers_exporttimelinedata_function(){
   db_set_active();
   
   // Create code to text translations for data export.
-  $prettynames['emission'] = array(
-    'rcp45'	=> 'RCP4.5',
-    'rcp85'	=> 'RCP8.5',
-    'A1B'	=>	'SRES A1B',
-    'B1'	=>	'SRES B1',
-    'low'	=>	'Low (RCP4.5 or B1)',
-    'high' =>	'High (RCP8.5 or A1B)',
-  );
-  $prettynames['confidence'] = array(
-    '5'	=>	'Slow',
-    '50'	=>	'Moderate',
-    '95'	=>	'Fast',
-  );
-  $prettynames['tolerance'] = array(
-    '95'	=>	'Low (to extreme 5% high or 5% low of 1950-1999 conditions)',
-    '80'	=>	'High (to extreme 20% high or 20% low of 1950-1999 conditions)',
-  );
+  $prettynames['emission'] = array(    'rcp45'	=> 'RCP4.5',    'rcp85'	=> 'RCP8.5',    'A1B'	=>	'SRES A1B',    'B1'	=>	'SRES B1',    'low'	=>	'Low (RCP4.5 or B1)',    'high' =>	'High (RCP8.5 or A1B)',  );
+  $prettynames['confidence'] = array(    '5'	=>	'Slow',    '50'	=>	'Moderate',    '95'	=>	'Fast',  );
+  $prettynames['rateofchange'] = array(    'slow'	=>	'Slow',    'moderate'	=>	'Moderate',    'fast'	=>	'Fast',  );
+  $prettynames['tolerance'] = array('95'=>'Low (to extreme 5% high or 5% low of 1950-1999 conditions)','80'=>'High (to extreme 20% high or 20% low of 1950-1999 conditions)',  );
     
   $o = "Time of Emergence in: " . $_SESSION['compare']['regionname'] . "
 Multi-model median
 Emissions Scenario: " . $prettynames['emission'][$emission] . "
 Management Sensitivity: " . $prettynames['tolerance'][$tolerance] . "
-Estimated Rate of Climate Change: " . $prettynames['confidence'][$confidence] . "\n\n" .
+Estimated Rate of Climate Change: " . $prettynames['rateofchange'][$rateofchange] . "\n\n" .
 "ToE = 0 indicates no emergence\n\n" .
 "Change direction indicates direction of climate change trend associated with each ToE\n" .
 "Change Direction = 1 indicates positive trend (increasing values of the variable as a result of climate change)\n" .
