@@ -95,7 +95,8 @@ jQuery( document ).ready(function( $ ) {
   });
     
   var variableid = location.pathname.match(/.*\/(V.*)/)[1];
-  var url = baseurl + "/boxplotdata/" + variableid;
+  //var url = baseurl + "/boxplotdata/" + variableid;
+  var url = baseurl + "/dotplotdata/" + variableid;
   
   $.post( url, function( jsonobj ) {  
     $("#variablename").html(jsonobj.variablename);

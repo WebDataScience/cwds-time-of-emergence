@@ -673,6 +673,7 @@ function toewhiskers_clean_array($array, $filter = 'check_plain') {
 
 /*
  * Ajax/JSON data retriever.
+ * Version 2.
  */
 function toewhiskers_json_query_function(){
   //drupal_set_message('formstate:<pre>'. print_r($_SESSION['compare'], TRUE) .'</pre>');
@@ -706,6 +707,176 @@ function toewhiskers_json_query_function(){
     'emission' => $emission,
   );
   $query = toewhiskers_timeline_query($val);
+  //drupal_set_message($query);
+  
+  $timelinequery = $query;
+  $timelinequery = str_replace("{", "", $timelinequery);
+  $timelinequery = str_replace("}", "", $timelinequery); 
+    
+  // Setup to query non Drupal database.
+  db_set_active('cig_toe');
+  
+  $result = db_query($query);
+  // Result is returned as a iterable object that returns a stdClass object on each iteration
+  foreach ($result as $record) {
+    
+    // Function to translate ugly short name value in DB to pretty names:
+    if($record->VARIABLESHORTNAME == "#Tmax>90degF(32.2deg"){$record->VARIABLESHORTNAME = "#Tmax>90°F(32.2°C)";}
+    // Replace '>=' with a proper utf code.
+    $record->VARIABLESHORTNAME = toewhiskers_utfencode($record->VARIABLESHORTNAME);
+    
+    $timelinedata[] = array(
+      $record->CHANGEDIR,
+      intval($record->TOE),
+      $record->VARIABLENAME,
+      $record->VARIABLEID,
+      round($record->TOE/5)*5,
+      $record->VARIABLESHORTNAME,
+      $record->EMISSCENARIO,
+      $record->DATASET,
+    );
+    
+  }  // End timeline data query.
+  
+  $csvvariables = array(
+    'VARIABLESHORTNAME'=> 'Variable',
+    'TOE'=> 'ToE_CentralTendency',
+    'TOE_RANGE' => 'ToE_Range',
+    'CHANGEDIR'=> 'Direction_of_Change',
+    'DATASET' => 'Dataset',
+  );
+  $csv = implode(",", array_values($csvvariables)) . "\n";
+  
+   
+  $toe_array =  array();
+  $variable_object = new stdClass();
+  $toe = "Beyond " . $max_TOE_year;
+  
+  // Query for 'table' portion of /timeline page.
+  $query = "SELECT ". $maindatatable.".*," . $lookupdatatable . ".VARIABLESHORTNAME 
+  FROM {". $maindatatable."}  LEFT JOIN {"
+  . $lookupdatatable . "} on (" . $lookupdatatable . ".VARIABLEID = ". $maindatatable.".VARIABLEID) WHERE
+  ". $maindatatable.".VARIABLEID in ('" . $variables . "') 
+  AND " . $maindatatable.".REGION = '" . $region .   "' 
+  AND " . $maindatatable.".EMERGTHRES = " . $tolerance ;
+  //AND " . $maindatatable.".SIGNALCONFIDENCE = " . $confidence . "
+  if($rateofchange == 'fast'){ 
+    $query .= " AND ((" . $maindatatable.".SIGNALCONFIDENCE = 95 AND " . $maindatatable.".CHANGEDIR = 1) OR (" . $maindatatable.".SIGNALCONFIDENCE = 5 AND " . $maindatatable . ".CHANGEDIR = -1)) ";
+  }
+  if($rateofchange == 'moderate'){ 
+    $query .= " AND " . $maindatatable.".SIGNALCONFIDENCE = 50 ";
+  }
+  if($rateofchange == 'slow'){ 
+    $query .= " AND ((" . $maindatatable.".SIGNALCONFIDENCE = 5 AND " . $maindatatable.".CHANGEDIR = 1) OR (" . $maindatatable.".SIGNALCONFIDENCE = 95 AND " . $maindatatable . ".CHANGEDIR = -1)) ";
+  }
+  $query .= " AND (" . $maindatatable.".MODELAGREEMENT = '25' or " .$maindatatable.".MODELAGREEMENT = '50' or " .$maindatatable.".MODELAGREEMENT = '75') 
+  AND (" . $maindatatable.".GCM = 'GCM_ensemble_25' OR ". $maindatatable.".GCM = 'GCM_ensemble' OR ". $maindatatable.".GCM = 'GCM_ensemble_75' ) ";
+  if($compare['emission'] == "high"){
+    $query .= "AND (". $maindatatable.".EMISSCENARIO = 'rcp85' OR " . $maindatatable.".EMISSCENARIO = 'a1b') ";
+  }
+  if($compare['emission'] == "low"){
+    $query .= "AND (". $maindatatable.".EMISSCENARIO = 'rcp45' OR " . $maindatatable.".EMISSCENARIO = 'b1') ";
+  }
+  $query .= "  AND (   ( ( " . $lookupdatatable . ".THEME = 'Air temperature' OR " . $lookupdatatable . ".THEME = 'Precipitation' ) AND ". $maindatatable.".DATASET = 'BCSD5')   
+  OR   (" . $lookupdatatable . ".THEME = 'Hydrologic' AND ". $maindatatable.".DATASET = 'BCSD3')   
+  OR   (" . $lookupdatatable . ".THEME = 'Streamflow' AND (". $maindatatable.".DATASET = 'BCSD3'  OR ". $maindatatable.".DATASET = 'BCSD5') )  ) ";
+    
+  $result = db_query($query);
+  
+  // Result is returned as a iterable object that returns a stdClass object on each iteration
+  foreach ($result as $record) {
+    // On first iteration of loop create object.
+    if(!isset($toe_array[$record->VARIABLEID])){
+      $toe_array[$record->VARIABLEID] = new stdClass();
+      $toe_array[$record->VARIABLEID]->VARIABLESHORTNAME = toewhiskers_utfencode($record->VARIABLESHORTNAME);
+      $toe_array[$record->VARIABLEID]->CHANGEDIRTEXT = "Indeterminate";
+    }
+    // Create rounded TOE value.
+    $toe = 0;
+    if ($record->TOE <= $max_TOE_year){
+      $toe = round($record->TOE/5)*5;
+    } 
+    // Assign TOE year ranges differently for different models.
+    if($record->GCM == 'GCM_ensemble'){
+      if($record->MODELAGREEMENT == "25"){
+        $toe_array[$record->VARIABLEID]->YEARA = ($toe == 0? "Unknown":$toe);
+      }
+      if($record->MODELAGREEMENT == "75"){
+        $toe_array[$record->VARIABLEID]->YEARB = ($toe == 0? "Unknown":$toe);
+      }
+    }
+    if($record->GCM == 'GCM_ensemble_25'){
+      $toe_array[$record->VARIABLEID]->YEARA = $toe;
+    }
+    if($record->GCM == 'GCM_ensemble_75'){
+      $toe_array[$record->VARIABLEID]->YEARB = $toe;
+    }
+    // CHANGEDIR for table is always at MODELAGREEMENT50
+    if($record->MODELAGREEMENT == "50"){
+      if($record->CHANGEDIR == "-1"){$toe_array[$record->VARIABLEID]->CHANGEDIRTEXT = "Decreasing";}
+      if($record->CHANGEDIR == "1") {$toe_array[$record->VARIABLEID]->CHANGEDIRTEXT = "Increasing";}
+    }
+  }  // End tabledata query.
+ 
+  $tablequery = $query;
+  $tablequery = str_replace("{", "", $tablequery);
+  $tablequery = str_replace("}", "", $tablequery);
+  
+  db_set_active();
+  
+  $toedata = array(
+    "maxtoeyear" => $max_TOE_year,
+    "emission" => $emission,
+    "confidence" => $confidence,
+    "rateofchange" => $rateofchange,
+    "tolerance" => $tolerance,
+    "timelinedata" => $timelinedata,
+    "tabledata" => $toe_array,
+    "timelinequery" => $timelinequery,
+    "tablequery" => $tablequery,
+  );  
+  
+  // Output JSON data for /timeline AJAX query.
+  // Cleaner output for testing only: drupal_json_output(print_r($toedata));
+  drupal_json_output($toedata);  
+}
+
+/*
+ * Ajax/JSON data retriever.
+ * Version 3
+ */
+function toewhiskers_json_query_function_v3(){
+  //drupal_set_message('formstate:<pre>'. print_r($_SESSION['compare'], TRUE) .'</pre>');
+  global $maindatatable;
+  global $lookupdatatable;
+  
+  $max_TOE_year = 2100;
+  $compare = $_SESSION['compare'];
+  // Multiple variables allowed.
+  $variables = implode("','",$compare['variable']);
+  $variables = str_replace(" ", "", $variables);
+  // Radios
+  $emission = trim($compare['emission']);
+  // Checkboxes
+  $tolerance = trim($compare['tolerance']);
+  $confidence = trim($compare['confidence']);
+  $rateofchange = trim($compare['rateofchange']);
+  $region = trim($compare['region']);
+  $timelinedata = array();
+  
+  //Query for the timeline chart portion of /timeline page.
+  $val = array(
+    'maindatatable' => $maindatatable,
+    'lookupdatatable' => $lookupdatatable,
+    'variables' => $variables,
+    'region' => $region,
+    'tolerance' => $tolerance,
+    'confidence' => $confidence,
+    'rateofchange' => $rateofchange,
+    'max_TOE_year' => $max_TOE_year,
+    'emission' => $emission,
+  );
+  $query = toewhiskers_timeline_query_v3($val);
   //drupal_set_message($query);
   
   $timelinequery = $query;
@@ -872,11 +1043,47 @@ function toewhiskers_json_query_function(){
 
 
 
+/* 
+ * Return the 'timeline' query for use by timeline page and 'export timeline data' function.
+ * This is V2 of the query.
+ */
+function toewhiskers_timeline_query($val){
+  $query = "SELECT 
+  {". $val['maindatatable']."}.TOE,{". $val['maindatatable']."}.VARIABLEID,{". $val['maindatatable']."}.CHANGEDIR,{" . $val['lookupdatatable'] . "}.VARIABLENAME,{" . $val['lookupdatatable'] . "}.VARIABLESHORTNAME,{". $val['maindatatable']."}.EMISSCENARIO,{" . $val['maindatatable'] . "}.DATASET 
+  FROM {". $val['maindatatable']."} 
+  LEFT JOIN {" . $val['lookupdatatable'] . "} on (" . $val['lookupdatatable'] . ".VARIABLEID = ". $val['maindatatable'].".VARIABLEID) 
+  WHERE ". $val['maindatatable'].".VARIABLEID in ('" . $val['variables'] . "') 
+  AND ". $val['maindatatable'].".REGION = '" . $val['region'] .   "' 
+  AND ". $val['maindatatable'].".EMERGTHRES = " . $val['tolerance'] ;
+  //AND ". $val['maindatatable'].".SIGNALCONFIDENCE = " . $val['confidence'] ;
+  if($val['rateofchange'] == 'fast'){ 
+    $query .= " AND ((" . $val['maindatatable'].".SIGNALCONFIDENCE = 95 AND " . $val['maindatatable'].".CHANGEDIR = 1) OR (" . $val['maindatatable'].".SIGNALCONFIDENCE = 5 AND " . $val['maindatatable'] . ".CHANGEDIR = -1)) ";
+  }
+  if($val['rateofchange'] == 'moderate'){ 
+    $query .= " AND " . $val['maindatatable'].".SIGNALCONFIDENCE = 50 ";
+  }
+  if($val['rateofchange'] == 'slow'){ 
+    $query .= " AND ((" . $val['maindatatable'].".SIGNALCONFIDENCE = 5 AND " . $val['maindatatable'].".CHANGEDIR = 1) OR (" . $val['maindatatable'] . ".SIGNALCONFIDENCE = 95 AND " . $val['maindatatable'] . ".CHANGEDIR = -1)) ";
+  }
+  $query .= " AND ". $val['maindatatable'].".TOE <= " . $val['max_TOE_year'] . "
+  AND ". $val['maindatatable'].".MODELAGREEMENT = '50' 
+  AND ". $val['maindatatable'].".GCM = 'GCM_ensemble' ";
+  if($val['emission'] == "high"){    $query .= "AND (". $val['maindatatable'].".EMISSCENARIO = 'rcp85' OR " . $val['maindatatable'].".EMISSCENARIO = 'a1b') ";  }
+  if($val['emission'] == "low"){    $query .= "AND (". $val['maindatatable'].".EMISSCENARIO = 'rcp45' OR " . $val['maindatatable'].".EMISSCENARIO = 'b1') ";  }
+  $query .= "  AND (   ( ( " . $val['lookupdatatable'] . ".THEME = 'Air temperature' OR " . $val['lookupdatatable'] . ".THEME = 'Precipitation' ) AND ". $val['maindatatable'].".DATASET = 'BCSD5')   
+  OR   (" . $val['lookupdatatable'] . ".THEME = 'Hydrologic' AND ". $val['maindatatable'].".DATASET = 'BCSD3')   
+  OR   (" . $val['lookupdatatable'] . ".THEME = 'Streamflow' AND (". $val['maindatatable'].".DATASET = 'BCSD3'  OR ". $val['maindatatable'].".DATASET = 'BCSD5') )  )
+  ORDER BY {". $val['maindatatable']."}.TOE";
+  return($query);
+}
+
 
 /* 
  * Return the 'timeline' query for use by timeline page and 'export timeline data' function.
+ * This function returns data for the timeline. This is V3 of the query that uses the CHANGEDIR at SIGNALCONFIDENCE50 to determine rate of change at
+ * SIGNALCONFIDENCE5 and 95.
  */
-function toewhiskers_timeline_query($val){
+function toewhiskers_timeline_query_v3($val){
   $query = "SELECT 
   {". $val['maindatatable']."}.TOE,{". $val['maindatatable']."}.VARIABLEID,{" . $val['lookupdatatable'] . "}.VARIABLENAME,{" . $val['lookupdatatable'] . "}.VARIABLESHORTNAME,{". $val['maindatatable']."}.EMISSCENARIO,{" . $val['maindatatable'] . "}.DATASET,
   GROUP_CONCAT(". $val['maindatatable'] . ".CHANGEDIR) AS CHANGEDIRRANGE,
@@ -916,6 +1123,7 @@ function toewhiskers_timeline_query($val){
 /*
  * Ajax/JSON data retriever.
  * This function returns data for the boxplot page.
+ * This is version 2 of this query that uses the CHANGEDIR value and SIGNALCONFIDENCE to determine the fast/slow rate of change for each TOE.
  */
 function toewhiskers_json_query_boxplot_function($variable, $mode = "json"){
   global $maindatatable;
@@ -1306,7 +1514,7 @@ function toewhiskers_csvencode($csv){
 
 /*
  * Ajax/JSON data retriever.
- * This function returns data for the boxplot page.
+ * This function returns data for the boxplot page. This is V3 of the query that uses the CHANGEDIR at SIGNALCONFIDENCE50 to determine rate of change at SIGNALCONFIDENCE5 and 95.
  */
 function toewhiskers_json_query_dotplot_function($variable, $mode = "json"){
   global $maindatatable;

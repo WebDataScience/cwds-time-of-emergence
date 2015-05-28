@@ -6,6 +6,11 @@ function toeboxplot_menu() {
     'access callback' => TRUE,
     'page arguments' => array(1),
   );
+  $items['dotplots'] = array(
+    'page callback' => 'toedotplots_page_function',
+    'access callback' => TRUE,
+    'page arguments' => array(1),
+  );
   return $items;
 }
 
@@ -17,18 +22,32 @@ function toeboxplots_page_function($variableid){
   drupal_add_css(drupal_get_path('module', 'toeboxplot') . '/css/toeboxplot.css');
   return theme('toeboxplots_template');
 }
-
+function toedotplots_page_function($variableid){
+  $comparearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
+  $comparearray['variableid'] = check_plain($variableid);
+  $_SESSION['compare'] = $comparearray;
+  drupal_add_css(drupal_get_path('module', 'toeboxplot') . '/css/toeboxplot.css');
+  return theme('toedotplots_template');
+}
 
 function toeboxplot_theme(){
   return array(
     'toeboxplots_template' => array(
       'template' => 'templates/toeboxplots',
     ),
+    'toedotplots_template' => array(
+      'template' => 'templates/toedotplots',
+    ),
   );
 }
 
 
+
 function template_preprocess_toeboxplots_template(&$variables) {
+  $block = module_invoke('block', 'block_view', '19');
+  $variables['fourpanelintro'] = render($block['content']);
+}
+function template_preprocess_toedotplots_template(&$variables) {
   $block = module_invoke('block', 'block_view', '19');
   $variables['fourpanelintro'] = render($block['content']);
 }
