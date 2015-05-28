@@ -17,6 +17,7 @@ d3.box = function() {
 
   // For each small multiple…
   function box(g) {
+ 
     g.each(function(data, i) {
 
       // data[1] is array of toe (the dots).
@@ -65,10 +66,8 @@ d3.box = function() {
       // Stash the new scale.
       this.__chart__ = x1;
 
-      // Note: the box, median, and box tick elements are fixed in number,
-      // so we only have to handle enter and update. In contrast, the outliers
-      // and other elements are variable, so we need to exit them! Variable
-      // elements also fade in and out.
+      // Note: the box, median, and box tick elements are fixed in number, so we only have to handle enter and update. In contrast, the outliers
+      // and other elements are variable, so we need to exit them! Variable elements also fade in and out.
 
       // Update center line: the vertical line spanning the whiskers.
       var center = g.selectAll("line.center")
@@ -105,8 +104,7 @@ d3.box = function() {
           .attr("x", 0)
           .attr("y", function(d) { return x0(d[2]); })
           .attr("width", width)
-          .attr("height", function(d) { return x0(d[0]) - x0(d[2]); })
-          ;
+          .attr("height", function(d) { return x0(d[0]) - x0(d[2]); }) ;
         box.transition()
           .duration(duration)
           .attr("y", function(d) { return x1(d[2]); })

@@ -169,10 +169,7 @@ jQuery( document ).ready(function( $ ) {
         .text("No emergence prior to 2100"); 
     }   
     // add a title
-    svg.append("text")
-      //.attr("y", (width / 2))             
-      //.attr("x", 0 + (margin.top / 2))
-      //.attr("y", -20)       
+    svg.append("text")       
       .attr("y", 15)         
       .attr("x", (0 - width))
       .attr("text-anchor", "start")  
