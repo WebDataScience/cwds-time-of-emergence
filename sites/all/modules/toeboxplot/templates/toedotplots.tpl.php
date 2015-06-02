@@ -63,7 +63,7 @@
     
 </div>
 <div>
-  <a id="downloadtextanchor" href="<?php print($GLOBALS['base_url'] ); ?>/boxplotdata/<?php print($variableid); ?>/text" download="boxplotdata.csv">
+  <a id="downloadtextanchor" href="<?php print($GLOBALS['base_url'] ); ?>/dotplotdata/<?php print($variableid); ?>/text" download="boxplotdata.csv">
     <input id="print-text-button" name="op" value="Export Boxplot Data" class="form-submit" type="submit">
   </a>  
 </div>

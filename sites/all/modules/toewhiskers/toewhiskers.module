@@ -52,7 +52,7 @@ function toewhiskers_menu() {
     'access callback' => TRUE,
   );
   $items['boxplotdata'] = array(
-    'page callback' => 'toewhiskers_json_query_boxplot_function',
+    'page callback' => 'toewhiskers_json_query_dotplot_function',
     'page arguments' => array(1,2),
     'access callback' => TRUE,
   );
@@ -1167,6 +1167,7 @@ function toewhiskers_variablelist_function($themeindex,$impactindex,$typeindex,$
 function toewhiskers_exporttimelinedata_function(){
   global $maindatatable;
   global $lookupdatatable;
+  global $queryversion;
   
   $max_TOE_year = 2100;
   $compare = $_SESSION['compare'];
@@ -1191,7 +1192,12 @@ function toewhiskers_exporttimelinedata_function(){
     'max_TOE_year' => $max_TOE_year,
     'emission' => $emission,
   );
-  $query = toewhiskers_timeline_query($val);
+  
+  if($queryversion == 'V3'){
+    $query = toewhiskers_timeline_query_v3($val);
+  } else {
+    $query = toewhiskers_timeline_query($val);
+  }
   
   $timelinequery = $query;
   $timelinequery = str_replace("{", "", $timelinequery);
@@ -1202,11 +1208,45 @@ function toewhiskers_exporttimelinedata_function(){
   $result = db_query($query);
   $csv = "Variable ID,Variable,Dataset,TOE(multi-model median),Change Direction\n";
   // Result is returned as a iterable object that returns a stdClass object on each iteration
-  foreach ($result as $record) {
-    // Rename one poorly coded variable shortname.
-    if($record->VARIABLESHORTNAME == "#Tmax>90degF(32.2deg"){$record->VARIABLESHORTNAME = "#Tmax>90°F(32.2°C)";}
-    $csv .= "\"" . toewhiskers_csvencode($record->VARIABLESHORTNAME) . "\",\"" . $record->VARIABLENAME . "\",\"" . $record->DATASET . "\"," . round($record->TOE/5)*5 . "," . $record->CHANGEDIR . "\n";
-  }  
+  
+  
+  if($queryversion == 'V3'){
+    foreach ($result as $record) {
+      // Parse ranges to support additional logic.
+      if($record->VARIABLESHORTNAME == "#Tmax>90degF(32.2deg"){$record->VARIABLESHORTNAME = "#Tmax>90°F(32.2°C)";}
+      $signalconfidencearray = explode(',',$record->SIGNALCONFIDENCERANGE);  
+      $changedirarray = explode(',',$record->CHANGEDIRRANGE);
+      $toearray = explode(',',$record->TOERANGE);
+      
+      $changedirrange = array_combine($signalconfidencearray,$changedirarray);
+      $toerange = array_combine($signalconfidencearray,$toearray);
+      
+      $changedir = $changedirrange['50'];
+      $toe = 0;
+      $changedir = 0;
+
+      // Additional V3 logic.
+      if($rateofchange == 'moderate'){ $toe = $toerange['50'];}
+      if(($rateofchange == 'fast' && $changedirrange['50'] == '1') || ($rateofchange == 'slow' && $changedirrange['50'] == '-1')){
+        $toe = $toerange['95'];
+        $changedir = $changedirrange['95'];
+      }
+      if(($rateofchange == 'slow' && $changedirrange['50'] == '1') || ($rateofchange == 'fast' && $changedirrange['50'] == '-1')){
+        $toe = $toerange['5'];
+        $changedir = $changedirrange['5'];
+      }
+      $csv .= "\"" . toewhiskers_csvencode($record->VARIABLESHORTNAME) . "\",\"" . $record->VARIABLENAME . "\",\"" . $record->DATASET . "\"," . round($toe/5)*5 . "," . $changedir . "\n";
+    }
+  }
+  
+  
+  else {
+    foreach ($result as $record) {
+      // Rename one poorly coded variable shortname.
+      if($record->VARIABLESHORTNAME == "#Tmax>90degF(32.2deg"){$record->VARIABLESHORTNAME = "#Tmax>90°F(32.2°C)";}
+      $csv .= "\"" . toewhiskers_csvencode($record->VARIABLESHORTNAME) . "\",\"" . $record->VARIABLENAME . "\",\"" . $record->DATASET . "\"," . round($record->TOE/5)*5 . "," . $record->CHANGEDIR . "\n";
+    }  
+  }
   db_set_active();
   
   // Create code to text translations for data export.
@@ -1425,20 +1465,22 @@ function toewhiskers_json_query_dotplot_function($variable, $mode = "json"){
           $dotsdata = "";
           $toeandchangedirdata = "";
           $toema50 = "";
-          if(isset($signalconfidence['toema50']['toe'])){
-            $toema50 = "toe:" . $signalconfidence['toema50']['toe'] . ",dir:" . $signalconfidence['toema50']['dir'];
-          }
-          foreach($signalconfidence as $boxordotskey=>$boxordots){
-            if($boxordotskey == 'box'){
-              $boxdata = implode(',',$boxordots);
-            }
-            if($boxordotskey == 'toeandchangedir'){
-              foreach($boxordots as $key=>$value){
-               $toeandchangedirdata .= "toe:" . $value['toe'] . ",dir:" . $value['dir'] . "," ;
+          if($signalconfidencekey != "query"){
+            foreach($signalconfidence as $boxordotskey=>$boxordots){
+              if($boxordotskey == 'toema50'){
+                $toema50 = "toe:" . $signalconfidence['toema50']['toe'] . ",dir:" . $signalconfidence['toema50']['dir'];
+              }
+              if($boxordotskey == 'box'){
+                $boxdata = implode(',',$boxordots);
+              }
+              if($boxordotskey == 'toeandchangedir'){
+                foreach($boxordots as $key=>$value){
+                 $toeandchangedirdata .= "toe:" . $value['toe'] . ",dir:" . $value['dir'] . "," ;
+                }
               }
             }
+            $csv .= $usertextconvert[$emergencekey] . "," . $usertextconvert[$emissionkey] . "," . $usertextconvert[$signalconfidencekey] . ",\"" . $toema50 ."\",\"" . rtrim($toeandchangedirdata,",") . "\"\n";
           }
-          $csv .= $usertextconvert[$emergencekey] . "," . $usertextconvert[$emissionkey] . "," . $usertextconvert[$signalconfidencekey] . ",\"" . $toema50 ."\",\"" . rtrim($toeandchangedirdata,",") . "\"\n";
     } } } 
     $o .= $csv;
     drupal_add_http_header('Content-Type', 'text/csv; utf-8');
