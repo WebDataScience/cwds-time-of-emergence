@@ -10,7 +10,7 @@ $maindatatable = "variablev7";
 global $lookupdatatable;
 $lookupdatatable = "lookupv3";
 global $queryversion;
-$queryversion = "V2";
+$queryversion = "V3";
 
 function toewhiskers_menu() {
   $items['explore'] = array(
@@ -1461,7 +1461,6 @@ function toewhiskers_json_query_dotplot_function($variable, $mode = "json"){
  * Version 3 query and parsing.
  */
 function toewhiskers_json_query_function_v3(){
-  //drupal_set_message('formstate:<pre>'. print_r($_SESSION['compare'], TRUE) .'</pre>');
   global $maindatatable;
   global $lookupdatatable;
   
@@ -1492,9 +1491,7 @@ function toewhiskers_json_query_function_v3(){
   );
   $query = toewhiskers_timeline_query_v3($val);
   
-  $timelinequery = $query;
-  $timelinequery = str_replace("{", "", $timelinequery);
-  $timelinequery = str_replace("}", "", $timelinequery); 
+  $timelinequery = str_replace(array("{","}"), "",$query);
     
   // Setup to query non Drupal database.
   db_set_active('cig_toe');
@@ -1507,9 +1504,9 @@ function toewhiskers_json_query_function_v3(){
     if($record->VARIABLESHORTNAME == "#Tmax>90degF(32.2deg"){$record->VARIABLESHORTNAME = "#Tmax>90°F(32.2°C)";}
     // Replace '>=' with a proper utf code.
     $record->VARIABLESHORTNAME = toewhiskers_utfencode($record->VARIABLESHORTNAME);
-    
+       
     // Parse ranges to support additional logic.
-    $signalconfidencearray = explode(',',$record->SIGNALCONFIDENCERANGE);
+    $signalconfidencearray = explode(',',$record->SIGNALCONFIDENCERANGE);  
     $changedirarray = explode(',',$record->CHANGEDIRRANGE);
     $toearray = explode(',',$record->TOERANGE);
     
@@ -1518,12 +1515,9 @@ function toewhiskers_json_query_function_v3(){
     
     $changedir = $changedirrange['50'];
     $toe = 0;
-    
+
     // Additional V3 logic.
-    if(($changedirrange['50'] == '0') && ($rateofchange != 'moderate')){
-      break;
-    }
-    if($rateofchange == 'moderate'){      $toe = $toerange['50'];    }
+    if($rateofchange == 'moderate'){ $toe = $toerange['50'];}
     if(($rateofchange == 'fast' && $changedirrange['50'] == '1') || ($rateofchange == 'slow' && $changedirrange['50'] == '-1')){
       $toe = $toerange['95'];
     }
@@ -1555,72 +1549,122 @@ function toewhiskers_json_query_function_v3(){
   
    
   $toe_array =  array();
+  $dirchange = array();
   $variable_object = new stdClass();
-  $toe = "Beyond " . $max_TOE_year;
+  //$toe = "Beyond " . $max_TOE_year;
   
-  // Query for 'table' portion of /timeline page.
-  $query = "SELECT " . $maindatatable . ".*," . $lookupdatatable . ".VARIABLESHORTNAME, 
-  GROUP_CONCAT(". $maindatatable . ".CHANGEDIR) AS CHANGEDIRRANGE,
-  GROUP_CONCAT(". $maindatatable . ".SIGNALCONFIDENCE) AS SIGNALCONFIDENCERANGE,
-  GROUP_CONCAT(". $maindatatable . ".TOE) AS TOERANGE,
-  GROUP_CONCAT(". $maindatatable . ".MODELAGREEMENT) AS MODELAGREEMENTRANGE,
-    GROUP_CONCAT(". $maindatatable . ".GCM) AS GCMRANGE
-  FROM {". $maindatatable . "}  LEFT JOIN {"
-  . $lookupdatatable . "} on (" . $lookupdatatable . ".VARIABLEID = ". $maindatatable.".VARIABLEID) WHERE
-  ". $maindatatable.".VARIABLEID in ('" . $variables . "') 
+  
+  // Query for 'directionofchange' value and central values. If 'fast' or 'slow' the second query will use the '$dirchange' values.
+  $tquery50 = "SELECT " . $maindatatable . ".*," . $lookupdatatable . ".VARIABLESHORTNAME
+  FROM {" . $maindatatable . "}  
+  LEFT JOIN {" . $lookupdatatable . "} on (" . $lookupdatatable . ".VARIABLEID = ". $maindatatable.".VARIABLEID)
+  WHERE ". $maindatatable.".VARIABLEID in ('" . $variables . "') 
+  AND " . $maindatatable.".SIGNALCONFIDENCE = '50' 
   AND " . $maindatatable.".REGION = '" . $region .   "' 
   AND " . $maindatatable.".EMERGTHRES = " . $tolerance . " 
   AND (" . $maindatatable.".MODELAGREEMENT = '25' or " .$maindatatable.".MODELAGREEMENT = '50' or " .$maindatatable.".MODELAGREEMENT = '75') 
   AND (" . $maindatatable.".GCM = 'GCM_ensemble_25' OR ". $maindatatable.".GCM = 'GCM_ensemble' OR ". $maindatatable.".GCM = 'GCM_ensemble_75' ) ";
   if($compare['emission'] == "high"){
-    $query .= "AND (". $maindatatable.".EMISSCENARIO = 'rcp85' OR " . $maindatatable.".EMISSCENARIO = 'a1b') ";
+    $tquery50 .= "AND (". $maindatatable.".EMISSCENARIO = 'rcp85' OR " . $maindatatable.".EMISSCENARIO = 'a1b') ";
   }
   if($compare['emission'] == "low"){
-    $query .= "AND (". $maindatatable.".EMISSCENARIO = 'rcp45' OR " . $maindatatable.".EMISSCENARIO = 'b1') ";
+    $tquery50 .= "AND (". $maindatatable.".EMISSCENARIO = 'rcp45' OR " . $maindatatable.".EMISSCENARIO = 'b1') ";
   }
-  $query .= "  AND (   ( ( " . $lookupdatatable . ".THEME = 'Air temperature' OR " . $lookupdatatable . ".THEME = 'Precipitation' ) AND " . $maindatatable . ".DATASET = 'BCSD5') ";  
-  $query .= " OR   (" . $lookupdatatable . ".THEME = 'Hydrologic' AND ". $maindatatable . ".DATASET = 'BCSD3') 
-  OR (" . $lookupdatatable . ".THEME = 'Streamflow' AND (". $maindatatable.".DATASET = 'BCSD3'  OR ". $maindatatable.".DATASET = 'BCSD5') )  ) 
-  GROUP BY " . $maindatatable . ".VARIABLEID ";
+  $tquery50 .= " AND ( ( ( " . $lookupdatatable . ".THEME = 'Air temperature' OR " . $lookupdatatable . ".THEME = 'Precipitation' ) AND " . $maindatatable . ".DATASET = 'BCSD5')  
+  OR (" . $lookupdatatable . ".THEME = 'Hydrologic' AND ". $maindatatable . ".DATASET = 'BCSD3') 
+  OR (" . $lookupdatatable . ".THEME = 'Streamflow' AND (". $maindatatable.".DATASET = 'BCSD3'  OR " . $maindatatable . ".DATASET = 'BCSD5') ) )";
   
-  drupal_set_message($query);
-  
-  $result = db_query($query);
-  
+  //drupal_set_message(str_replace(array("{","}"), "", $tquery50));
+    
+  $result = db_query($tquery50);
+
   // Result is returned as a iterable object that returns a stdClass object on each iteration
   foreach ($result as $record) {
+  
+    // Populate array of stored dirchange for possible use by second query.
+    if($record->MODELAGREEMENT == "50"){ $dirchange[$record->VARIABLEID] = $record->CHANGEDIR; }
+    
     // On first iteration of loop create object.
     if(!isset($toe_array[$record->VARIABLEID])){
       $toe_array[$record->VARIABLEID] = new stdClass();
       $toe_array[$record->VARIABLEID]->VARIABLESHORTNAME = toewhiskers_utfencode($record->VARIABLESHORTNAME);
       $toe_array[$record->VARIABLEID]->CHANGEDIRTEXT = "Indeterminate";
+      $toe_array[$record->VARIABLEID]->YEARA = "Unknown";
+      $toe_array[$record->VARIABLEID]->YEARB = "Unknown";
     }
-    // Create rounded TOE value.
     $toe = 0;
-    if ($record->TOE <= $max_TOE_year){
-      $toe = round($record->TOE/5)*5;
-    } 
-    // Assign TOE year ranges differently for different models.
-    if($record->GCM == 'GCM_ensemble'){
-      if($record->MODELAGREEMENT == "25"){
-        $toe_array[$record->VARIABLEID]->YEARA = ($toe == 0? "Unknown":$toe);
-      }
-      if($record->MODELAGREEMENT == "75"){
-        $toe_array[$record->VARIABLEID]->YEARB = ($toe == 0? "Unknown":$toe);
-      }
-    }
-    if($record->GCM == 'GCM_ensemble_25'){
-      $toe_array[$record->VARIABLEID]->YEARA = $toe;
-    }
-    if($record->GCM == 'GCM_ensemble_75'){
-      $toe_array[$record->VARIABLEID]->YEARB = $toe;
-    }
+    if($record->TOE <= $max_TOE_year){ $toe = round($record->TOE/5)*5; } 
+
     // CHANGEDIR for table is always at MODELAGREEMENT50
     if($record->MODELAGREEMENT == "50"){
       if($record->CHANGEDIR == "-1"){$toe_array[$record->VARIABLEID]->CHANGEDIRTEXT = "Decreasing";}
       if($record->CHANGEDIR == "1") {$toe_array[$record->VARIABLEID]->CHANGEDIRTEXT = "Increasing";}
     }
-  }  // End tabledata query.
+    
+    if($rateofchange == 'moderate'){
+      if($record->SIGNALCONFIDENCE == '50'){
+        if($record->GCM == 'GCM_ensemble'){
+          if($record->MODELAGREEMENT == "25"){            $toe_array[$record->VARIABLEID]->YEARA = ($toe == 0? "Unknown":$toe);          }
+          if($record->MODELAGREEMENT == "75"){            $toe_array[$record->VARIABLEID]->YEARB = ($toe == 0? "Unknown":$toe);          }
+        }
+        if($record->GCM == 'GCM_ensemble_25'){          $toe_array[$record->VARIABLEID]->YEARA = $toe;        }
+        if($record->GCM == 'GCM_ensemble_75'){          $toe_array[$record->VARIABLEID]->YEARB = $toe;        }
+      }
+    }  // end moderate
+    
+  } // end foreach result loop
+  
+  
+  // fast and slow rateofchange utilize different toe values depending on previously queried signalconfidence50 value.
+  if($rateofchange != 'moderate'){
+    
+    // Query for 'table' portion of /timeline page.
+    $query = "SELECT " . $maindatatable . ".*
+    FROM {" . $maindatatable . "}  
+    LEFT JOIN {" . $lookupdatatable . "} on (" . $lookupdatatable . ".VARIABLEID = ". $maindatatable.".VARIABLEID) 
+    WHERE ". $maindatatable.".VARIABLEID in ('" . $variables . "') 
+    AND (" . $maindatatable.".SIGNALCONFIDENCE = '5' OR  " . $maindatatable.".SIGNALCONFIDENCE = '95')
+    AND " . $maindatatable.".REGION = '" . $region .   "' 
+    AND " . $maindatatable.".EMERGTHRES = " . $tolerance . " 
+    AND (" . $maindatatable.".MODELAGREEMENT = '25' OR " .$maindatatable.".MODELAGREEMENT = '75') 
+    AND (" . $maindatatable.".GCM = 'GCM_ensemble_25' OR ". $maindatatable.".GCM = 'GCM_ensemble' OR ". $maindatatable.".GCM = 'GCM_ensemble_75' ) ";
+    if($compare['emission'] == "high"){
+      $query .= "AND (". $maindatatable.".EMISSCENARIO = 'rcp85' OR " . $maindatatable.".EMISSCENARIO = 'a1b') ";
+    }
+    if($compare['emission'] == "low"){
+      $query .= "AND (". $maindatatable.".EMISSCENARIO = 'rcp45' OR " . $maindatatable.".EMISSCENARIO = 'b1') ";
+    }
+    $query .= " AND ( ( ( " . $lookupdatatable . ".THEME = 'Air temperature' OR " . $lookupdatatable . ".THEME = 'Precipitation' ) AND " . $maindatatable . ".DATASET = 'BCSD5')  
+    OR (" . $lookupdatatable . ".THEME = 'Hydrologic' AND ". $maindatatable . ".DATASET = 'BCSD3') 
+    OR (" . $lookupdatatable . ".THEME = 'Streamflow' AND (". $maindatatable.".DATASET = 'BCSD3'  OR " . $maindatatable . ".DATASET = 'BCSD5') ) )"; 
+    //drupal_set_message(str_replace(array("{","}"), "", $query));
+    
+    $result = db_query($query);
+    
+    // Result is returned as a iterable object that returns a stdClass object on each iteration
+    foreach ($result as $record) {
+ 
+      // Create rounded TOE value.
+      $toe = 0;
+      if ($record->TOE <= $max_TOE_year){ $toe = round($record->TOE/5)*5;      } 
+      
+      // This conditional encapsulates the V3 version of the query logic.
+      if(($rateofchange == 'slow' && $dirchange[$record->VARIABLEID] == '-1' && $record->SIGNALCONFIDENCE == '95') ||
+         ($rateofchange == 'slow' && $dirchange[$record->VARIABLEID] == '1'  && $record->SIGNALCONFIDENCE == '5') ||
+         ($rateofchange == 'fast' && $dirchange[$record->VARIABLEID] == '-1' && $record->SIGNALCONFIDENCE == '5') ||
+         ($rateofchange == 'fast' && $dirchange[$record->VARIABLEID] == '1'  && $record->SIGNALCONFIDENCE == '95')){
+        // Assign TOE year ranges differently for different models .
+        if($record->GCM == 'GCM_ensemble'){
+          if($record->MODELAGREEMENT == "25"){            $toe_array[$record->VARIABLEID]->YEARA = ($toe == 0? "Unknown":$toe);          }
+          if($record->MODELAGREEMENT == "75"){            $toe_array[$record->VARIABLEID]->YEARB = ($toe == 0? "Unknown":$toe);          }
+        }
+        if($record->GCM == 'GCM_ensemble_25'){          $toe_array[$record->VARIABLEID]->YEARA = $toe;        }
+        if($record->GCM == 'GCM_ensemble_75'){          $toe_array[$record->VARIABLEID]->YEARB = $toe;        }
+      } // end if(rate/changedir/signal)
+     
+    }  // End tabledata query.
+   
+  }
  
   $tablequery = $query;
   $tablequery = str_replace("{", "", $tablequery);
@@ -1637,6 +1681,7 @@ function toewhiskers_json_query_function_v3(){
     "timelinedata" => $timelinedata,
     "tabledata" => $toe_array,
     "timelinequery" => $timelinequery,
+    "tquery50" => $tquery50,
     "tablequery" => $tablequery,
   );  
   // Output JSON data for /timeline AJAX query.
