@@ -227,7 +227,7 @@ d3.box = function() {
           }
         }
       }
-       
+        
        
       // The original 'dots'
       if(displaydots){

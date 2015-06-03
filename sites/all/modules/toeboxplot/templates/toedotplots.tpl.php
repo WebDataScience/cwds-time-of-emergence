@@ -152,6 +152,14 @@ jQuery( document ).ready(function( $ ) {
     var yAxis = d3.svg.axis().scale(y).orient("right").ticks(4).tickFormat(d3.format("d"));
     // Count number of dots found for this boxplot. Then display 'No emergence prior to 2100' message if appropriate.
     var dotcount = data[0][3].length + data[0][4].length;
+    
+    
+var totaldotcount = 0;
+alert("Starting totaldotcount: " + totaldotcount);
+totaldotcount = dotcounter(data[0][3] + data[0][4]);
+alert("Ending totaldotcount: " + totaldotcount);
+
+
     if(dotcount > 0){
       //draw boxplots  
       svg.selectAll(".box")    
@@ -159,6 +167,7 @@ jQuery( document ).ready(function( $ ) {
         .enter().append("g")
         .attr("transform", function(d) { return "translate(" +  x(d[0])  + "," + margin.top + ")"; } )
         .call(chart.width(x.rangeBand()));
+
     } else {
       //Zero results text
       svg.append("text")
@@ -211,6 +220,17 @@ jQuery( document ).ready(function( $ ) {
       .call(xAxis); 
                            
   }  // end drawboxplot
+    
+    
+    
+    
+function dotcounter(d){
+  var datapointcount = 0;
+  for (i = 0; i < d.length; i++) {
+    if(d[i]<=2100){datapointcount +=1;}
+  }
+  return datapointcount;
+}
     
     
 /**
