@@ -1209,7 +1209,6 @@ function toewhiskers_exporttimelinedata_function(){
   $csv = "Variable ID,Variable,Dataset,TOE(multi-model median),Change Direction\n";
   // Result is returned as a iterable object that returns a stdClass object on each iteration
   
-  
   if($queryversion == 'V3'){
     foreach ($result as $record) {
       // Parse ranges to support additional logic.
@@ -1238,7 +1237,6 @@ function toewhiskers_exporttimelinedata_function(){
       $csv .= "\"" . toewhiskers_csvencode($record->VARIABLESHORTNAME) . "\",\"" . $record->VARIABLENAME . "\",\"" . $record->DATASET . "\"," . round($toe/5)*5 . "," . $changedir . "\n";
     }
   }
-  
   
   else {
     foreach ($result as $record) {
@@ -1282,16 +1280,16 @@ function toewhiskers_utfencode($html){
   $html = str_replace(">=", "&ge;", $html);
   return($html);
 }
+
 function toewhiskers_csvencode($csv){
   $csv = str_replace('"', '""', $csv);
   return($csv);
 }
 
 
-
-
-
-
+/*
+ * Version 3 query logic code below this comment. 
+ */
 
 
 /*
@@ -1356,18 +1354,14 @@ function toewhiskers_json_query_dotplot_function($variable, $mode = "json"){
         $query .= " WHERE variableid='" . $variable . "' and emergthres=" . $emergencethreshold;                  
         $query .= " AND REGION = '" . $_SESSION['compare']['region'] . "'";
         //$query .= " AND REGION = '" . $_SESSION['compare']['region'] . "'";
-        if($emissionscenario == "high"){
-          $query .= " AND (". $maindatatable . ".EMISSCENARIO = 'rcp85' OR " . $maindatatable.".EMISSCENARIO = 'a1b') ";
-        }
-        if($emissionscenario == "low"){
-          $query .= " AND (". $maindatatable . ".EMISSCENARIO = 'rcp45' OR " . $maindatatable.".EMISSCENARIO = 'b1') ";
-        }
+        if($emissionscenario == "high"){ $query .= " AND (". $maindatatable . ".EMISSCENARIO = 'rcp85' OR " . $maindatatable.".EMISSCENARIO = 'a1b') ";        }
+        if($emissionscenario == "low"){  $query .= " AND (". $maindatatable . ".EMISSCENARIO = 'rcp45' OR " . $maindatatable.".EMISSCENARIO = 'b1') ";        }
+        if($mode == 'json'){             $query .= " AND (". $maindatatable . ".TOE <= 2100 "; }
         $query .= $themequery;
         $query .= " GROUP BY ". $maindatatable . ".GCM";
            
         $result = db_query($query);
         
-       
         $fastboxplot = array('toeandchangedir' => array() );      
         $moderateboxplot = array('toeandchangedir' => array() ); 
         $slowboxplot = array('toeandchangedir' => array() ); 
@@ -1486,17 +1480,9 @@ function toewhiskers_json_query_dotplot_function($variable, $mode = "json"){
     drupal_add_http_header('Content-Type', 'text/csv; utf-8');
     drupal_add_http_header('Content-Disposition', 'attachment; filename = dataexport.csv');
     print($o);
-    
   }
 }
 
-
-
-/*
- * Version 3 query logic code below this comment. 
- */
- 
- 
 
 /*
  * Ajax/JSON data retriever.
@@ -1594,7 +1580,6 @@ function toewhiskers_json_query_function_v3(){
   $dirchange = array();
   $variable_object = new stdClass();
   //$toe = "Beyond " . $max_TOE_year;
-  
   
   // Query for 'directionofchange' value and central values. If 'fast' or 'slow' the second query will use the '$dirchange' values.
   $tquery50 = "SELECT " . $maindatatable . ".*," . $lookupdatatable . ".VARIABLESHORTNAME
