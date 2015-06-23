@@ -1220,9 +1220,8 @@ function toewhiskers_exporttimelinedata_function(){
       $changedirrange = array_combine($signalconfidencearray,$changedirarray);
       $toerange = array_combine($signalconfidencearray,$toearray);
       
-      $changedir = $changedirrange['50'];
+      $changedir = isset($changedirrange['50'])?$changedirrange['50']:0;
       $toe = 0;
-      $changedir = 0;
 
       // Additional V3 logic.
       if($rateofchange == 'moderate'){ $toe = $toerange['50'];}
