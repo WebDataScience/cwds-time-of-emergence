@@ -290,7 +290,6 @@ function wrap(text, width) {
 </script>
 <style>
 body, svg, h2 {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: black;
   font-weight: normal;
 	overflow: visible;
@@ -302,18 +301,18 @@ body{
 	font-size: 22px;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
-h2 {
+h2{
   padding: 0;
   margin: 0;
 }
-    #top-x-title {
-padding-top: 25px;
-      text-align: center;
-      color: black;
-    }
-    #top-y-title {
-      color: black;
-      position: absolute;
+#top-x-title {
+  padding-top: 25px;
+  text-align: center;
+  color: black;
+}
+#top-y-title {
+  color: black;
+  position: absolute;
       top: 600px;
       left: 60px;
       z-index: 1000;
@@ -321,8 +320,8 @@ padding-top: 25px;
       -moz-transform: rotate(-90deg);
       -o-transform: rotate(-90deg);
       -ms-transform: rotate(-90deg);
-      transform: rotate(-90deg);
-    }
+  transform: rotate(-90deg);
+}
 #boxplot-key{
   margin-left: auto;
   margin-right: auto;

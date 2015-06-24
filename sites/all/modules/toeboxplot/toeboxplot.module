@@ -30,6 +30,7 @@ function toedotplots_page_function($variableid){
   return theme('toedotplots_template');
 }
 
+
 function toeboxplot_theme(){
   return array(
     'toeboxplots_template' => array(
@@ -40,7 +41,6 @@ function toeboxplot_theme(){
     ),
   );
 }
-
 
 
 function template_preprocess_toeboxplots_template(&$variables) {

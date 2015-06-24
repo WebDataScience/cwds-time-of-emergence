@@ -859,8 +859,6 @@ function toewhiskers_timeline_query($val){
 }
 
 
-
-
 /*
  * Ajax/JSON data retriever.
  * This function returns data for the boxplot page.
@@ -1073,8 +1071,7 @@ function variablesarray($themeindex = 4, $impactindex = 0, $typeindex = 2, $time
   if($averageextreme){ $query .= " AND " . $lookupdatatable . ".AVERAGEEXTREME = '" . $averageextreme . "'";}
   if($timescale){ $query .= " AND " . $lookupdatatable . ".TIMESCALE = '" . $timescale . "'";}
   if(array_key_exists('region', $comparearray)){ $query .= " AND " . $maindatatable . ".REGION = '" . $comparearray['region'] . "'";}
-    
-  drupal_set_message($query);
+  //drupal_set_message($query);
   
   $result = db_query($query);
   // Result is returned as a iterable object that returns a stdClass object on each iteration
