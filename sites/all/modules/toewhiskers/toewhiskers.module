@@ -364,7 +364,6 @@ function toewhiskers_compare_form($form,&$form_submit) {
       'data-toggle'=> 'tooltip',
       'title' => t('Selecting “High” emissions scenario results in earlier emergence, due to greater atmospheric concentrations of greenhouse gases, aerosols etc. Selecting “Low” results in later emergence, due to lower atmospheric concentrations.'),
     ),
-
   );
   $options = array('95' => 'Low (to extreme 5% high or 5% low of 1950-1999 conditions)', '80' => 'High (to extreme 20% high or 20% low of 1950-1999 conditions)',);
   $form['parameter']['tolerance'] = array(
@@ -378,18 +377,6 @@ function toewhiskers_compare_form($form,&$form_submit) {
       'title' => t('Selecting “High” management sensitivity to changing conditions results in earlier emergence. Selecting “Low” results in later emergence.'),
     ),
   );
-  /*$options = array('95' => 'Fast', '50' => 'Moderate', '5' => 'Slow',);
-  $form['parameter']['confidence'] = array(
-    '#type' => 'radios',
-    '#title' => t('Estimated Rate of Climate Change'),
-    '#options' => $options,
-    '#required' => TRUE,
-    '#default_value' => isset($comparearray['confidence'])?$comparearray['confidence']:50,//key($options),
-        '#label_attributes' => array(
-      'data-toggle'=> 'tooltip',
-      'title' => t('Selecting “Fast” results in earlier emergence. Selecting “Slow” results in later emergence. And selecting “Central” results in emergence roughly centered between “Fast” and “Slow”.'),
-    ),
-  );*/
   $options = array('fast' => 'Fast', 'moderate' => 'Moderate', 'slow' => 'Slow',);
   $form['parameter']['rateofchange'] = array(
     '#type' => 'radios',
@@ -1078,16 +1065,17 @@ function variablesarray($themeindex = 4, $impactindex = 0, $typeindex = 2, $time
   db_set_active('cig_toe');
   $query = "SELECT DISTINCT " .$maindatatable. ".VARIABLEID AS k, "
   . $lookupdatatable . ".VARIABLENAME AS v FROM "
-  .$maindatatable. " LEFT JOIN " . $lookupdatatable . " ON (" . $lookupdatatable . ".VARIABLEID = "
-  .$maindatatable. ".VARIABLEID) WHERE 1=1
+  . $maindatatable . " LEFT JOIN " . $lookupdatatable . " ON (" . $lookupdatatable . ".VARIABLEID = "
+  . $maindatatable . ".VARIABLEID) WHERE 1=1
   AND (" .$maindatatable.".MODELAGREEMENT = '25' or " .$maindatatable.".MODELAGREEMENT = '75') ";
   if($theme){ $query .= " AND " . $lookupdatatable . ".THEME = '" . $theme . "'";}
   if($impact){ $query .= " AND " . $lookupdatatable . ".IMPACT LIKE '%" . $impact . "%'";} 
   if($averageextreme){ $query .= " AND " . $lookupdatatable . ".AVERAGEEXTREME = '" . $averageextreme . "'";}
   if($timescale){ $query .= " AND " . $lookupdatatable . ".TIMESCALE = '" . $timescale . "'";}
   if(array_key_exists('region', $comparearray)){ $query .= " AND " . $maindatatable . ".REGION = '" . $comparearray['region'] . "'";}
+    
+  drupal_set_message($query);
   
-  $o .= "<br/>" . $query . "<br/>";   
   $result = db_query($query);
   // Result is returned as a iterable object that returns a stdClass object on each iteration
   foreach ($result as $record) {
@@ -1500,7 +1488,6 @@ function toewhiskers_json_query_function_v3(){
   $emission = trim($compare['emission']);
   // Checkboxes
   $tolerance = trim($compare['tolerance']);
-  $confidence = trim($compare['confidence']);
   $rateofchange = trim($compare['rateofchange']);
   $region = trim($compare['region']);
   $timelinedata = array();
@@ -1701,7 +1688,6 @@ function toewhiskers_json_query_function_v3(){
   $toedata = array(
     "maxtoeyear" => $max_TOE_year,
     "emission" => $emission,
-    "confidence" => $confidence,
     "rateofchange" => $rateofchange,
     "tolerance" => $tolerance,
     "timelinedata" => $timelinedata,
