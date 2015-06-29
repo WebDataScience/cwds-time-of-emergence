@@ -1353,23 +1353,26 @@ function toewhiskers_json_query_dotplot_function($variable, $mode = "json"){
         // Result is returned as a iterable object that returns a stdClass object on each iteration
         foreach ($result as $record) {
           
-          // If GCM is not ensemble than it is MODEL_X and this datapoint is a small dot. Only report dots where TOE is not zero.
+          // If GCM is not ensemble then it is MODEL_X and this datapoint is a small dot. Only report dots where TOE is not zero.
           $pos = strpos($record->GCM, 'ensemble');
           if ($pos === false) {          
             // Split concats into arrays with 'signalconfidence' as key.
             $signalconfidencearray = explode(',',$record->SIGNALCONFIDENCERANGE);   
             $changedirrange = array_combine($signalconfidencearray,explode(',',$record->CHANGEDIRRANGE));
             $toerange = array_combine($signalconfidencearray,explode(',',$record->TOERANGE));
-              
-            if($changedirrange['50'] == '1'){
-              if($toerange['95'] > 0){$fastboxplot['toeandchangedir'][] = array('toe' => $toerange['95'], 'dir' => 1);}
-              if($toerange['5'] > 0){$slowboxplot['toeandchangedir'][] = array('toe' => $toerange['5'], 'dir' => 1);}
+            if(isset($changedirrange['50'])){
+              if($changedirrange['50'] == '1'){
+                if($toerange['95'] > 0){$fastboxplot['toeandchangedir'][] = array('toe' => $toerange['95'], 'dir' => 1);}
+                if($toerange['5'] > 0){$slowboxplot['toeandchangedir'][] = array('toe' => $toerange['5'], 'dir' => 1);}
+              }
+              if($changedirrange['50'] == '-1'){
+                if($toerange['5'] > 0){$fastboxplot['toeandchangedir'][] = array('toe' => $toerange['5'], 'dir' => -1);}
+                if($toerange['95'] > 0){$slowboxplot['toeandchangedir'][] = array('toe' => $toerange['95'], 'dir' => -1);}
+              }
             }
-            if($changedirrange['50'] == '-1'){
-              if($toerange['5'] > 0){$fastboxplot['toeandchangedir'][] = array('toe' => $toerange['5'], 'dir' => -1);}
-              if($toerange['95'] > 0){$slowboxplot['toeandchangedir'][] = array('toe' => $toerange['95'], 'dir' => -1);}
+            if(isset($toerange['50'])){
+              if($toerange['50'] > 0){$moderateboxplot['toeandchangedir'][] = array('toe' => $toerange['50'], 'dir' => $changedirrange['50']);}
             }
-            if($toerange['50'] > 0){$moderateboxplot['toeandchangedir'][] = array('toe' => $toerange['50'], 'dir' => $changedirrange['50']);}
           } else { // 'ensemble' found in 'GCM' so this is the LARGE datapoint.
             // Parse concat lists into arrays.
             $modelagreementrantearray = explode(',',$record->MODELAGREEMENTRANGE);
@@ -1392,11 +1395,9 @@ function toewhiskers_json_query_dotplot_function($variable, $mode = "json"){
               if($toerange['95'] > 0){$slowboxplot['toema50'] = array('toe' => $toerange['95'], 'dir' => -1);}
             }
             if($toerange['50'] > 0){$moderateboxplot['toema50'] = array('toe' => $toerange['50'], 'dir' => $changedirrange['50']); }
-          }
-                         
-          
+          }            
           $datasets[$record->DATASET] = $record->DATASET;
-          
+        
         } 
          
         $boxplotdata['emergencethreshold' . $emergencethreshold]['emissionscenario' . $emissionscenario]['query'] = $query;
@@ -1481,9 +1482,8 @@ function toewhiskers_json_query_function_v3(){
   // Multiple variables allowed.
   $variables = implode("','",$compare['variable']);
   $variables = str_replace(" ", "", $variables);
-  // Radios
+  // Radios and checkboxes
   $emission = trim($compare['emission']);
-  // Checkboxes
   $tolerance = trim($compare['tolerance']);
   $rateofchange = trim($compare['rateofchange']);
   $region = trim($compare['region']);
@@ -1614,11 +1614,11 @@ function toewhiskers_json_query_function_v3(){
     if($rateofchange == 'moderate'){
       if($record->SIGNALCONFIDENCE == '50'){
         if($record->GCM == 'GCM_ensemble'){
-          if($record->MODELAGREEMENT == "25"){            $toe_array[$record->VARIABLEID]->YEARA = ($toe == 0? "Unknown":$toe);          }
-          if($record->MODELAGREEMENT == "75"){            $toe_array[$record->VARIABLEID]->YEARB = ($toe == 0? "Unknown":$toe);          }
+          if($record->MODELAGREEMENT == "25"){ $toe_array[$record->VARIABLEID]->YEARA = ($toe == 0? "Unknown":$toe); }
+          if($record->MODELAGREEMENT == "75"){ $toe_array[$record->VARIABLEID]->YEARB = ($toe == 0? "Unknown":$toe); }
         }
-        if($record->GCM == 'GCM_ensemble_25'){          $toe_array[$record->VARIABLEID]->YEARA = $toe;        }
-        if($record->GCM == 'GCM_ensemble_75'){          $toe_array[$record->VARIABLEID]->YEARB = $toe;        }
+        if($record->GCM == 'GCM_ensemble_25'){ $toe_array[$record->VARIABLEID]->YEARA = $toe; }
+        if($record->GCM == 'GCM_ensemble_75'){ $toe_array[$record->VARIABLEID]->YEARB = $toe; }
       }
     }  // end moderate
     
