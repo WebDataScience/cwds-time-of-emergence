@@ -32,7 +32,8 @@ jQuery( document ).ready(function( $ ) {
   colorarray = ["#E59C00","#E39400","#E18C00","#DF8400","#DD7C00","#DB7400","#D96C00","#D76400","#D55C00","#D35400","#D14C01","#CF4401","#CD3C01","#CB3401","#C92C01","#C72401","#C51C01","#C31401","#C10C01","#C00402"];
 
   // Ajax endpoint will retrieve vars and parameters from session.
-  $.post( "timelinedata" , function( jsonobj ) { 
+  //$.post( "timelinedata" , function( jsonobj ) { 
+  $.post( "/?q=timelinedata" , function( jsonobj ) { 
   
     dataarray = [  ['Genre', '',{ role: 'style' },'Blue',{ role: 'style' }] ];
     //jsondataarray = [['Variable','Year of Emergence',{ role: 'annotation' }]];
