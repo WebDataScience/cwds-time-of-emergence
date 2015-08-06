@@ -87,7 +87,7 @@ jQuery( document ).ready(function( $ ) {
       $('#tabledata tr:last').after("<tr>"
 	      + "<td>" + onerow.VARIABLESHORTNAME + "</td><td>"
         + dateConversion(onerow) + "</td>"
-	      + "<td><a href='dotplots/" + key + "'>see details</a></td>" +
+	      + "<td><a href='/?q=dotplots/" + key + "'>see details</a></td>" +
         "<td>" + onerow.CHANGEDIRTEXT + "</td></tr>"); 
     }
     // Display debug info into hidden div
