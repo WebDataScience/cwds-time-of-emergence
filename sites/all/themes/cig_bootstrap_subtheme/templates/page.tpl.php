@@ -105,7 +105,7 @@
                         <div class="top-menu normal-top-menu">
                             <ul id="menu-university" class="menu">
                                 <li id="menu-item-2660" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-2660"><a href="http://uw.edu">UW Home</a></li>
-                                <li id="menu-item-2661" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-2661"><a href="http://coenv.uw.edu">College Home</a></li>
+                                <li id="menu-item-2661" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-2661"><a href="http://environment.uw.edu">College Home</a></li>
                             </ul> 
                         </div><!-- .top-menu -->
                     </div><!-- .row -->
@@ -166,13 +166,10 @@
                 </nav>
             </div>
             <section class="container" role="document">
-
                 <div class="row">
-
                     <div class="entry-content">
                     <?php print render($page['header']); ?>
                     </div>
-
                     <div class="small-12 medium-12 columns" role="main">
                             <?php if (!empty($page['sidebar_first'])): ?>
                             <div class="main-container container">
@@ -189,27 +186,13 @@
                             </aside>
                             </div>
                             <?php endif; ?>
-                            
-
-
-
-
                         <article class="post-82 page type-page status-publish hentry template-page" id="post-82">
                             <div class="entry-content">
-
-
-
-
                                 <section<?php print $content_column_class; ?>>
                                                 <?php if (!empty($page['highlighted'])): ?>
                                                 <div class="highlighted jumbotron"><?php print render($page['highlighted']); ?></div>
                                                 <?php endif; ?>
                                                 <?php if (!empty($breadcrumb)): print $breadcrumb; endif;?> 
-
-
-
-
-
                                 <article id="post-82" class="post-82 page type-page status-publish hentry article">
                                     <header class="article__header">
                                         <div class="article__meta"></div>
@@ -237,8 +220,6 @@
                                 </section>
                             </div>
                         </article>
-
-
                         <?php if (!empty($page['sidebar_second'])): ?>
                             <div class="main-container container">
                             <aside id="sidebar" class="small-12 medium-3 columns">
@@ -258,11 +239,8 @@
       <div class="content-footer-row">
                      <?php print render($page['footer']); ?>
                 </div>
-
-            <footer id="footer" role="contentinfo" class="site-footer">
-          
-                <div class="footer-row">
-                    
+            <footer id="footer" role="contentinfo" class="site-footer">        
+                <div class="footer-row">                 
                     <div class="row">
                         <div class="medium-6 columns">
                             <div class="footer-logo left">
@@ -289,7 +267,7 @@
                                 <li><a target="_blank" href="http://www.atmos.washington.edu/">Atmospheric Sciences</a></li>
                                 <li><a target="_blank" href="http://www.ess.washington.edu/">Earth and Space Sciences</a></li>
                                 <li><a target="_blank" href="http://www.sefs.washington.edu/">Environmental and Forest Sciences</a></li>
-                                <li><a target="_blank" href="http://depts.washington.edu/smea/front">Marine and Environmental Affairs</a></li>
+                                <li><a target="_blank" href="http://smea.uw.edu">School of Marine and Environmental Affairs</a></li>
                                 <li><a target="_blank" href="http://www.ocean.washington.edu/">Oceanography</a></li>
                                 <li><a target="_blank" href="http://depts.washington.edu/poeweb/">Program on the Environment</a></li>
                                 <li><a target="_blank" href="http://cses.washington.edu/cig/">Climate Impacts Group</a></li>
