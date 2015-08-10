@@ -9,11 +9,9 @@
   $comparearray = isset($_SESSION['compare'])?$_SESSION['compare']:array();
   $variableid = $comparearray['variableid']
 ?>
-
 <?php
   print($fourpanelintro);
 ?>
-  
 <input id="module_path" type="hidden" value="<?php echo base_path() . $path ?>" />
 <div id="main-chart-area">
   <h1 id="top-y-title"></h1>
@@ -24,7 +22,6 @@
       Climate dataset: <span id="dataset">N/A</span>
     </span>
   </h1>
-  
   <div id="boxplot-key">
     <div class="legend">
       <div class="legend-left">
@@ -47,11 +44,8 @@
         <div class="symbol"><span class="largesymbolplus">+</span> Ensemble median, emergence in the positive (increasing) direction</div>
       </div>
     </div>
-      
   </div>
-  
   <div id="top-loading"></div>
-  
   <div id="chart-area-3">
   </div>
   <div id="chart-area-4">
@@ -60,7 +54,6 @@
   </div>
   <div id="chart-area-2">
   </div>
-    
 </div>
 <div>
   <a id="downloadtextanchor" href="<?php print($GLOBALS['base_url'] ); ?>/dotplotdata/<?php print($variableid); ?>/text" download="boxplotdata.csv">
@@ -94,21 +87,31 @@ jQuery( document ).ready(function( $ ) {
     $('#svg-img-wrapper').attr('href', theImage);
   });
     
-  var variableid = location.pathname.match(/.*\/(V.*)/)[1];
-  //var url = baseurl + "/boxplotdata/" + variableid;
-  var url = baseurl + "/dotplotdata/" + variableid;
-  
-  $.post( url, function( jsonobj ) {  
-    $("#variablename").html(jsonobj.variablename);
-    $("#location").html(jsonobj.regionname);
-    $("#dataset").html(jsonobj.dataname);
-    drawBoxplot("chart-area-3", "High Emissions (RCP 8.5 or A1B)",parse4data(jsonobj.emergencethreshold80.emissionscenariohigh),"Past Sensitivity High (to extreme 40% of 1950-1999 conditions)");
-    drawBoxplot("chart-area-4", "Low Emissions (RCP 4.5 or B1)", parse4data(jsonobj.emergencethreshold80.emissionscenariolow),"");     
-    drawBoxplot("chart-area-1", "High Emissions (RCP 8.5 or A1B)", parse4data(jsonobj.emergencethreshold95.emissionscenariohigh),"Past Sensitivity Low (to extreme 10% of 1950-1999 conditions)");
-    drawBoxplot("chart-area-2", "Low Emissions (RCP 4.5 or B1)", parse4data(jsonobj.emergencethreshold95.emissionscenariolow),"");
+  // Test for variableid in querystring and then pathname if necessary. Expecting something like /?q=dotplots/V1.01 OR /dotplots/V1.01
+  var variableid;
+  var variablepattern = new RegExp(/.*\/(V.*)/);
+  var qs = getParameterByName('q');
+  if(variablepattern.test(qs)){ variableid = qs.match(variablepattern)[1]; }
+  if(!(variableid)){
+    if(variablepattern.test(location.pathname)){ variableid = location.pathname.match(variablepattern)[1]; }
+  }
+    
+  if(variableid){
+    var url = baseurl + "/dotplotdata/" + variableid;
+    $.post( url, function( jsonobj ) {  
+      $("#variablename").html(jsonobj.variablename);
+      $("#location").html(jsonobj.regionname);
+      $("#dataset").html(jsonobj.dataname);
+      drawBoxplot("chart-area-3", "High Emissions (RCP 8.5 or A1B)",parse4data(jsonobj.emergencethreshold80.emissionscenariohigh),"Past Sensitivity High (to extreme 40% of 1950-1999 conditions)");
+      drawBoxplot("chart-area-4", "Low Emissions (RCP 4.5 or B1)", parse4data(jsonobj.emergencethreshold80.emissionscenariolow),"");     
+      drawBoxplot("chart-area-1", "High Emissions (RCP 8.5 or A1B)", parse4data(jsonobj.emergencethreshold95.emissionscenariohigh),"Past Sensitivity Low (to extreme 10% of 1950-1999 conditions)");
+      drawBoxplot("chart-area-2", "Low Emissions (RCP 4.5 or B1)", parse4data(jsonobj.emergencethreshold95.emissionscenariolow),"");
+      loadingGif.html("");
+    });
+  } else {
     loadingGif.html("");
-  });
-  
+  }
+
 
   function drawBoxplot(containingElementID, ytitle, data, xtitle) {
   
@@ -285,8 +288,18 @@ function wrap(text, width) {
         
     return data;
   }  // end parse4data()    
+  
+
     
 }); //end jquery
+
+function getParameterByName(name) {
+  name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+  var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+      results = regex.exec(location.search);
+  return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+  
 </script>
 <style>
 body, svg, h2 {
