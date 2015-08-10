@@ -133,7 +133,7 @@
                         <div id="unit-college-uw" class="centered">
                             <h1 class="left"><a href="<?php print $front_page; ?>" rel="home" title="<?php print $site_name; ?>"><?php print $site_name; ?></a></h1>
                             <div class="units show-for-large-up right">
-                                <a href="http://coenv.uw.edu" title="UW College of the Environment"><img src="<?php print base_path() . path_to_theme();?>/assets/img/College-of-the-Environment.png" class="college-name" alt="College of the Environment"></a><br />
+                                <a href="http://environment.uw.edu" title="UW College of the Environment"><img src="<?php print base_path() . path_to_theme();?>/assets/img/College-of-the-Environment.png" class="college-name" alt="College of the Environment"></a><br />
                                 <a href="http://uw.edu" title="University of Washington"><img src="<?php print base_path() . path_to_theme();?>/assets/img/UW-Tagline.png" class="uw-name" alt="University of Washington"></a>
                             </div>
                         </div>
@@ -215,7 +215,6 @@
                                                     <ul class="action-links"><?php print render($action_links); ?></ul>
                                                   <?php endif; ?>
                                                   <?php print render($page['content']); ?>
-                                   
                                 </article><!-- .article -->
                                 </section>
                             </div>
@@ -260,7 +259,7 @@
                     <div class="medium-6 columns right">
                         <nav class="footer-nav">
                             <header class="site-footer__header">
-                                <h2 id="logo"><a href="http://coenv.washington.edu/" rel="home" title="UW College of the Environment"><img alt="College of the Environment Logo" src="<?php print base_path() . path_to_theme();?>/assets/img/uw-footer.svg" width="350" ></a></h2>
+                                <h2 id="logo"><a href="http://environment.uw.edu" rel="home" title="UW College of the Environment"><img alt="College of the Environment Logo" src="<?php print base_path() . path_to_theme();?>/assets/img/uw-footer.svg" width="350" ></a></h2>
                             </header>
                             <ul class="menu-footer-units">
                                 <li><a target="_blank" href="http://fish.washington.edu/">Aquatic and Fishery Sciences</a></li>
