@@ -243,7 +243,7 @@
                     <div class="row">
                         <div class="medium-6 columns">
                             <div class="footer-logo left">
-                                <img src="sites/all/themes/cig_bootstrap_subtheme/assets/img/logo-color.png" alt="Climate Impacts Group Logo" />
+                                <img src="/sites/all/themes/cig_bootstrap_subtheme/assets/img/logo-color.png" alt="Climate Impacts Group Logo" />
                             </div>
                             <header class="site-footer__header">
                                 <h2>Climate Impacts Group</h2>
@@ -300,4 +300,4 @@
         </div>
     <a class="exit-off-canvas"></a>
     </div>
-        <script type='text/javascript' src='sites/all/themes/cig_bootstrap_subtheme/js/app.js?ver=1.0.0'></script>
+        <script type='text/javascript' src='/sites/all/themes/cig_bootstrap_subtheme/js/app.js?ver=1.0.0'></script>
